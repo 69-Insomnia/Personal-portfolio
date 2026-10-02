@@ -1,5 +1,6 @@
 import { profile } from '@/data/profile';
 import { site } from '@/data/seo';
+import { isoDate } from '@/utils/dates';
 import type { BlogPost, Project, Service } from '@/types';
 
 /**
@@ -118,15 +119,20 @@ export function professionalServiceNode(): Node {
  * The content dates on this site are display strings ("9 August 2026"), not
  * ISO-8601. Parsing is guarded and the property is dropped when it does not
  * resolve, because an invalid `datePublished` is worse than an absent one.
+ * `isoDate` is shared with the sitemap, which needs the same conversion.
  */
-function isoDate(display: string): string | undefined {
-  const parsed = new Date(display);
-  return Number.isNaN(parsed.getTime()) ? undefined : parsed.toISOString().slice(0, 10);
-}
-
 export function articleNode(post: BlogPost): Node {
   const url = `${site.url}/blog/${post.slug}`;
   const published = isoDate(post.date);
+  const modified = isoDate(post.updatedAt);
+
+  /**
+   * Emitted only when it genuinely differs from the publish date. A
+   * `dateModified` identical to `datePublished` carries no information, and
+   * repeating the same value in both is the shape of markup that was filled in
+   * mechanically rather than because anything was edited.
+   */
+  const edited = modified && modified !== published ? modified : undefined;
 
   return {
     '@type': 'BlogPosting',
@@ -141,6 +147,7 @@ export function articleNode(post: BlogPost): Node {
     articleSection: post.category,
     ...(post.tags && post.tags.length > 0 ? { keywords: post.tags.join(', ') } : {}),
     ...(published ? { datePublished: published } : {}),
+    ...(edited ? { dateModified: edited } : {}),
     inLanguage: 'en',
   };
 }

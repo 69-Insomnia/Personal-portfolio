@@ -1,15 +1,44 @@
 'use client';
 
 import { useState } from 'react';
+import type { ImgHTMLAttributes } from 'react';
 import type { PlatformTool } from '@/types';
 
 /**
- * Sized by HEIGHT with `width: auto`, which is what lets a wide wordmark
- * (WooCommerce) render at its natural aspect instead of collapsing into a
- * square slot. The width cap stops an unusually long mark from pushing the
- * tool's name out of the chip.
+ * Sized by HEIGHT with `width: auto`, which lets a mark render at its natural
+ * aspect rather than being forced into a square slot, capped so an unusually
+ * wide mark cannot push the tool's name out of the chip.
+ *
+ * In practice every mark in `public/logos/` is a Simple Icons file, and those
+ * all ship a 24×24 viewBox — so they render square at this height and the width
+ * cap never binds. Keeping `width: auto` costs nothing and is the right
+ * behaviour if a brand's own press-kit asset is ever dropped in beside them.
  */
 const imageClasses = 'h-[18px] w-auto max-w-[92px] shrink-0 object-contain';
+
+/**
+ * Shared attributes for every mark.
+ *
+ * `loading="lazy"` is the one that matters. React 19 emits
+ * `<link rel="preload" as="image">` for every image it renders during server
+ * rendering *unless* that image is lazy. With the Hero's strip and the
+ * Technologies cards both drawing from the registry, that meant 24 preloads
+ * firing before first paint — 24 requests competing for bandwidth with
+ * whatever the real largest contentful paint was, to fetch 18px of decoration.
+ * Lazy puts them back in the ordinary deferred queue, where they belong.
+ *
+ * `width`/`height` give the browser an aspect ratio before the file arrives, so
+ * the chip's text does not jump when it does. They describe the intrinsic size,
+ * not the rendered size — the classes above still decide that.
+ */
+const imageProps: ImgHTMLAttributes<HTMLImageElement> = {
+  alt: '',
+  'aria-hidden': true,
+  loading: 'lazy',
+  decoding: 'async',
+  width: 24,
+  height: 24,
+};
 
 /**
  * The mark beside a tool's name.
@@ -25,7 +54,7 @@ const imageClasses = 'h-[18px] w-auto max-w-[92px] shrink-0 object-contain';
  * Both branches are decorative — the tool's name always sits beside them — so
  * they're hidden from the accessibility tree and the chip's accessible name
  * comes from its text. A plain <img> rather than next/image: these are tiny
- * SVGs, where the optimizer adds a round trip and buys nothing.
+ * local SVGs, where the optimizer adds a round trip and buys nothing.
  */
 export function ToolMark({ tool }: { tool: PlatformTool }) {
   const [failed, setFailed] = useState(false);
@@ -49,19 +78,15 @@ export function ToolMark({ tool }: { tool: PlatformTool }) {
       <>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
+          {...imageProps}
           src={tool.logo}
-          alt=""
-          aria-hidden
-          decoding="async"
           onError={() => setFailed(true)}
           className={`${imageClasses} dark:hidden`}
         />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
+          {...imageProps}
           src={tool.logoDark}
-          alt=""
-          aria-hidden
-          decoding="async"
           onError={() => setFailed(true)}
           className={`${imageClasses} hidden dark:block`}
         />
@@ -72,10 +97,8 @@ export function ToolMark({ tool }: { tool: PlatformTool }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
+      {...imageProps}
       src={tool.logo}
-      alt=""
-      aria-hidden
-      decoding="async"
       onError={() => setFailed(true)}
       className={imageClasses}
     />

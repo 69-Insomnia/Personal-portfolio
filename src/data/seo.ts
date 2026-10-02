@@ -10,20 +10,60 @@ import { profile } from '@/data/profile';
  * value you can put in a canonical tag, because it tells Google the real copy
  * of each page lives somewhere else.
  *
- * Set `NEXT_PUBLIC_SITE_URL` to the production origin (no trailing slash) in
- * Vercel and in `.env.local`. The localhost fallback keeps development
- * coherent, and production warns loudly rather than silently shipping a wrong
- * canonical again.
+ * The replacement was a localhost fallback plus a `console.warn`, which turned
+ * out to be barely better. The warning only reaches someone reading a build
+ * log, and the site went to production with every canonical, every `og:url`,
+ * every JSON-LD `@id`, the whole of `sitemap.xml` and the `Sitemap:` line in
+ * `robots.txt` pointing at `http://localhost:3000` — 18 occurrences on the home
+ * page alone.
+ *
+ * So the origin is now resolved from whatever the environment can actually
+ * tell us, and in production a total failure to resolve is a build error rather
+ * than a quiet downgrade to a domain that does not exist. A build that fails is
+ * recoverable in a minute; a site that tells Google its real pages live on
+ * localhost is not.
  */
+
+/**
+ * Vercel sets both of these to a bare hostname, no protocol.
+ *
+ * `VERCEL_PROJECT_PRODUCTION_URL` is the stable production domain and is
+ * present on preview and development deploys too, which is why it is tried
+ * first: it makes a preview build canonicalise to production, so preview URLs
+ * cannot be indexed as duplicates of the live pages.
+ *
+ * `VERCEL_URL` is that specific deployment's hostname, so it changes on every
+ * push. It is only a last resort — a self-consistent origin beats a wrong one,
+ * but a per-deploy origin in a sitemap is not something to opt into.
+ */
+const VERCEL_ORIGIN_VARS = ['VERCEL_PROJECT_PRODUCTION_URL', 'VERCEL_URL'] as const;
+
+function vercelOrigin(): string | undefined {
+  for (const name of VERCEL_ORIGIN_VARS) {
+    const value = process.env[name]?.trim();
+    if (!value) continue;
+    // Tolerate a protocol being set on the variable even though Vercel omits it.
+    return `https://${value.replace(/^https?:\/\//, '').replace(/\/+$/, '')}`;
+  }
+  return undefined;
+}
+
 function resolveSiteUrl(): string {
+  // An explicit value always wins: it is the only way to point the site at a
+  // custom domain that is not the one the host thinks it is serving.
   const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
   if (configured) return configured.replace(/\/+$/, '');
 
+  const vercel = vercelOrigin();
+  if (vercel) return vercel;
+
   if (process.env.NODE_ENV === 'production') {
-    console.warn(
-      '[seo] NEXT_PUBLIC_SITE_URL is not set. Canonical tags, sitemap.xml, ' +
-        'robots.txt and structured data are being built against localhost. ' +
-        'Set it to the production origin before this deploy goes live.',
+    throw new Error(
+      '[seo] Cannot resolve the site origin. Set NEXT_PUBLIC_SITE_URL to the ' +
+        'production origin, with no trailing slash, in the deploy environment. ' +
+        'Canonical tags, og:url, sitemap.xml, robots.txt and every JSON-LD @id ' +
+        'are built from it, and shipping them as localhost is worse than not ' +
+        'shipping at all. See .env.example.',
     );
   }
 

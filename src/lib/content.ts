@@ -89,6 +89,7 @@ interface ProjectRow {
   results: unknown;
   link: string | null;
   is_placeholder: boolean;
+  updated_at: string | null;
 }
 
 function mapProject(row: ProjectRow): Project {
@@ -114,6 +115,7 @@ function mapProject(row: ProjectRow): Project {
       : undefined,
     link: strOr(row.link),
     isPlaceholder: row.is_placeholder === true,
+    updatedAt: strOr(row.updated_at),
   };
 }
 
@@ -156,6 +158,7 @@ interface PostRow {
   content: unknown;
   tags: unknown;
   is_placeholder: boolean;
+  updated_at: string | null;
 }
 
 function mapPost(row: PostRow): BlogPost {
@@ -170,6 +173,7 @@ function mapPost(row: PostRow): BlogPost {
     content: strList(row.content),
     tags: strList(row.tags),
     isPlaceholder: row.is_placeholder === true,
+    updatedAt: strOr(row.updated_at),
   };
 }
 
@@ -215,6 +219,7 @@ interface ServiceRow {
   body: unknown;
   capabilities: unknown;
   icon: string;
+  updated_at: string | null;
 }
 
 /**
@@ -242,6 +247,7 @@ function mapService(row: ServiceRow): UnnumberedService {
     body: serviceSections(row.body),
     capabilities: strList(row.capabilities),
     icon: row.icon as Service['icon'],
+    updatedAt: strOr(row.updated_at),
   };
 }
 
@@ -263,19 +269,4 @@ export async function getServices(): Promise<Service[]> {
 export async function getService(slug: string): Promise<Service | undefined> {
   const list = await getServices();
   return list.find((s) => s.slug === slug);
-}
-
-// --------------------------------------------------------------- sitemap ---
-
-export async function getContentSlugs(): Promise<{
-  work: string[];
-  blog: string[];
-  services: string[];
-}> {
-  const [projects, posts, services] = await Promise.all([getProjects(), getPosts(), getServices()]);
-  return {
-    work: projects.map((p) => p.slug),
-    blog: posts.map((p) => p.slug),
-    services: services.map((s) => s.slug),
-  };
 }

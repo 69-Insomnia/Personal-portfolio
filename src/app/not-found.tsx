@@ -5,6 +5,17 @@ import { buildMetadata } from '@/utils/metadata';
 const notFoundSEO = {
   title: `Page Not Found | ${profile.name}`,
   description: 'The page you are looking for does not exist.',
+  /**
+   * Next injects `noindex` for any unmatched route by itself, but the root
+   * layout's site-wide `robots: { index: true, follow: true }` merged in
+   * alongside it, so every 404 shipped two contradictory robots tags —
+   * `<meta name="robots" content="noindex">` and `content="index, follow"`.
+   * Browsers and crawlers resolve that to the more restrictive of the two, so
+   * nothing was technically broken, but a contradictory signal on the one page
+   * type that most needs to be unambiguous is not worth leaving to chance.
+   * Stating it here overrides the layout instead of stacking on top of it.
+   */
+  robots: { index: false, follow: false },
 };
 
 /**

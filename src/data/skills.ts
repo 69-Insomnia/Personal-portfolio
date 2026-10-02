@@ -1,16 +1,16 @@
 import type { PlatformTool, TechnologyCategory, ToolLogo } from '@/types';
 
-const SIMPLE_ICONS = 'https://cdn.simpleicons.org';
-
 /**
  * Brand mark for every tool the site names, keyed by the name shown in the UI.
  *
- * `slug` is a Simple Icons identifier, which the CDN serves in the brand's own
- * colour. Two entries carry a `src` instead, because the CDN doesn't publish
- * those marks at all — they're checked into `public/logos/`. See that folder's
- * README before adding more.
+ * Every mark is a file in `public/logos/`. These used to be hotlinked from the
+ * Simple Icons CDN, which cost a couple of dozen third-party requests per page
+ * load, handed every visitor's IP to a CDN with no other business with it, and
+ * broke the section behind a strict `Content-Security-Policy`. `slug` is kept
+ * as provenance — it is what you search for when a mark needs re-fetching. See
+ * `public/logos/README.md`.
  *
- * `white` fetches a second, white mark for dark chips. It is set only where the
+ * `srcDark` is a second, white mark for dark chips. It is set only where the
  * brand mark is near-black and would otherwise vanish against a dark surface;
  * every other brand colour already reads on both, so this stays the exception
  * rather than the rule.
@@ -18,44 +18,38 @@ const SIMPLE_ICONS = 'https://cdn.simpleicons.org';
  * A name absent from this map is not an error — `ToolMark` falls back to a
  * lettered monogram. `Meta Pixel` relies on that today: Simple Icons has never
  * carried a mark for it.
- *
- * NOTE: the CDN entries are hotlinks, so the Hero and the Technologies section
- * together make a couple of dozen third-party requests per page load, and the
- * visitor's IP reaches that CDN. Downloading these into `public/logos/` and
- * changing each entry to `{ slug, src: '/logos/<slug>.svg' }` is the production
- * fix, and is the only edit the components need.
  */
 export const toolLogos: Record<string, ToolLogo> = {
-  React: { slug: 'react' },
-  'Next.js': { slug: 'nextdotjs', white: true },
-  JavaScript: { slug: 'javascript' },
-  TypeScript: { slug: 'typescript' },
-  HTML: { slug: 'html5' },
-  CSS: { slug: 'css' },
-  'Tailwind CSS': { slug: 'tailwindcss' },
+  React: { slug: 'react', src: '/logos/react.svg' },
+  'Next.js': { slug: 'nextdotjs', src: '/logos/nextdotjs.svg', srcDark: '/logos/nextdotjs-white.svg' },
+  JavaScript: { slug: 'javascript', src: '/logos/javascript.svg' },
+  TypeScript: { slug: 'typescript', src: '/logos/typescript.svg' },
+  HTML: { slug: 'html5', src: '/logos/html5.svg' },
+  CSS: { slug: 'css', src: '/logos/css.svg' },
+  'Tailwind CSS': { slug: 'tailwindcss', src: '/logos/tailwindcss.svg' },
 
-  'Node.js': { slug: 'nodedotjs' },
-  'Express.js': { slug: 'express', white: true },
-  PHP: { slug: 'php' },
+  'Node.js': { slug: 'nodedotjs', src: '/logos/nodedotjs.svg' },
+  'Express.js': { slug: 'express', src: '/logos/express.svg', srcDark: '/logos/express-white.svg' },
+  PHP: { slug: 'php', src: '/logos/php.svg' },
 
-  MongoDB: { slug: 'mongodb' },
-  MySQL: { slug: 'mysql' },
+  MongoDB: { slug: 'mongodb', src: '/logos/mongodb.svg' },
+  MySQL: { slug: 'mysql', src: '/logos/mysql.svg' },
 
-  WordPress: { slug: 'wordpress' },
-  WooCommerce: { slug: 'woocommerce' },
-  Shopify: { slug: 'shopify' },
+  WordPress: { slug: 'wordpress', src: '/logos/wordpress.svg' },
+  WooCommerce: { slug: 'woocommerce', src: '/logos/woocommerce.svg' },
+  Shopify: { slug: 'shopify', src: '/logos/shopify.svg' },
 
-  'Google Ads': { slug: 'googleads' },
-  'Meta Ads': { slug: 'meta' },
-  'Google Analytics': { slug: 'googleanalytics' },
-  'Google Tag Manager': { slug: 'googletagmanager' },
-  'Search Console': { slug: 'googlesearchconsole' },
+  'Google Ads': { slug: 'googleads', src: '/logos/googleads.svg' },
+  'Meta Ads': { slug: 'meta', src: '/logos/meta.svg' },
+  'Google Analytics': { slug: 'googleanalytics', src: '/logos/googleanalytics.svg' },
+  'Google Tag Manager': { slug: 'googletagmanager', src: '/logos/googletagmanager.svg' },
+  'Search Console': { slug: 'googlesearchconsole', src: '/logos/googlesearchconsole.svg' },
   /* The Hero panel is half the viewport wide, so its strip uses the short forms
      of the three long Google names. Same marks, different label. */
-  Analytics: { slug: 'googleanalytics' },
-  'Tag Manager': { slug: 'googletagmanager' },
+  Analytics: { slug: 'googleanalytics', src: '/logos/googleanalytics.svg' },
+  'Tag Manager': { slug: 'googletagmanager', src: '/logos/googletagmanager.svg' },
 
-  Figma: { slug: 'figma' },
+  Figma: { slug: 'figma', src: '/logos/figma.svg' },
   Photoshop: { slug: 'adobephotoshop', src: '/logos/adobephotoshop.svg' },
   Canva: { slug: 'canva', src: '/logos/canva.svg' },
 };
@@ -73,8 +67,8 @@ export function toPlatformTool(name: string): PlatformTool {
 
   return {
     name,
-    logo: logo.src ?? `${SIMPLE_ICONS}/${logo.slug}`,
-    logoDark: logo.white ? `${SIMPLE_ICONS}/${logo.slug}/FFFFFF` : undefined,
+    logo: logo.src,
+    logoDark: logo.srcDark,
   };
 }
 

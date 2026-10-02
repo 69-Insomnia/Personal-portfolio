@@ -1,3 +1,5 @@
+import type { Metadata } from 'next';
+
 export interface SocialLinks {
   linkedin?: string;
   github?: string;
@@ -39,6 +41,13 @@ export interface SEOData {
   canonical?: string;
   ogImage?: string;
   ogType?: 'website' | 'article';
+  /**
+   * Robots directives for this page. Omit to inherit the site-wide default
+   * (`index, follow` in `src/app/layout.tsx`); set it to override that, which
+   * is what the 404 needs — without it, Next's own `noindex` for unmatched
+   * routes and the layout's `index, follow` are emitted side by side.
+   */
+  robots?: Metadata['robots'];
 }
 
 export interface Stat {
@@ -87,6 +96,8 @@ export interface Service {
   body?: ServiceSection[];
   capabilities: string[];
   icon: IconName;
+  /** ISO-8601 last-edit timestamp from Supabase; absent on static fallback data. */
+  updatedAt?: string;
 }
 
 export type ProjectCategory =
@@ -122,6 +133,8 @@ export interface Project {
   results?: ProjectResult[];
   link?: string;
   isPlaceholder?: boolean;
+  /** ISO-8601 last-edit timestamp from Supabase; absent on static fallback data. */
+  updatedAt?: string;
 }
 
 export interface ExperienceItem {
@@ -173,6 +186,8 @@ export interface BlogPost {
   content?: string[];
   tags?: string[];
   isPlaceholder?: boolean;
+  /** ISO-8601 last-edit timestamp from Supabase; absent on static fallback data. */
+  updatedAt?: string;
 }
 
 export interface FAQ {
@@ -214,17 +229,24 @@ export interface PlatformTool {
  * A tool's entry in the brand-mark registry (`src/data/skills.ts`), keyed there
  * by the name shown in the UI.
  *
- * `slug` is the tool's Simple Icons identifier. `src` overrides the CDN URL for
- * the few marks Simple Icons doesn't publish, which are checked into
- * `public/logos/` instead. `white` asks for a second, white mark to use on dark
- * chips — see `toPlatformTool` for how the two become a `PlatformTool`.
+ * Every mark is served from `public/logos/`. These used to be hotlinked from
+ * the Simple Icons CDN, which cost a couple of dozen third-party requests per
+ * page load, sent every visitor's IP to that CDN, and made the section fail
+ * behind a strict `Content-Security-Policy`. `slug` is kept as provenance — it
+ * is what you search for when a mark needs re-fetching, and it is how these
+ * files were originally obtained.
+ *
+ * `srcDark` is a second, white mark for a near-black logo that would otherwise
+ * vanish against a dark chip. See `toPlatformTool` for how the two become a
+ * `PlatformTool`.
  */
 export interface ToolLogo {
+  /** Simple Icons identifier, kept for provenance and re-fetching. */
   slug: string;
-  /** Local path, for marks the Simple Icons CDN doesn't serve. */
-  src?: string;
-  /** Also fetch a white variant, for a near-black mark on a dark chip. */
-  white?: boolean;
+  /** The mark, as a path relative to `public/`. */
+  src: string;
+  /** Optional white variant, for a near-black mark on a dark chip. */
+  srcDark?: string;
 }
 
 export interface CapabilityGroup {
