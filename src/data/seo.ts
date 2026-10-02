@@ -48,22 +48,72 @@ function vercelOrigin(): string | undefined {
   return undefined;
 }
 
+/**
+ * Origins that are real on a developer's machine and meaningless anywhere else.
+ *
+ * This guard exists because the previous version of this function trusted
+ * `NEXT_PUBLIC_SITE_URL` unconditionally, and the site then shipped with every
+ * canonical, `og:url`, JSON-LD `@id`, the whole sitemap and the `Sitemap:` line
+ * in robots.txt pointing at `http://localhost:3000` — including into `llms.txt`,
+ * which the AI crawlers allowlisted in `robots.ts` read. The production build
+ * guard below never fired, because the configured-value branch returned first.
+ * A guard that only catches "nothing resolved" does not catch "resolved to
+ * something that cannot be fetched."
+ */
+const LOOPBACK_ORIGIN =
+  /^https?:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])(:\d+)?$/i;
+
+/**
+ * Rejects anything that is not an absolute `http(s)://host` origin.
+ *
+ * A bare `dipendraguragain.tech` (no protocol) is the other way this value gets
+ * set wrong, and it produces canonical tags like `dipendraguragain.tech/about`
+ * — relative strings that resolve against the *current* page and are therefore
+ * worse than no canonical at all.
+ */
+function isUsableOrigin(value: string): boolean {
+  if (LOOPBACK_ORIGIN.test(value)) return false;
+  try {
+    const { protocol } = new URL(value);
+    return protocol === 'http:' || protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 function resolveSiteUrl(): string {
+  const isProduction = process.env.NODE_ENV === 'production';
+
   // An explicit value always wins: it is the only way to point the site at a
-  // custom domain that is not the one the host thinks it is serving.
-  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  if (configured) return configured.replace(/\/+$/, '');
+  // custom domain that is not the one the host thinks it is serving. In
+  // production it has to be a usable absolute origin, otherwise it is skipped
+  // in favour of the host's own variables rather than being trusted.
+  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/+$/, '');
+  if (configured) {
+    if (isUsableOrigin(configured)) return configured;
+    // In development a loopback value is correct and expected.
+    if (!isProduction && LOOPBACK_ORIGIN.test(configured)) return configured;
+  }
 
   const vercel = vercelOrigin();
   if (vercel) return vercel;
 
-  if (process.env.NODE_ENV === 'production') {
+  if (isProduction) {
+    const rejected =
+      configured && !isUsableOrigin(configured)
+        ? ` NEXT_PUBLIC_SITE_URL was set to "${configured}", which is not a ` +
+          'usable public origin and has been ignored.'
+        : '';
+
     throw new Error(
-      '[seo] Cannot resolve the site origin. Set NEXT_PUBLIC_SITE_URL to the ' +
-        'production origin, with no trailing slash, in the deploy environment. ' +
-        'Canonical tags, og:url, sitemap.xml, robots.txt and every JSON-LD @id ' +
-        'are built from it, and shipping them as localhost is worse than not ' +
-        'shipping at all. See .env.example.',
+      '[seo] Cannot resolve the site origin.' +
+        rejected +
+        ' Set NEXT_PUBLIC_SITE_URL to the production origin (absolute, no ' +
+        'trailing slash) in the deploy environment, and note that because it ' +
+        'is a NEXT_PUBLIC_* variable it is inlined at build time — changing ' +
+        'it requires a redeploy, not a restart. Canonical tags, og:url, ' +
+        'sitemap.xml, robots.txt, llms.txt and every JSON-LD @id are built ' +
+        'from it. See .env.example.',
     );
   }
 
