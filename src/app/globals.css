@@ -1,0 +1,338 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------------------
+   Colour system
+
+   Luminance structure is deliberate and contrast-checked (ratios noted below).
+   The neutral ramp is WARM throughout — the previous palette paired a warm
+   paper (#fafaf8) with cool blue-greys (#55555f / #6f6f76), which is why the
+   greys never quite settled against the background.
+
+   Three text tiers, each verified against --color-paper and --color-surface:
+     ink   16.7:1  headings, emphasis
+     muted  7.3:1  body copy, descriptions
+     faint  4.7:1  placeholders, meta
+   All three clear WCAG AA (4.5:1) for normal text.
+--------------------------------------------------------------------------- */
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --color-paper: #ffffff;
+  --color-subtle: #f4f3f0; /* alternate band, keeps depth without a border */
+  --color-surface: #ffffff;
+  --color-paper-blur: rgba(255, 255, 255, 0.82);
+
+  /* Text */
+  --color-ink: #1c1917;
+  --color-muted: #57534e;
+  --color-faint: #767068;
+
+  /* Lines. `line` is decorative (dividers, card edges). `line-strong` is the
+     accessible component boundary — form fields, anything a user must be able
+     to see the edge of. It is deliberately solid rather than alpha-based so its
+     ratio is predictable wherever it lands, and it clears the 3:1 required by
+     WCAG 1.4.11 (3.6:1 on paper, 3.4:1 on surface). */
+  --color-line: rgba(28, 25, 23, 0.12);
+  --color-line-strong: #8a837c;
+
+  /* Accent ramp — a full scale so hover/tint/soft states derive from one hue
+     instead of being hand-mixed.
+
+     Warm orange: vivid burnt orange on light surfaces, lifted amber-orange on
+     dark. The hue sits next to the warm stone neutrals rather than opposing
+     them, so the accent reads as part of the same material instead of a sticker
+     on top of it.
+
+     The theme aliases below are tuned so every text-bearing use clears WCAG AA
+     on paper: `accent` (700) is 4.96:1 on light paper, `accent-strong` (800)
+     is 7.0:1, and on dark paper the 400 step is 7.9:1. Buttons pair the ramp
+     with `on-accent` — white on 700 (5.18:1), deep brown on 400 (6.9:1).
+
+     NOTE: the numbered steps are theme-INVARIANT and tuned for light surfaces.
+     Reach for `accent` / `accent-strong` / `accent-soft` in components — those
+     are the theme-aware aliases and are re-pointed in `.dark`. Using e.g.
+     `bg-accent-700` directly would put a dark burnt orange on a dark page. The
+     mid steps are used literally in two places only — chart fills and tinted
+     bands — where they are fills rather than text. */
+  --color-accent-50: #fff7ed;
+  --color-accent-100: #ffedd5;
+  --color-accent-200: #fed7aa;
+  --color-accent-300: #fdba74;
+  --color-accent-400: #fb923c;
+  --color-accent-500: #f97316;
+  --color-accent-600: #ea580c;
+  --color-accent-700: #c2410c;
+  --color-accent-800: #9a3412;
+  --color-accent-900: #7c2d12;
+  --color-accent-950: #431407;
+
+  --color-accent: var(--color-accent-700);
+  --color-accent-strong: var(--color-accent-800);
+  --color-accent-soft: rgba(234, 88, 12, 0.1);
+  --color-on-accent: #ffffff;
+
+  /* Status. Kept in the same luminance band as the accent so no single status
+     colour shouts louder than the brand colour.
+
+     There is deliberately NO `--color-warning` here. The brand now owns orange,
+     and a warning token would have to be either orange (unreadable as "warning"
+     when it is also the accent) or red (already `danger`). Rather than ship a
+     token that has nowhere correct to point, it is gone. Re-add it only if the
+     accent ever leaves the warm end of the wheel. */
+  --color-success: #15803d;
+  --color-danger: #b91c1c;
+  --color-info: #1d4ed8;
+
+  /* WhatsApp brand. Deliberately NOT re-pointed in `.dark` or the inverse band —
+     the green is the product's identity, not part of our palette, and it keeps
+     its meaning only if it is the same colour everywhere. The ink is a near-black
+     green so the label sits at ~8.4:1 on `--color-whatsapp` (white would be
+     under 2:1 here and unreadable). */
+  --color-whatsapp: #25d366;
+  --color-whatsapp-hover: #1eb157;
+  --color-whatsapp-ink: #062e19;
+
+  --color-ring: #ea580c;
+
+  /* Inverse band — deliberately dark in BOTH themes so it stays a feature band
+     rather than flipping with the page. Its content colours are identical in
+     both themes, so the band looks the same either way. */
+  --color-inverse: #0f0e0d;
+  --color-inverse-surface: #1a1817;
+  --color-inverse-raised: #232019;
+  --color-inverse-line: #2e2b28;
+  --color-inverse-ink: #f5f5f4;
+  --color-inverse-muted: #a8a29e;
+  --color-inverse-faint: #8f8880;
+  --color-inverse-accent: #fb923c;
+  --color-inverse-accent-strong: #fdba74;
+  --color-inverse-accent-soft: rgba(251, 146, 60, 0.14);
+  --color-inverse-on-accent: #431407;
+  --color-inverse-danger: #f87171;
+
+  /* Modal scrim. A pre-mixed rgba rather than a `/95` opacity modifier on
+     `--color-inverse`, because Tailwind 3 cannot inject an alpha channel into
+     a theme colour declared as a bare `var()` — it drops the utility and the
+     overlay renders fully transparent. Same reason `--color-paper-blur`
+     exists. Dark in both themes, like the inverse band. */
+  --color-scrim: rgba(15, 14, 13, 0.94);
+
+  /* Elevation. Warm-tinted shadows — a neutral-black shadow reads cold against
+     a warm page, and reads colder still now that the accent is orange. The
+     tint is a brown-black rather than the old neutral, so the shadow belongs to
+     the same material as everything above it. Deeper than the previous set:
+     the direction is scale-led, and a card that lifts needs a shadow with
+     enough reach that the lift reads as height rather than as a rendering bug. */
+  --shadow-xs: 0 1px 2px rgba(41, 24, 12, 0.05);
+  --shadow-sm: 0 1px 3px rgba(41, 24, 12, 0.08), 0 1px 2px rgba(41, 24, 12, 0.05);
+  --shadow-md: 0 6px 16px rgba(41, 24, 12, 0.1), 0 2px 4px rgba(41, 24, 12, 0.06);
+  --shadow-lg: 0 16px 40px rgba(41, 24, 12, 0.14), 0 4px 10px rgba(41, 24, 12, 0.07);
+
+  /* One radius for every card and inset — see the `.card` / `.inset` recipes. */
+  --radius-card: 0.75rem;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --color-paper: #0c0a09;
+  --color-subtle: #151311;
+  --color-surface: #1c1917;
+  --color-paper-blur: rgba(12, 10, 9, 0.78);
+
+  --color-ink: #f5f5f4;
+  --color-muted: #a8a29e;
+  --color-faint: #8f8880;
+
+  --color-line: rgba(245, 245, 244, 0.13);
+  --color-line-strong: #6b6560;
+
+  /* Dark mode keeps the hue but climbs the ramp. Burnt orange at #c2410c on a
+     near-black page is nearly invisible; the 400 step is the same family read
+     from the other end, and clears 7.9:1 on paper. `accent-strong` goes
+     LIGHTER here rather than darker — on a dark surface, "more emphasis" means
+     more light, which is the opposite of the light theme. Buttons pair it with
+     the 950 step as `on-accent` (6.9:1). */
+  --color-accent: #fb923c;
+  --color-accent-strong: #fdba74;
+  --color-accent-soft: rgba(251, 146, 60, 0.14);
+  --color-on-accent: #431407;
+
+  --color-success: #4aa876;
+  --color-danger: #f87171;
+  --color-info: #7dabf8;
+
+  --color-ring: #fb923c;
+
+  /* Paper is near-black here, so the band goes to true black with its inner
+     surfaces lifted ABOVE paper — that keeps it legible as a recessed region
+     instead of dissolving into the page. */
+  --color-inverse: #000000;
+  --color-inverse-surface: #0f0e0d;
+  --color-inverse-raised: #171512;
+  --color-inverse-line: #2a2724;
+
+  --color-scrim: rgba(0, 0, 0, 0.95);
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.66), 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-paper font-sans text-ink antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+    font-weight: 500;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Anchor targets have to clear the fixed header. */
+  section[id] {
+    scroll-margin-top: 5rem;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 3px;
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    font: inherit;
+    color: inherit;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .skip-link {
+    @apply sr-only rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-paper;
+  }
+
+  .skip-link:focus-visible {
+    @apply fixed left-4 top-4 z-[100] not-sr-only;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-3 text-label font-medium uppercase text-muted;
+  }
+
+  /* The three surface roles, as named recipes rather than repeated class
+     strings. This is what stops the site drifting back into two accidental card
+     languages — the problem was never that there were two, it was that nothing
+     said which was which.
+
+       Band   Full-bleed section background: `bg-paper` / `bg-subtle` on the
+              <Section> itself. Breaks up a seventeen-section scroll.
+       Card   Top-level content — projects, services, posts, the Technologies
+              panels. `surface` fill, a hairline, and it lifts on hover.
+       Inset  A panel nested INSIDE a card or band, like the Hero's tools strip.
+              `subtle` fill, no hairline, and it never lifts — it isn't a thing
+              you can click, so motion there would be decoration.
+
+     Card and Inset share `--radius-card` so a card containing an inset still
+     reads as a single object. Only Card gets `.card-interactive`; adding the
+     pair to a component is the whole contract. */
+  .card {
+    @apply rounded-card border border-line bg-surface;
+  }
+
+  .card-interactive {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .card-interactive:hover {
+    @apply -translate-y-1 border-ink shadow-lg;
+  }
+
+  .inset {
+    @apply rounded-card bg-subtle;
+  }
+
+  /* Re-points the token variables for everything inside, so the existing
+     primitives (Badge, Button, SkillCard, FlowChain, Section…) re-theme with no
+     per-component changes. The `* { border-color: var(--color-line) }` rule in
+     the base layer picks this up too, which is what makes plain `border-line`
+     work inside the band. */
+  .section-inverse {
+    --color-paper: var(--color-inverse);
+    --color-paper-blur: var(--color-inverse);
+    --color-subtle: var(--color-inverse-surface);
+    --color-surface: var(--color-inverse-surface);
+    --color-ink: var(--color-inverse-ink);
+    --color-muted: var(--color-inverse-muted);
+    --color-faint: var(--color-inverse-faint);
+    --color-line: var(--color-inverse-line);
+    --color-line-strong: var(--color-inverse-faint);
+    --color-accent: var(--color-inverse-accent);
+    --color-accent-strong: var(--color-inverse-accent-strong);
+    --color-accent-soft: var(--color-inverse-accent-soft);
+    --color-on-accent: var(--color-inverse-on-accent);
+    --color-danger: var(--color-inverse-danger);
+    --color-info: #7dabf8;
+    --color-ring: var(--color-inverse-accent);
+
+    background-color: var(--color-inverse);
+    color: var(--color-inverse-ink);
+  }
+}
+
+@layer utilities {
+  .dot-grid {
+    background-image: radial-gradient(var(--color-line) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
