@@ -82,6 +82,25 @@ function isUsableOrigin(value: string): boolean {
 }
 
 function resolveSiteUrl(): string {
+  /**
+   * The browser cannot recover the production origin.
+   *
+   * Every variable that identifies it — Vercel's `VERCEL_PROJECT_PRODUCTION_URL`
+   * and `VERCEL_URL` — is server-only and reads as `undefined` in the client
+   * bundle. `NEXT_PUBLIC_SITE_URL` is the only one that survives, and if it
+   * holds a rejected value we have nothing left to try.
+   *
+   * This matters more than it looks: this module is evaluated at module scope
+   * during hydration, so an uncaught error here does not fail one component, it
+   * fails the whole React tree and Next.js replaces the entire page with its
+   * built-in global error screen. That is exactly what happened — the server
+   * rendered perfect HTML and every real browser showed "This page couldn't
+   * load", which no crawler could see because the HTML was never the problem.
+   *
+   * So the browser never throws. It falls back to whatever origin it is
+   * actually on, which is at worst a preview URL and is always self-consistent.
+   */
+  const isBrowser = typeof window !== 'undefined';
   const isProduction = process.env.NODE_ENV === 'production';
 
   // An explicit value always wins: it is the only way to point the site at a
@@ -98,7 +117,19 @@ function resolveSiteUrl(): string {
   const vercel = vercelOrigin();
   if (vercel) return vercel;
 
-  if (isProduction) {
+  if (isBrowser) return window.location.origin;
+
+  /**
+   * The build-failure guard applies only to a hosted build.
+   *
+   * `next build` loads `.env.local` in every environment, and a developer's
+   * `.env.local` correctly holds `http://localhost:3000`. Failing the build on
+   * that value would break local production builds to protect an artifact that
+   * is never deployed. On Vercel the host's own variables have already resolved
+   * above, so reaching here means the deploy genuinely cannot name itself —
+   * which is the case worth failing loudly for.
+   */
+  if (isProduction && process.env.VERCEL) {
     const rejected =
       configured && !isUsableOrigin(configured)
         ? ` NEXT_PUBLIC_SITE_URL was set to "${configured}", which is not a ` +
