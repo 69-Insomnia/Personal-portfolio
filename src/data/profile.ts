@@ -8,7 +8,7 @@ export const profile: Profile = {
   headline: 'I Build Websites. Then I Get Them Found.',
 
   description:
-    "I'm a web developer in Kathmandu. I build the site, then do the search and paid work that brings people to it, and stay long enough to see what they actually do.",
+    "I'm Dipendra Guragain, a web developer and SEO specialist in Kathmandu. I build the site, then do the search and paid work that brings people to it, and stay long enough to see what they actually do.",
 
   location: 'Kathmandu, Nepal',
 

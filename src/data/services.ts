@@ -47,12 +47,12 @@ const serviceOrder: UnnumberedService[] = [
     slug: 'web-development',
     title: 'Web Development Services',
     shortDescription:
-      'Custom websites and web applications built with React, Next.js, WordPress and Shopify.',
+      'Website design and development in Nepal: custom websites, web applications and online stores built with React, Next.js, WordPress and Shopify.',
     description:
-      "I build websites in Kathmandu — marketing sites, web applications and online stores. The stack follows the job rather than a preference: React and Next.js where the project needs to be fast and custom, WordPress or Shopify where someone other than me has to edit it after launch. Every build starts with what the site has to do for the business, because a good-looking site that takes four seconds to load on a phone has already failed at the only thing it was for. What that means in practice is a fast, accessible, maintainable build that someone else can pick up later without a rewrite. I work across the front end and the back end, wire the analytics up properly, and stay involved after launch long enough to see how people actually use it.",
+      "I am a web developer in Kathmandu, building marketing websites, web applications and online stores. The stack follows the job rather than a preference: React and Next.js where the project needs to be fast and custom, WordPress or Shopify where someone other than me has to edit it after launch. Every build starts with what the site has to do for the business, because a good-looking site that takes four seconds to load on a phone has already failed at the only thing it was for. What that means in practice is a fast, accessible, maintainable build that someone else can pick up later without a rewrite. I work across the front end and the back end, wire the analytics up properly, and stay involved after launch long enough to see how people actually use it.",
     body: [
       {
-        heading: 'What does a web development service include?',
+        heading: 'What does website design and development include?',
         paragraphs: [
           'Most of the work is one of three things: a marketing site that has to explain a business and collect enquiries, a web application that does something specific, or an online store. They have different constraints and I build them differently.',
           'A marketing site is a persuasion problem. The pages have to load fast, read clearly and lead somewhere. An application is a state problem: what happens when two people edit the same record, what happens when the network drops. A store is a trust problem, and everything from the product page to the checkout either builds trust or spends it.',
@@ -63,6 +63,13 @@ const serviceOrder: UnnumberedService[] = [
         paragraphs: [
           'The honest answer is that it depends on who edits the site after I hand it over. If the owner wants to publish blog posts and change copy without calling anyone, WordPress or Shopify will do that better than a custom build, and I will say so even when a custom build would be more interesting work.',
           'React and Next.js make sense when the site has to do something the platforms cannot, when performance is the constraint, or when the design is specific enough that fighting a theme costs more than building it. The stack is a decision about maintenance, not about quality.',
+        ],
+      },
+      {
+        heading: 'Do you build the design as well as the code?',
+        paragraphs: [
+          'Yes. On most projects the same person handles the layout, the type, the responsive behaviour and the front-end build, which removes the handover where a design gets reinterpreted into something slightly worse. Where a designer is already involved I build to their files instead.',
+          'Accessibility and Core Web Vitals are part of the build rather than a later pass: real heading structure, focus states that work with a keyboard, images sized and lazy-loaded correctly, and no layout shift when a font or a script arrives late.',
         ],
       },
       {
@@ -222,17 +229,25 @@ const serviceOrder: UnnumberedService[] = [
   },
   {
     slug: 'ecommerce-growth',
-    title: 'Ecommerce Growth',
+    title: 'Ecommerce Growth Specialist',
     shortDescription:
-      'Storefront, product SEO, ads and analytics treated as one funnel rather than four projects.',
+      'Ecommerce growth specialist in Nepal. Storefront, ecommerce SEO, product pages, ads and analytics run as one funnel rather than four projects.',
     description:
-      'I work on ecommerce growth, which in practice means treating the storefront, product pages, search visibility, advertising and analytics as one system rather than four projects owned by four people. Most ecommerce problems arrive described as a single problem. Traffic is down, or conversion is down, or ad costs are up, and it usually turns out to be the same problem wearing different hats. A product page that takes four seconds to load on mobile is an SEO issue, an advertising issue and a merchandising issue at once, and because three people each see a different symptom, nobody fixes it. So I start by finding where people actually drop off, using the funnel rather than an opinion, and fix that before sending more traffic into a leaking store.',
+      'I am an ecommerce growth specialist based in Kathmandu, working with online stores in Nepal and remotely. In practice the job means treating the storefront, product pages, ecommerce SEO, advertising and analytics as one system rather than four projects owned by four people. Most ecommerce problems arrive described as a single problem. Traffic is down, or conversion is down, or ad costs are up, and it usually turns out to be the same problem wearing different hats. A product page that takes four seconds to load on mobile is an SEO issue, an advertising issue and a merchandising issue at once, and because three people each see a different symptom, nobody fixes it. So I start by finding where people actually drop off, using the funnel rather than an opinion, and fix that before sending more traffic into a leaking store.',
     body: [
       {
         heading: 'Why do ecommerce problems look like several problems?',
         paragraphs: [
           'Because each specialist sees the symptom their tool measures. The SEO sees a Core Web Vitals failure. The ads manager sees a high bounce rate and blames the audience. The merchandiser sees a product with views and no carts.',
           'All three are describing the same page and none of them is wrong. That is exactly why it goes unfixed: the problem is not inside anybody\'s remit, so it sits in the gap between them.',
+        ],
+      },
+      {
+        heading: 'How does ecommerce SEO differ from optimising a normal website?',
+        paragraphs: [
+          'Because the pages multiply. A store with two hundred products has two hundred pages that each need a title and a description matching what the product actually is, plus the category pages above them — and the categories are usually what should be ranking for the broad terms, not the individual products.',
+          'The failures repeat across almost every store I look at. Product pages that inherit the manufacturer description, so every shop selling the same item publishes the same words and none of them is the original. Category pages with no content at all, competing on nothing but internal links. Filter and sort parameters generating thousands of crawlable URLs that dilute the pages that matter. Missing product structured data, so price and availability cannot appear in the result even when the page ranks.',
+          'Nepali stores add one of their own: product names written in romanised Nepali on the page and in English in the title, so neither version is complete. Both belong on the page when both are how people search.',
         ],
       },
       {
@@ -255,14 +270,14 @@ const serviceOrder: UnnumberedService[] = [
   },
   {
     slug: 'digital-marketing',
-    title: 'Digital Marketing Services',
+    title: 'Digital Marketing Specialist',
     shortDescription:
-      'One strategy across content, search, paid media and conversion instead of four separate people.',
+      'Digital marketing specialist in Nepal: one strategy across content, SEO, paid media and conversion, instead of four separate suppliers.',
     description:
-      "I do digital marketing, which mostly means refusing to treat content, search, paid media and conversion as separate jobs. They get decided together because they only pay off together. An ad that sends traffic to a page which does not answer the query wastes the budget, and a page nobody can find wastes the writing. The question stays the same across all of it: what brings the right visitors, and what turns them into customers. For a business in Nepal that usually means search first, because demand already exists and it is the cheapest demand to capture, then paid media to reach the people who are not searching yet, then the conversion work that stops both from leaking. One person holding all four is not about doing more. It is about not having to reconcile four reports that disagree.",
+      "I am a digital marketing specialist in Kathmandu, which mostly means refusing to treat content, SEO, paid media and conversion as separate jobs. They get decided together because they only pay off together. An ad that sends traffic to a page which does not answer the query wastes the budget, and a page nobody can find wastes the writing. The question stays the same across all of it: what brings the right visitors, and what turns them into customers. For a business in Nepal that usually means search first, because demand already exists and it is the cheapest demand to capture, then paid media to reach the people who are not searching yet, then the conversion work that stops both from leaking. One person holding all four is not about doing more. It is about not having to reconcile four reports that disagree.",
     body: [
       {
-        heading: 'What does digital marketing actually own?',
+        heading: 'What does a digital marketing specialist actually own?',
         paragraphs: [
           'The plan and the numbers behind it. Which channel gets the next rupee, what each one is expected to return, and what gets cut when it does not deliver.',
           'That is a different job from running four channels well in isolation. When search, ads and content are optimised separately by different people against different targets, the business can hit every one of those targets and still not grow, because none of them was measuring the thing that mattered.',
