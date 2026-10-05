@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Breadcrumb } from '@/components/common/Breadcrumb';
 import { Container } from '@/components/ui/Container';
 import { Reveal } from '@/components/ui/Reveal';
 import { RevealText } from '@/components/ui/RevealText';
@@ -14,17 +14,17 @@ export default function ContactPage() {
     <>
       <Section className="border-b border-line pb-14 pt-32 md:pb-16 md:pt-40">
         <Container>
-          <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm text-muted">
-            <Link href="/" className="py-1.5 transition-colors duration-300 hover:text-accent">
-              Home
-            </Link>
-            <span aria-hidden className="text-faint">
-              /
-            </span>
-            <span aria-current="page" className="text-ink">
-              Contact
-            </span>
-          </nav>
+          {/* The shared component, not a hand-rolled `<nav>`. The local one
+              looked identical but carried no `BreadcrumbList`, so this was the
+              only page on the site with a visible trail and no markup to match
+              it — the exact mismatch in the other direction from the detail
+              routes, which had the markup and nothing to see. */}
+          <Breadcrumb
+            items={[
+              { name: 'Home', path: '/' },
+              { name: 'Contact', path: '/contact' },
+            ]}
+          />
 
           <RevealText
             as="h1"

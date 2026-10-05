@@ -1,11 +1,14 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Clock } from 'lucide-react';
+import { ArticleBody } from '@/components/common/ArticleBody';
+import { AuthorByline } from '@/components/common/AuthorByline';
 import { BlogCard } from '@/components/cards/BlogCard';
 import { ImageLightbox } from '@/components/common/ImageLightbox';
 import { JsonLd } from '@/components/common/JsonLd';
 import { PlaceholderBadge } from '@/components/common/PlaceholderBadge';
 import { PageHeader } from '@/components/common/PageHeader';
+import { RelatedBlock } from '@/components/common/RelatedBlock';
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import { Reveal } from '@/components/ui/Reveal';
@@ -13,10 +16,12 @@ import { RevealText } from '@/components/ui/RevealText';
 import { Section } from '@/components/ui/Section';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 import { blogPosts, getPostBySlug } from '@/data/blog';
-import { getPost, getPosts } from '@/lib/content';
-import { articleNode, breadcrumbNode } from '@/lib/structured-data';
+import { getPost, getPosts, getProjects, getServices } from '@/lib/content';
+import { relatedToPost } from '@/lib/related';
+import { articleNode } from '@/lib/structured-data';
 import { postSEO } from '@/data/seo';
 import { buildMetadata } from '@/utils/metadata';
+import { postImageAlt } from '@/utils/images';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -32,7 +37,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const post = (await getPost(slug)) ?? getPostBySlug(slug);
   if (!post) {
-    return { title: 'Article Not Found' };
+    // `notFound()` renders the root boundary, which sends its own `noindex`.
+    return { title: 'Article Not Found', robots: { index: false, follow: false } };
   }
   return buildMetadata(postSEO(post));
 }
@@ -45,31 +51,43 @@ export default async function BlogPostPage({ params }: PageProps) {
     notFound();
   }
 
-  const all = await getPosts();
-  const related = all
+  const [allPosts, allServices, allProjects] = await Promise.all([
+    getPosts(),
+    getServices(),
+    getProjects(),
+  ]);
+
+  const related = allPosts
     .filter((item) => item.slug !== post.slug && item.category === post.category)
-    .concat(all.filter((item) => item.slug !== post.slug && item.category !== post.category))
+    .concat(
+      allPosts.filter((item) => item.slug !== post.slug && item.category !== post.category),
+    )
     .slice(0, 2);
+
+  const { services: relatedServices, projects: relatedProjects } = relatedToPost(post.slug, {
+    services: allServices,
+    projects: allProjects,
+  });
 
   return (
     <article>
-      <JsonLd
-        graph={[
-          articleNode(post),
-          breadcrumbNode([
-            { name: 'Home', path: '/' },
-            { name: 'Insights', path: '/blog' },
-            { name: post.title, path: `/blog/${post.slug}` },
-          ]),
-        ]}
-      />
+      {/* The breadcrumb trail is rendered by `PageHeader` below, which emits
+          its own `BreadcrumbList`. Passing one here as well would publish the
+          same trail twice. */}
+      <JsonLd graph={[articleNode(post)]} />
       <PageHeader
         label={post.category}
         badge={post.isPlaceholder ? <PlaceholderBadge /> : null}
+        breadcrumb={[
+          { name: 'Home', path: '/' },
+          { name: 'Insights', path: '/blog' },
+          { name: post.title, path: `/blog/${post.slug}` },
+        ]}
         title={post.title}
         meta={
-          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted">
-            <span>{post.date}</span>
+          <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted">
+            <AuthorByline post={post} />
+            <span aria-hidden className="h-px w-4 bg-line" />
             <span className="inline-flex items-center gap-1.5">
               <Clock size={14} aria-hidden />
               {post.readingTime}
@@ -82,11 +100,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       <Container className="mt-10 md:mt-14">
         <ImageLightbox
           src={post.image}
-          alt={
-            post.isPlaceholder
-              ? `Placeholder image for article: ${post.title}`
-              : `${post.title}: ${post.excerpt}`
-          }
+          alt={postImageAlt(post)}
           sizes="(max-width: 1200px) 100vw, 1100px"
         />
       </Container>
@@ -97,11 +111,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             <SectionLabel label="Article" />
           </div>
           <div className="flex flex-col gap-6 lg:col-span-8 lg:col-start-5">
-            {(post.content ?? []).map((paragraph, index) => (
-              <Reveal key={index} delay={index * 0.05}>
-                <p className="max-w-2xl leading-relaxed text-muted">{paragraph}</p>
-              </Reveal>
-            ))}
+            <ArticleBody content={post.content ?? []} />
 
             {post.tags && post.tags.length > 0 ? (
               <Reveal>
@@ -120,6 +130,23 @@ export default async function BlogPostPage({ params }: PageProps) {
           </div>
         </div>
       </Container>
+
+      {/* The services this article argues for, and the project it came out of.
+          An article that makes a technical claim and never links to the work
+          behind it reads as opinion; the edge to the case study is what makes
+          it first-hand. */}
+      <RelatedBlock
+        kind="services"
+        label="Services"
+        title="Work With Me On This"
+        items={relatedServices}
+      />
+      <RelatedBlock
+        kind="projects"
+        label="Case Study"
+        title="The Work Behind This Article"
+        items={relatedProjects}
+      />
 
       {related.length > 0 ? (
         <Section className="border-t border-line">

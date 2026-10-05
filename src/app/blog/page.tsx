@@ -14,6 +14,10 @@ export default async function BlogPage() {
     <>
       <PageHeader
         label="Insights"
+        breadcrumb={[
+          { name: 'Home', path: '/' },
+          { name: 'Insights', path: '/blog' },
+        ]}
         title="Things I'm Learning, Building & Sharing"
         description="Notes on web development, search, advertising and ecommerce, written from real project work."
       />

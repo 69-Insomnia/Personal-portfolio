@@ -2,21 +2,28 @@ import type { MetadataRoute } from 'next';
 import { site } from '@/data/seo';
 
 /**
- * AI answer engines are allowed in explicitly.
+ * Crawlers named explicitly, so a later wildcard edit cannot take them out.
  *
- * The wildcard rule already permits them, so this changes no behaviour today.
- * It exists so the intent is auditable: the single most common way a site
- * disappears from AI answers is a later "block all bots" edit to the wildcard,
- * which silently takes the AI crawlers with it. Naming them means that edit
- * has to be deliberate.
+ * The wildcard rule already permits all of these, so this changes no behaviour
+ * today. It exists so the intent is auditable: the single most common way a
+ * site disappears from AI answers is a later "block all bots" edit to the
+ * wildcard, which silently takes everything unnamed with it. Naming an agent
+ * means that edit has to be deliberate.
  *
  * `Google-Extended` is the one that governs whether content can ground Gemini
  * and AI Overviews. `Applebot-Extended` does the same for Apple Intelligence.
  * Neither affects normal Google Search ranking.
  *
+ * `Bingbot` is not an AI crawler — it is Bing's search index, and therefore
+ * also the retrieval layer behind Bing Copilot. It is named here because Bing
+ * matters for reasons beyond Bing's own share: Copilot, and ChatGPT's browsing
+ * mode, both resolve a meaningful amount of the web through it. It is grouped
+ * with the AI agents because the rule applied to it is identical, not because
+ * it belongs in the same category.
+ *
  * `/admin` stays disallowed for every agent.
  */
-const AI_AGENTS = [
+const NAMED_CRAWLERS = [
   'GPTBot',
   'OAI-SearchBot',
   'ChatGPT-User',
@@ -42,7 +49,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/admin', '/admin/'],
       },
       {
-        userAgent: AI_AGENTS,
+        userAgent: NAMED_CRAWLERS,
         allow: '/',
         disallow: ['/admin', '/admin/'],
       },

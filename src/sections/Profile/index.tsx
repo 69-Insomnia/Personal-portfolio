@@ -23,7 +23,7 @@ import { profile } from '@/data/profile';
 const HEADLINE = ['Web Development,', 'SEO and Ads,', 'ALL IN ONE.'];
 
 const BIO = [
-  "I'm a web developer in Kathmandu, working across React and Next.js on one side and search and paid media on the other. Most projects need both, and most teams split them between two people.",
+  "I'm Dipendra Guragain — a web developer and SEO specialist based in Kathmandu, Nepal. I work across React and Next.js on one side and search and paid media on the other. Most projects need both, and most teams split them between two people.",
   "I spent a year at DrillThru, a web design and digital marketing agency in Nepal, building the agency's own site on Next.js: service pages, a work showcase, testimonials, blog and enquiry flows, plus the structured data that feeds their search results. Working alongside the SEO and ads side is where I stopped thinking of a website as the finish line.",
   "Six months on POM's Penthouse, a serviced-apartment residence in Lakeside, Pokhara, went further. Guests compare 1, 2 and 3 BHK apartments with amenities and nightly rates, then reserve over WhatsApp in one tap rather than filling in a form and waiting. It is the clearest example I have of a decision that came from asking how the customer actually behaves rather than how the site usually works.",
   'The work usually starts with the same question: where are people dropping off? A page that takes four seconds to load on a phone, a query that lands somewhere that does not answer it, an ad pointing at a category when someone wanted one product. Finding it is usually cheaper than the thing everyone assumed was the problem.',

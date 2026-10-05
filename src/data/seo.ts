@@ -1,5 +1,6 @@
 import type { BlogPost, Project, SEOData, Service } from '@/types';
 import { profile } from '@/data/profile';
+import { isoDate } from '@/utils/dates';
 
 /**
  * Production origin for canonical tags, Open Graph URLs, the sitemap, robots.txt
@@ -151,11 +152,47 @@ function resolveSiteUrl(): string {
   return 'http://localhost:3000';
 }
 
+/**
+ * The single source of truth for who this site is about.
+ *
+ * Every one of these was previously restated wherever it was needed — the name
+ * in the layout, the title in the Person node, the location in three separate
+ * places — which is how `sameAs` ended up describing an entity whose job title
+ * disagreed with the one on the page. Reading them from one object means a
+ * corrected title cannot leave four stale copies behind it.
+ *
+ * `role` is the entity's positioning line, and it is deliberately different
+ * from `profile.title` (the navbar's tracked micro-type, which has to stay
+ * short enough to sit under a name). This is the version that goes into a
+ * heading, a `jobTitle` and a meta description.
+ */
+export const identity = {
+  name: profile.name,
+  role: 'Web Developer & SEO Specialist',
+  location: profile.location,
+  email: profile.email,
+  telephone: profile.whatsapp,
+} as const;
+
 export const site = {
   url: resolveSiteUrl(),
-  name: profile.name,
+  name: identity.name,
   locale: 'en_US',
 };
+
+/**
+ * The social profiles that identify this person elsewhere.
+ *
+ * Exported so `sameAs`, the contact page and the footer resolve to one list
+ * rather than three filters over the same object that can disagree about
+ * whether an empty string counts as a profile.
+ */
+export const socialProfiles: string[] = Object.values(profile.socialLinks).filter(
+  (href): href is string => typeof href === 'string' && href.trim().length > 0,
+);
+
+/** 1200×630, served from `public/`. Absolute downstream via `metadataBase`. */
+export const DEFAULT_OG_IMAGE = '/og-image.png';
 
 /**
  * Titles lead with the query, not the name. A portfolio for someone who is not
@@ -239,23 +276,65 @@ export const contactSEO: SEOData = {
   canonical: `${site.url}/contact`,
 };
 
+/**
+ * Project pages.
+ *
+ * The title named every project a "Website & SEO Project in Nepal", which was
+ * not true of all of them — `poms-penthouse` carries no SEO work at all — so
+ * the page asserted something about itself that its own case study contradicted.
+ * Naming the real category instead is both accurate and a better description of
+ * what someone clicking the result is going to get.
+ *
+ * The description is the project's own summary, which is the honest one, and it
+ * is clamped by `buildMetadata` because several of these run past the length a
+ * result will display.
+ */
 export function projectSEO(project: Project): SEOData {
   return {
-    title: `${project.title} | Website & SEO Project in Nepal`,
+    title: `${project.title} Case Study | ${project.category} in Nepal`,
     description: project.description,
+    keywords: [project.title, `${project.category} Nepal`, ...project.technologies],
     canonical: `${site.url}/work/${project.slug}`,
   };
 }
 
+/**
+ * Service pages.
+ *
+ * The title is `${service.title} in Nepal`, which means the page's own name
+ * decides what it targets — so a service named "Ecommerce Growth Specialist"
+ * and one named "Web Development Services" both produce a query-shaped title
+ * without anything being forced into a template.
+ *
+ * `base` strips the role suffix so the shorter term is covered too. "Ecommerce
+ * Growth Specialist" is how the service is named, but "Ecommerce Growth" and
+ * "Ecommerce Growth Nepal" are what more people type, and a page should not
+ * miss the shorter version of its own name because of the longer one it chose.
+ * Nothing here is invented: every term is a prefix of the page's own title.
+ */
 export function serviceSEO(service: Service): SEOData {
+  const base = service.title.replace(/\s+(Services|Specialist)$/i, '');
+
   return {
     title: `${service.title} in Nepal | ${profile.name}`,
     description: service.shortDescription,
-    keywords: [`${service.title} Nepal`, `${service.title} Kathmandu`],
+    keywords: [
+      `${service.title} Nepal`,
+      `${service.title} Kathmandu`,
+      `${base} Nepal`,
+      `${base} Kathmandu`,
+    ],
     canonical: `${site.url}/services/${service.slug}`,
   };
 }
 
+/**
+ * Article pages carry the full set of fields `og:type=article` expects.
+ *
+ * These were previously left to Next's defaults, which means the published and
+ * modified times existed in the BlogPosting JSON-LD and nowhere in the metadata
+ * a social crawler or an aggregator actually reads.
+ */
 export function postSEO(post: BlogPost): SEOData {
   return {
     title: `${post.title} | ${profile.name}`,
@@ -263,5 +342,9 @@ export function postSEO(post: BlogPost): SEOData {
     keywords: post.tags,
     canonical: `${site.url}/blog/${post.slug}`,
     ogType: 'article',
+    authors: [profile.name],
+    publishedTime: isoDate(post.date),
+    modifiedTime: isoDate(post.updatedAt),
+    tags: post.tags,
   };
 }

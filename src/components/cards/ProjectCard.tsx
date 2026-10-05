@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { PlaceholderBadge } from '@/components/common/PlaceholderBadge';
 import { projectCategories } from '@/data/projects';
+import { projectImageAlt } from '@/utils/images';
 import type { Project } from '@/types';
 
 interface ProjectCardProps {
@@ -22,11 +23,7 @@ export function ProjectCard({ project, priority = false }: ProjectCardProps) {
         <div className="relative aspect-[4/3] overflow-hidden rounded-sm bg-paper">
           <Image
             src={project.image}
-            alt={
-              project.isPlaceholder
-                ? `Placeholder image for project: ${project.title}`
-                : `${project.title}: ${project.description}`
-            }
+            alt={projectImageAlt(project)}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 640px"
             className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]"

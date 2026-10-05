@@ -48,6 +48,17 @@ export interface SEOData {
    * routes and the layout's `index, follow` are emitted side by side.
    */
   robots?: Metadata['robots'];
+  /**
+   * Article metadata, only read when `ogType` is `'article'`.
+   *
+   * These feed `og:type=article`'s `article:published_time`, `article:modified_time`,
+   * `article:author` and `article:tag`. They are the same values the BlogPosting
+   * JSON-LD carries, so the two cannot describe different publication dates.
+   */
+  authors?: string[];
+  publishedTime?: string;
+  modifiedTime?: string;
+  tags?: string[];
 }
 
 export interface Stat {
@@ -183,6 +194,15 @@ export interface BlogPost {
   date: string;
   readingTime: string;
   image: string;
+  /**
+   * Article body, one entry per block.
+   *
+   * An entry beginning with `## ` is rendered as an `<h2>` rather than a
+   * paragraph — see `ArticleBody`. The convention exists so a heading can be
+   * added without a schema change and without a second CMS field, and because
+   * these posts previously shipped as ~350 words of unbroken prose with nothing
+   * for a retrieval system to chunk on.
+   */
   content?: string[];
   tags?: string[];
   isPlaceholder?: boolean;

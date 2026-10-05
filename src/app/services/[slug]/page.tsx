@@ -3,16 +3,16 @@ import { notFound } from 'next/navigation';
 import { SkillCard } from '@/components/cards/SkillCard';
 import { JsonLd } from '@/components/common/JsonLd';
 import { PageHeader } from '@/components/common/PageHeader';
-import { ServiceCard } from '@/components/cards/ServiceCard';
+import { RelatedBlock } from '@/components/common/RelatedBlock';
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import { Reveal } from '@/components/ui/Reveal';
-import { RevealText } from '@/components/ui/RevealText';
 import { Section } from '@/components/ui/Section';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 import { getServiceBySlug, services } from '@/data/services';
-import { getService, getServices } from '@/lib/content';
-import { breadcrumbNode, serviceNode } from '@/lib/structured-data';
+import { getPosts, getProjects, getService, getServices } from '@/lib/content';
+import { relatedToService } from '@/lib/related';
+import { serviceNode } from '@/lib/structured-data';
 import { serviceSEO } from '@/data/seo';
 import { buildMetadata } from '@/utils/metadata';
 
@@ -30,7 +30,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const service = (await getService(slug)) ?? getServiceBySlug(slug);
   if (!service) {
-    return { title: 'Service Not Found' };
+    // `notFound()` renders the root boundary, which sends its own `noindex`.
+    // This only has to avoid publishing a title that reads like a real page.
+    return { title: 'Service Not Found', robots: { index: false, follow: false } };
   }
   return buildMetadata(serviceSEO(service));
 }
@@ -43,25 +45,33 @@ export default async function ServicePage({ params }: PageProps) {
     notFound();
   }
 
-  const all = await getServices();
-  const related = all.filter((item) => item.slug !== service.slug).slice(0, 3);
+  const [allServices, allProjects, allPosts] = await Promise.all([
+    getServices(),
+    getProjects(),
+    getPosts(),
+  ]);
+
+  const related = allServices.filter((item) => item.slug !== service.slug).slice(0, 3);
+  const { projects: relatedProjects, posts: relatedPosts } = relatedToService(service.slug, {
+    projects: allProjects,
+    posts: allPosts,
+  });
   const body = service.body ?? [];
 
   return (
     <article>
-      <JsonLd
-        graph={[
-          serviceNode(service),
-          breadcrumbNode([
-            { name: 'Home', path: '/' },
-            { name: 'Services', path: '/services' },
-            { name: service.title, path: `/services/${service.slug}` },
-          ]),
-        ]}
-      />
+      {/* The breadcrumb trail is rendered by `PageHeader` below, which emits
+          its own `BreadcrumbList`. Passing one here as well would publish the
+          same trail twice. */}
+      <JsonLd graph={[serviceNode(service)]} />
       <PageHeader
         label="Service"
         index={service.index}
+        breadcrumb={[
+          { name: 'Home', path: '/' },
+          { name: 'Services', path: '/services' },
+          { name: service.title, path: `/services/${service.slug}` },
+        ]}
         title={service.title}
         description={service.shortDescription}
       />
@@ -99,8 +109,21 @@ export default async function ServicePage({ params }: PageProps) {
                   <Button href="/contact" size="lg" showArrow>
                     Discuss This Service
                   </Button>
-                  <Button href="/work" variant="outline" size="lg">
-                    See Related Work
+                  {/*
+                    Points at the first real case study for this service rather
+                    than at the /work index. "See Related Work" used to drop a
+                    reader on a grid of everything, which is one more decision
+                    to make; the specific project is the evidence for the page
+                    they are already on.
+                  */}
+                  <Button
+                    href={
+                      relatedProjects[0] ? `/work/${relatedProjects[0].slug}` : '/work'
+                    }
+                    variant="outline"
+                    size="lg"
+                  >
+                    {relatedProjects[0] ? `See ${relatedProjects[0].title}` : 'See Related Work'}
                   </Button>
                 </div>
               </Reveal>
@@ -138,19 +161,27 @@ export default async function ServicePage({ params }: PageProps) {
         </Container>
       </Section>
 
-      {related.length > 0 ? (
-        <Section className="border-t border-line">
-          <Container>
-            <SectionLabel label="Keep Exploring" />
-            <RevealText as="h2" text="Other Services" className="mt-5 text-h3" />
-            <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {related.map((item) => (
-                <ServiceCard key={item.slug} service={item} />
-              ))}
-            </div>
-          </Container>
-        </Section>
-      ) : null}
+      {/* Work first, then reading, then the rest of the catalogue. That order is
+          the argument the page is making: here it is, here is why, here is what
+          else I do. */}
+      <RelatedBlock
+        kind="projects"
+        label="Proof"
+        title="Related Work"
+        items={relatedProjects}
+      />
+      <RelatedBlock
+        kind="posts"
+        label="Further Reading"
+        title="Articles On This"
+        items={relatedPosts}
+      />
+      <RelatedBlock
+        kind="services"
+        label="Keep Exploring"
+        title="Other Services"
+        items={related}
+      />
     </article>
   );
 }

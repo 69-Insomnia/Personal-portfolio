@@ -3,7 +3,8 @@ import type { ReactNode } from 'react';
 import { Space_Grotesk } from 'next/font/google';
 import { MotionConfig } from 'framer-motion';
 import { ConditionalChrome } from '@/components/layout/ConditionalChrome';
-import { defaultSEO, site } from '@/data/seo';
+import { DEFAULT_OG_IMAGE, defaultSEO, identity, site } from '@/data/seo';
+import { searchConsoleVerification } from '@/utils/metadata';
 import { profile } from '@/data/profile';
 import './globals.css';
 
@@ -37,8 +38,11 @@ export const metadata: Metadata = {
   title: defaultSEO.title,
   description: defaultSEO.description,
   keywords: defaultSEO.keywords,
-  authors: [{ name: profile.name }],
+  applicationName: profile.name,
+  authors: [{ name: profile.name, url: site.url }],
   creator: profile.name,
+  publisher: profile.name,
+  category: 'technology',
   openGraph: {
     type: 'website',
     locale: site.locale,
@@ -46,15 +50,43 @@ export const metadata: Metadata = {
     siteName: profile.name,
     title: defaultSEO.title,
     description: defaultSEO.description,
-    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: `${profile.name} — ${identity.role} in ${identity.location}`,
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: defaultSEO.title,
     description: defaultSEO.description,
-    images: ['/og-image.png'],
+    images: [{ url: DEFAULT_OG_IMAGE, alt: `${profile.name} — ${identity.role}` }],
   },
-  robots: { index: true, follow: true },
+  /**
+   * The site-wide directive. Pages override it through `buildMetadata`, and the
+   * 404 overrides it to `noindex, nofollow`.
+   *
+   * `max-image-preview:large` is the one that matters beyond the obvious: the
+   * default is a thumbnail, and without this every result gets a small, cropped
+   * preview instead of the full 1200×630 card. `max-snippet: -1` lifts the
+   * length cap on the descriptive snippet, which is what lets a well-written
+   * first paragraph be the thing that gets shown.
+   */
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
+  },
+  verification: searchConsoleVerification,
   // Icons come from the file convention: `src/app/icon.png` and
   // `src/app/apple-icon.png` are picked up automatically and emits a
   // content-hashed URL, so there is no `icons` entry to keep in sync here.

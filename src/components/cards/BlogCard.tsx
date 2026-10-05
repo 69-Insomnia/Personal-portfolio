@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Clock } from 'lucide-react';
 import { PlaceholderBadge } from '@/components/common/PlaceholderBadge';
+import { postImageAlt } from '@/utils/images';
 import type { BlogPost } from '@/types';
 
 export function BlogCard({ post }: { post: BlogPost }) {
@@ -13,11 +14,7 @@ export function BlogCard({ post }: { post: BlogPost }) {
         <div className="card relative aspect-[16/10] overflow-hidden">
           <Image
             src={post.image}
-            alt={
-              post.isPlaceholder
-                ? `Placeholder image for article: ${post.title}`
-                : `${post.title}: ${post.excerpt}`
-            }
+            alt={postImageAlt(post)}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 420px"
             /* `contain` to match the article hero. The article artwork is 3:2

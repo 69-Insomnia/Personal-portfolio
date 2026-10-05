@@ -5,6 +5,7 @@ import { PlaceholderBadge } from '@/components/common/PlaceholderBadge';
 import { JsonLd } from '@/components/common/JsonLd';
 import { PageHeader } from '@/components/common/PageHeader';
 import { ProjectCard } from '@/components/cards/ProjectCard';
+import { RelatedBlock } from '@/components/common/RelatedBlock';
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import { Reveal } from '@/components/ui/Reveal';
@@ -12,10 +13,12 @@ import { RevealText } from '@/components/ui/RevealText';
 import { Section } from '@/components/ui/Section';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 import { getProjectBySlug, projectCategories, projects } from '@/data/projects';
-import { getProject, getProjects } from '@/lib/content';
-import { breadcrumbNode, projectNode } from '@/lib/structured-data';
+import { getPosts, getProject, getProjects, getServices } from '@/lib/content';
+import { relatedToProject } from '@/lib/related';
+import { projectNode } from '@/lib/structured-data';
 import { projectSEO } from '@/data/seo';
 import { buildMetadata } from '@/utils/metadata';
+import { projectImageAlt } from '@/utils/images';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -31,7 +34,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const project = (await getProject(slug)) ?? getProjectBySlug(slug);
   if (!project) {
-    return { title: 'Project Not Found' };
+    // `notFound()` renders the root boundary, which sends its own `noindex`.
+    return { title: 'Project Not Found', robots: { index: false, follow: false } };
   }
   return buildMetadata(projectSEO(project));
 }
@@ -44,11 +48,27 @@ export default async function ProjectPage({ params }: PageProps) {
     notFound();
   }
 
-  const all = await getProjects();
-  const related = all
-    .filter((item) => item.slug !== project.slug && item.category === project.category)
-    .concat(all.filter((item) => item.slug !== project.slug && item.category !== project.category))
+  const [allProjects, allServices, allPosts] = await Promise.all([
+    getProjects(),
+    getServices(),
+    getPosts(),
+  ]);
+
+  const related = allProjects
+    .filter(
+      (item) => item.slug !== project.slug && item.category === project.category,
+    )
+    .concat(
+      allProjects.filter(
+        (item) => item.slug !== project.slug && item.category !== project.category,
+      ),
+    )
     .slice(0, 2);
+
+  const { services: relatedServices, posts: relatedPosts } = relatedToProject(project.slug, {
+    services: allServices,
+    posts: allPosts,
+  });
 
   const detailBlocks = [
     { key: 'overview', label: 'Overview', text: project.overview },
@@ -60,19 +80,18 @@ export default async function ProjectPage({ params }: PageProps) {
 
   return (
     <article>
-      <JsonLd
-        graph={[
-          projectNode(project),
-          breadcrumbNode([
-            { name: 'Home', path: '/' },
-            { name: 'Work', path: '/work' },
-            { name: project.title, path: `/work/${project.slug}` },
-          ]),
-        ]}
-      />
+      {/* The breadcrumb trail is rendered by `PageHeader` below, which emits
+          its own `BreadcrumbList`. Passing one here as well would publish the
+          same trail twice. */}
+      <JsonLd graph={[projectNode(project)]} />
       <PageHeader
         label={projectCategories(project).join(' · ')}
         badge={project.isPlaceholder ? <PlaceholderBadge /> : null}
+        breadcrumb={[
+          { name: 'Home', path: '/' },
+          { name: 'Work', path: '/work' },
+          { name: project.title, path: `/work/${project.slug}` },
+        ]}
         title={project.title}
         description={project.description}
       />
@@ -81,11 +100,7 @@ export default async function ProjectPage({ params }: PageProps) {
         <div className="relative aspect-[16/9] overflow-hidden border border-line bg-surface">
           <Image
             src={project.image}
-            alt={
-              project.isPlaceholder
-                ? `Placeholder image for project: ${project.title}`
-                : `${project.title}: ${project.description}`
-            }
+            alt={projectImageAlt(project)}
             fill
             priority
             sizes="(max-width: 1200px) 100vw, 1100px"
@@ -159,14 +174,14 @@ export default async function ProjectPage({ params }: PageProps) {
                 <section className="border-t border-line pt-6">
                   <h2 className="text-h3">Gallery</h2>
                   <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                    {project.images.map((image) => (
+                    {project.images.map((image, index) => (
                       <div
                         key={image}
                         className="relative aspect-[4/3] overflow-hidden border border-line bg-surface"
                       >
                         <Image
                           src={image}
-                          alt={`Gallery image for project: ${project.title}`}
+                          alt={`${project.title} project gallery image ${index + 1} of ${project.images?.length ?? 0}`}
                           fill
                           sizes="(max-width: 640px) 100vw, 50vw"
                           className="object-cover"
@@ -190,6 +205,23 @@ export default async function ProjectPage({ params }: PageProps) {
           </div>
         </div>
       </Container>
+
+      {/* The service this build demonstrates, then the writing it came out of.
+          Previously a case study only ever linked to other case studies, so the
+          page that carries the actual evidence pointed at nothing that sells
+          the work it is evidence for. */}
+      <RelatedBlock
+        kind="services"
+        label="Services Used"
+        title="Services Behind This Build"
+        items={relatedServices}
+      />
+      <RelatedBlock
+        kind="posts"
+        label="Further Reading"
+        title="Articles On This Work"
+        items={relatedPosts}
+      />
 
       {related.length > 0 ? (
         <Section className="border-t border-line">

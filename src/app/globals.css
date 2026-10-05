@@ -246,6 +246,38 @@
       transition-duration: 0.01ms !important;
     }
   }
+
+  /* Content must not depend on JavaScript to become visible.
+     ---------------------------------------------------------------------------
+
+     `Reveal` and `RevealText` render their hidden state on the server, so every
+     animated block ships with `style="opacity:0"` — 68 of them on the home page
+     — and every display heading ships with `translateY(115%)` inside an
+     `overflow:hidden` parent. Framer Motion then animates them in once it
+     hydrates.
+
+     That is fine when the bundle loads and catastrophic when it does not, which
+     is not hypothetical here: a module-scope throw in the client bundle once
+     replaced every page on this site with Next's global error screen. It also
+     means the raw HTML a crawler parses first has most of the page marked
+     invisible, which is not a state any content wants to be in.
+
+     `scripting: none` matches exactly when the browser cannot run scripts, and
+     the `!important` is required because the value it is overriding is an
+     inline style. Unsupported browsers simply do not match the query and fall
+     back to today's behaviour, so this cannot regress anything.
+
+     It does not cover a bundle that loads and then throws — nothing in CSS can
+     detect that. The guard for that case is the error boundary in
+     `src/app/error.tsx`. */
+  @media (scripting: none) {
+    [style*='opacity:0'],
+    [style*='opacity: 0'],
+    [style*='translateY(115%)'] {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
 }
 
 @layer components {

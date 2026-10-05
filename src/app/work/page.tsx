@@ -11,6 +11,10 @@ export default async function WorkPage() {
     <>
       <PageHeader
         label="Work"
+        breadcrumb={[
+          { name: 'Home', path: '/' },
+          { name: 'Work', path: '/work' },
+        ]}
         title="Selected Projects"
         description="A selection of websites, ecommerce experiences and digital projects I've worked on."
       />

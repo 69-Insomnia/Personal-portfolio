@@ -15,8 +15,31 @@ import { profile } from '@/data/profile';
  * The breaks are a typographic decision, not a consequence of the measure —
  * "Then I Get Them" and "FOUND" are one clause, and letting the browser break
  * them wherever the column happens to end would read as an accident.
+ *
+ * This is a *tagline*, and it is no longer the `<h1>`. See `ROLE` below.
  */
 const HEADLINE = ['I Build Websites.', 'Then I Get Them', 'FOUND'];
+
+/**
+ * The page's one `<h1>`, and the reason the tagline above is not it.
+ *
+ * A heading is the strongest statement a page makes about what it is, and
+ * "I Build Websites. Then I Get Them FOUND" — memorable as it is — names no
+ * person, no role and no place. It told a search engine nothing it could match
+ * against "web developer Kathmandu" or resolve against the Person entity
+ * defined at `#person`, so the site's own identity was absent from the one
+ * element that carries the most weight.
+ *
+ * The role line now sits in the heading position and the tagline keeps its
+ * display type directly beneath it, so nothing moves: this is the same
+ * `<motion>` treatment, the same classes and the same vertical rhythm. Only
+ * which element wraps which has changed. It also reads better in a screen
+ * reader, which announces the identity before the slogan rather than after.
+ *
+ * Kept in sync with `identity.role` and `identity.location` in
+ * `src/data/seo.ts` — this string is the visible half of that same claim.
+ */
+const ROLE = ['Web Developer', 'SEO Specialist', 'Kathmandu, Nepal'];
 
 export function Hero() {
   const whatsappHref = profile.whatsapp
@@ -28,7 +51,10 @@ export function Hero() {
       <Container>
         <div className="grid items-center gap-14 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-7">
-            <motion.p
+            {/* The h1. Split across three spans with the separators hidden from
+                assistive tech, so it announces as one sentence — "Web Developer
+                SEO Specialist Kathmandu, Nepal" — rather than as a list. */}
+            <motion.h1
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: 'easeOut' }}
@@ -39,18 +65,18 @@ export function Hero() {
                   `.eyebrow` already carries gap-3, and JSX strips the
                   whitespace around a newline next to a tag, so inline spans
                   collapsed together. */}
-              <span>Web Development</span>
+              <span>{ROLE[0]}</span>
               <span aria-hidden className="text-line-strong">
                 /
               </span>
-              <span>SEO</span>
+              <span>{ROLE[1]}</span>
               <span aria-hidden className="text-line-strong">
                 /
               </span>
-              <span>Kathmandu</span>
-            </motion.p>
+              <span>{ROLE[2]}</span>
+            </motion.h1>
 
-            <h1 className="mt-7 text-display font-medium">
+            <p className="mt-7 text-display font-medium">
               {HEADLINE.map((line, index) => (
                 <span key={line} className="-mb-[0.06em] block overflow-hidden pb-[0.06em]">
                   <motion.span
@@ -67,7 +93,7 @@ export function Hero() {
                   </motion.span>
                 </span>
               ))}
-            </h1>
+            </p>
 
             <motion.p
               initial={{ opacity: 0, y: 18 }}
