@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { Hero } from '@/sections/Hero';
 import { SectionNumberingProvider } from '@/components/ui/SectionNumbering';
 import { Introduction } from '@/sections/About';
@@ -11,8 +12,8 @@ import { Testimonials } from '@/sections/Testimonials';
 import { FAQ } from '@/sections/FAQ';
 import { Contact } from '@/sections/Contact';
 import { buildMetadata } from '@/utils/metadata';
-import { homeSEO } from '@/data/seo';
-import { getExperience, getPosts, getProjects, getTestimonials } from '@/lib/content';
+import { homeSEO, withSeoMeta } from '@/data/seo';
+import { getExperience, getPosts, getProjects, getSeo, getSiteSettings, getTestimonials } from '@/lib/content';
 
 /**
  * Ten numbered sections, down from fifteen. The page ran to roughly fifteen
@@ -48,4 +49,13 @@ export default async function HomePage() {
   );
 }
 
-export const metadata = buildMetadata(homeSEO);
+/**
+ * A function rather than a constant, so the admin's `seo_meta` row for this
+ * page is read at render time. With no row — or no database — `getSeo`
+ * resolves to `undefined` and `withSeoMeta` returns `homeSEO` untouched, which
+ * is the same metadata this route exported before the table existed.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const meta = await getSeo('page', 'home');
+  return buildMetadata(withSeoMeta(homeSEO, meta), await getSiteSettings());
+}

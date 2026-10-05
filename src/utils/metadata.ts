@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import type { SEOData } from '@/types';
+import type { SEOData, SiteSettings } from '@/types';
 import { DEFAULT_OG_IMAGE, identity, site } from '@/data/seo';
 
 /**
@@ -41,7 +41,7 @@ export function clampDescription(text: string, limit = DESCRIPTION_LIMIT): strin
  * Article fields are only emitted when `ogType` is `article`, so a stray
  * `publishedTime` on a service page cannot claim it was published.
  */
-export function buildMetadata(seo: SEOData): Metadata {
+export function buildMetadata(seo: SEOData, settings?: SiteSettings): Metadata {
   const {
     title,
     description,
@@ -54,15 +54,51 @@ export function buildMetadata(seo: SEOData): Metadata {
     publishedTime,
     modifiedTime,
     tags,
+    ogTitle,
+    ogDescription,
+    twitterTitle,
+    twitterDescription,
+    twitterImage,
   } = seo;
 
-  const image = ogImage ?? DEFAULT_OG_IMAGE;
+  /**
+   * The global title suffix, appended rather than replaced.
+   *
+   * This is off by default and should usually stay off: every title this site
+   * generates already ends with the brand ("… | Dipendra Guragain"), so a
+   * suffix set here lands after it and produces "… | Dipendra Guragain |
+   * Junior Developer Portfolio". The field exists because it was asked for and
+   * because it is genuinely useful on a site whose titles do *not* carry the
+   * brand — say, after a rebrand where the page titles were rewritten. The
+   * admin panel says so next to the field.
+   */
+  const suffixed = settings?.titleSuffix ? `${title}${settings.titleSuffix}` : title;
+
+  const ogTitleValue = ogTitle ?? suffixed;
+  const ogDescriptionValue = clampDescription(ogDescription ?? description);
+  const twitterTitleValue = twitterTitle ?? ogTitleValue;
+  const twitterDescriptionValue = clampDescription(
+    twitterDescription ?? ogDescription ?? description,
+  );
+
+  /**
+   * Page image, then the admin's site-wide default, then the repo constant.
+   *
+   * The middle step is why `settings` is threaded through at all. Without it
+   * the global OG image field would be decorative: every page that calls
+   * `buildMetadata` sets `openGraph.images` explicitly, which overrides the
+   * root layout's value, so a default configured in the admin would never
+   * reach a project page.
+   */
+  const ogImageValue = ogImage ?? settings?.defaultOgImage ?? DEFAULT_OG_IMAGE;
+  const twitterImageValue = twitterImage ?? ogImageValue;
+
   const summary = clampDescription(description);
   const isArticle = ogType === 'article';
   const byline = authors && authors.length > 0 ? authors : [identity.name];
 
   return {
-    title,
+    title: suffixed,
     description: summary,
     keywords,
     /**
@@ -80,9 +116,27 @@ export function buildMetadata(seo: SEOData): Metadata {
     ...(robots ? { robots } : {}),
     authors: byline.map((name) => ({ name })),
     alternates: canonical ? { canonical } : undefined,
+    /**
+     * Verification from the admin when it is set, from the environment
+     * otherwise.
+     *
+     * The env vars are build-time inlined, so changing one needs a redeploy;
+     * the database value does not. Both are supported rather than the database
+     * replacing the env var, because a DNS-verified property needs neither and
+     * an existing deploy that already sets the env var should not silently
+     * lose its token.
+     */
+    verification: settings
+      ? {
+          google: settings.googleSiteVerification ?? searchConsoleVerification?.google,
+          other: settings.bingSiteVerification
+            ? { 'msvalidate.01': settings.bingSiteVerification }
+            : searchConsoleVerification?.other,
+        }
+      : undefined,
     openGraph: {
-      title,
-      description: summary,
+      title: ogTitleValue,
+      description: ogDescriptionValue,
       url: canonical ?? undefined,
       siteName: site.name,
       locale: site.locale,
@@ -91,14 +145,14 @@ export function buildMetadata(seo: SEOData): Metadata {
       // in place of the preview card, and what a text-only consumer shows
       // instead of the image. Falling back to the title is honest here: the
       // card is a typographic treatment of that same title.
-      images: [{ url: image, width: 1200, height: 630, alt: title }],
+      images: [{ url: ogImageValue, width: 1200, height: 630, alt: ogTitleValue }],
       ...(isArticle ? { publishedTime, modifiedTime, authors: byline, tags } : {}),
     },
     twitter: {
       card: 'summary_large_image',
-      title,
-      description: summary,
-      images: [{ url: image, alt: title }],
+      title: twitterTitleValue,
+      description: twitterDescriptionValue,
+      images: [{ url: twitterImageValue, alt: twitterTitleValue }],
     },
   };
 }

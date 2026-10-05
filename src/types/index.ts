@@ -42,6 +42,30 @@ export interface SEOData {
   ogImage?: string;
   ogType?: 'website' | 'article';
   /**
+   * Social overrides.
+   *
+   * A Google result and a LinkedIn card are different surfaces with different
+   * limits, so the same sentence is rarely the best text for both: a meta
+   * description is written to be truncated at ~158 characters under a title,
+   * while a share card shows the whole thing next to a large image. When these
+   * are unset `buildMetadata` falls back to `title`/`description`, so they are
+   * purely additive and a page that sets none of them is unaffected.
+   */
+  ogTitle?: string;
+  ogDescription?: string;
+  twitterTitle?: string;
+  twitterDescription?: string;
+  twitterImage?: string;
+  /**
+   * Admin-supplied JSON-LD nodes for this page's `@graph`.
+   *
+   * Carried on `SEOData` so a page component can read it without a second
+   * database call. `buildMetadata` ignores it — it returns `<head>` values and
+   * JSON-LD lives in the body — so this is a passenger on the same object
+   * rather than something the metadata builder acts on.
+   */
+  customJsonLd?: unknown;
+  /**
    * Robots directives for this page. Omit to inherit the site-wide default
    * (`index, follow` in `src/app/layout.tsx`); set it to override that, which
    * is what the 404 needs — without it, Next's own `noindex` for unmatched
@@ -59,6 +83,86 @@ export interface SEOData {
   publishedTime?: string;
   modifiedTime?: string;
   tags?: string[];
+}
+
+/**
+ * One row of `seo_meta` — the admin-editable overrides for a single entity.
+ *
+ * Every field is optional because an absent row, and an unset column inside a
+ * present one, both mean the same thing: inherit the template in
+ * `src/data/seo.ts`. There is no "empty string means empty" case, which is why
+ * the readers in `src/lib/content.ts` normalise blank strings to `undefined`
+ * rather than passing them through — an empty meta title that reached
+ * `buildMetadata` would emit an empty `<title>` tag instead of falling back.
+ *
+ * `noindex`/`nofollow` are the exception and are always present, defaulting to
+ * `false`. A missing row must mean "indexable", which is the behaviour the
+ * site had before this table existed.
+ */
+export interface SeoMeta {
+  metaTitle?: string;
+  metaDescription?: string;
+  focusKeyword?: string;
+  keywords?: string[];
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  twitterTitle?: string;
+  twitterDescription?: string;
+  twitterImage?: string;
+  /** Absolute URL. Takes precedence over the generated canonical. */
+  canonicalOverride?: string;
+  /**
+   * Raw JSON-LD the admin pasted in, merged into this page's `@graph`.
+   *
+   * `unknown` rather than a node type, because it arrives from a `jsonb` column
+   * that a human typed into. `customJsonLdNodes` in `src/lib/structured-data.ts`
+   * is what makes it safe to emit — it filters to objects rather than trusting
+   * the shape.
+   */
+  customJsonLd?: unknown;
+  noindex: boolean;
+  nofollow: boolean;
+  /** ISO-8601 last edit, from the `touch_seo_meta` trigger. */
+  updatedAt?: string;
+}
+
+/**
+ * What a row in `seo_meta` is attached to.
+ *
+ * `page` covers the routes that have no database table — home, about, work,
+ * services, blog, contact — keyed by a stable name rather than a URL fragment.
+ */
+export type SeoEntityType = 'project' | 'post' | 'service' | 'page';
+
+/**
+ * The `site_settings` singleton, as the site reads it.
+ *
+ * Every field is optional and every one falls back to the value already in
+ * `src/data/seo.ts` or `src/data/profile.ts`. That is what keeps the global
+ * panel additive: an unconfigured install renders exactly what it rendered
+ * before the table existed, and the admin is an override layer rather than a
+ * second source of truth that can disagree with the repo.
+ */
+export interface SiteSettings {
+  /** Appended to page titles, e.g. ` | Junior Developer Portfolio`. */
+  titleSuffix?: string;
+  defaultMetaTitle?: string;
+  defaultMetaDescription?: string;
+  defaultOgImage?: string;
+  personJobTitle?: string;
+  personKnowsAbout?: string[];
+  /** Keyed by platform — `{ github: 'https://…' }`. */
+  socialLinks: Record<string, string>;
+  ga4MeasurementId?: string;
+  gtmContainerId?: string;
+  metaPixelId?: string;
+  googleSiteVerification?: string;
+  bingSiteVerification?: string;
+  /** Raw robots.txt body. Absent means "render the generated default". */
+  robotsTxt?: string;
+  /** Raw JSON-LD merged into the site-wide graph. */
+  customJsonLd?: unknown;
 }
 
 export interface Stat {

@@ -51,8 +51,14 @@ interface ImageSubject {
  * are infographics. Vague, but accurate, which is the right trade: an alt that
  * is merely unhelpful costs nothing, and one that describes something the
  * picture does not show is a lie told to every screen reader.
+ *
+ * `override` is the alt text from the media library, and it wins when present.
+ * It is how an image uploaded through `/admin/media` gets a real description
+ * without anyone editing this file — the lookup above stays as the fallback
+ * for the committed assets, which is the only case it was ever designed for.
  */
-export function projectImageAlt(project: ImageSubject): string {
+export function projectImageAlt(project: ImageSubject, override?: string): string {
+  if (override) return override;
   if (project.isPlaceholder) return `Placeholder image for the ${project.title} project`;
   return (
     PROJECT_IMAGE_ALT[project.slug] ??
@@ -60,7 +66,8 @@ export function projectImageAlt(project: ImageSubject): string {
   );
 }
 
-export function postImageAlt(post: ImageSubject): string {
+export function postImageAlt(post: ImageSubject, override?: string): string {
+  if (override) return override;
   if (post.isPlaceholder) return `Placeholder image for the article "${post.title}"`;
   return POST_IMAGE_ALT[post.slug] ?? `Infographic summarising the article "${post.title}"`;
 }

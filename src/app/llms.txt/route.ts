@@ -57,6 +57,7 @@ ${posts.map((p) => `- [${p.title}](${abs(`/blog/${p.slug}`)}): ${p.excerpt}`).jo
 - [About](${abs('/about')})
 - [Work](${abs('/work')})
 - [Services](${abs('/services')})
+- [Pricing](${abs('/pricing')})
 - [Insights](${abs('/blog')})
 - [Contact](${abs('/contact')})
 

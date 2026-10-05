@@ -1,4 +1,7 @@
 import type { ProjectCategory, BlogCategory, IconName } from '@/types';
+import { postSEO, projectSEO, serviceSEO } from '@/data/seo';
+
+const str = (v: unknown): string => (typeof v === 'string' ? v : '');
 
 export type FieldType =
   | 'text'
@@ -8,7 +11,16 @@ export type FieldType =
   | 'select'
   | 'number'
   | 'toggle'
-  | 'results';
+  | 'results'
+  /**
+   * The Project-Level SEO panel.
+   *
+   * A field type rather than a fixed part of the form, so the panel's position
+   * stays declarative alongside every other field. It is the one type that is
+   * not a single database column — `AdminForm` renders `SeoPanel` for it and
+   * writes `seo_meta` as a second table after the content row.
+   */
+  | 'seo';
 
 export interface Field {
   /** Database column name (forms edit columns directly — no mapping layer). */
@@ -23,6 +35,31 @@ export interface Field {
   pk?: boolean;
 }
 
+/**
+ * Attaches a collection to the SEO layer.
+ *
+ * Only the three collections with public pages have this. `experience` and
+ * `testimonials` render as sections of other pages, so they have no URL of
+ * their own and nothing for a canonical, a slug or an OG card to describe.
+ */
+export interface SeoConfig {
+  entityType: 'project' | 'post' | 'service';
+  /** First path segment of the public URL, e.g. `work` for `/work/drillthru`. */
+  pathPrefix: string;
+  /** Field seeding the slug generator and the SERP preview. */
+  titleField: string;
+  /**
+   * The title and description the site would emit if the SEO fields were left
+   * blank — i.e. the panel's placeholders and its preview fallback.
+   *
+   * Built by calling the real `projectSEO` / `postSEO` / `serviceSEO`, not by
+   * restating their templates. The templates are the thing this preview exists
+   * to show, so a copy of them here would be a preview that drifts from the
+   * site and quietly stops being true.
+   */
+  fallback: (row: Record<string, unknown>) => { title: string; description: string };
+}
+
 export interface Collection {
   /** URL segment under /admin and the Postgres table name. */
   key: string;
@@ -33,6 +70,7 @@ export interface Collection {
   fields: Field[];
   columns: { name: string; label: string }[];
   defaults: Record<string, unknown>;
+  seo?: SeoConfig;
 }
 
 const PROJECT_CATEGORIES: ProjectCategory[] = [
@@ -76,6 +114,8 @@ const placeholderField: Field = {
   help: 'Marks rows that are template content rather than real work.',
 };
 const sortField: Field = { name: 'sort_order', label: 'Sort order', type: 'number' };
+/** Rendered by `SeoPanel`, not by `FieldControl` — see the `FieldType` note. */
+const seoField: Field = { name: 'seo', label: 'SEO settings', type: 'seo' };
 
 export const COLLECTIONS: Record<string, Collection> = {
   projects: {
@@ -84,6 +124,22 @@ export const COLLECTIONS: Record<string, Collection> = {
     label: 'Projects',
     singular: 'Project',
     pk: 'slug',
+    seo: {
+      entityType: 'project',
+      pathPrefix: 'work',
+      titleField: 'title',
+      fallback: (row) => {
+        const seo = projectSEO({
+          slug: str(row.slug),
+          title: str(row.title),
+          category: (str(row.category) || 'Web Development') as ProjectCategory,
+          description: str(row.description),
+          technologies: [],
+          image: '',
+        });
+        return { title: seo.title, description: seo.description };
+      },
+    },
     fields: [
       { name: 'slug', label: 'Slug (URL id)', type: 'text', pk: true, required: true, placeholder: 'my-project' },
       { name: 'title', label: 'Title', type: 'text', required: true },
@@ -104,6 +160,7 @@ export const COLLECTIONS: Record<string, Collection> = {
       placeholderField,
       publishedField,
       sortField,
+      seoField,
     ],
     columns: [
       { name: 'title', label: 'Title' },
@@ -140,6 +197,24 @@ export const COLLECTIONS: Record<string, Collection> = {
     label: 'Blog Posts',
     singular: 'Post',
     pk: 'slug',
+    seo: {
+      entityType: 'post',
+      pathPrefix: 'blog',
+      titleField: 'title',
+      fallback: (row) => {
+        const seo = postSEO({
+          slug: str(row.slug),
+          title: str(row.title),
+          excerpt: str(row.excerpt),
+          category: (str(row.category) || 'Web Development') as BlogCategory,
+          date: str(row.date),
+          readingTime: str(row.reading_time),
+          image: '',
+          tags: [],
+        });
+        return { title: seo.title, description: seo.description };
+      },
+    },
     fields: [
       { name: 'slug', label: 'Slug (URL id)', type: 'text', pk: true, required: true },
       { name: 'title', label: 'Title', type: 'text', required: true },
@@ -153,6 +228,7 @@ export const COLLECTIONS: Record<string, Collection> = {
       placeholderField,
       publishedField,
       sortField,
+      seoField,
     ],
     columns: [
       { name: 'title', label: 'Title' },
@@ -251,6 +327,23 @@ export const COLLECTIONS: Record<string, Collection> = {
     label: 'Services',
     singular: 'Service',
     pk: 'slug',
+    seo: {
+      entityType: 'service',
+      pathPrefix: 'services',
+      titleField: 'title',
+      fallback: (row) => {
+        const seo = serviceSEO({
+          slug: str(row.slug),
+          index: str(row.service_index) || '01',
+          title: str(row.title),
+          shortDescription: str(row.short_description),
+          description: str(row.description),
+          capabilities: [],
+          icon: 'code',
+        });
+        return { title: seo.title, description: seo.description };
+      },
+    },
     fields: [
       { name: 'slug', label: 'Slug (URL id)', type: 'text', pk: true, required: true },
       { name: 'title', label: 'Title', type: 'text', required: true },
@@ -260,6 +353,7 @@ export const COLLECTIONS: Record<string, Collection> = {
       { name: 'icon', label: 'Icon', type: 'select', options: ICONS, required: true },
       publishedField,
       sortField,
+      seoField,
     ],
     columns: [
       { name: 'title', label: 'Title' },

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { PlaceholderBadge } from '@/components/common/PlaceholderBadge';
 import { JsonLd } from '@/components/common/JsonLd';
 import { PageHeader } from '@/components/common/PageHeader';
@@ -13,9 +13,9 @@ import { RevealText } from '@/components/ui/RevealText';
 import { Section } from '@/components/ui/Section';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 import { getProjectBySlug, projectCategories, projects } from '@/data/projects';
-import { getPosts, getProject, getProjects, getServices } from '@/lib/content';
+import { getImageAlt, getPosts, getProject, getProjects, getRedirect, getSeo, getServices, getSiteSettings } from '@/lib/content';
 import { relatedToProject } from '@/lib/related';
-import { projectNode } from '@/lib/structured-data';
+import { customJsonLdNodes, projectNode } from '@/lib/structured-data';
 import { projectSEO } from '@/data/seo';
 import { buildMetadata } from '@/utils/metadata';
 import { projectImageAlt } from '@/utils/images';
@@ -32,12 +32,16 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const project = (await getProject(slug)) ?? getProjectBySlug(slug);
+  // The overrides are a separate read from the project itself, so they are
+  // fetched alongside it rather than after it — this runs on every request for
+  // the route, and the two queries are independent.
+  const [live, meta] = await Promise.all([getProject(slug), getSeo('project', slug)]);
+  const project = live ?? getProjectBySlug(slug);
   if (!project) {
     // `notFound()` renders the root boundary, which sends its own `noindex`.
     return { title: 'Project Not Found', robots: { index: false, follow: false } };
   }
-  return buildMetadata(projectSEO(project));
+  return buildMetadata(projectSEO(project, meta), await getSiteSettings());
 }
 
 export default async function ProjectPage({ params }: PageProps) {
@@ -45,13 +49,35 @@ export default async function ProjectPage({ params }: PageProps) {
   const project = (await getProject(slug)) ?? getProjectBySlug(slug);
 
   if (!project) {
+    /**
+     * The slug did not resolve, so before giving up: was it renamed?
+     *
+     * This runs *after* the lookup fails, which is the whole point — the happy
+     * path costs nothing extra. Doing it in middleware would put a database
+     * round trip (or a cache with a staleness window) in front of every request
+     * to serve the small minority that are redirects.
+     *
+     * `permanentRedirect` emits 308, not 301. Both are permanent and Google
+     * passes ranking signals identically; 308 additionally preserves the
+     * request method, which is irrelevant for a GET.
+     */
+    const target = await getRedirect(`/work/${slug}`);
+    if (target) permanentRedirect(target);
     notFound();
   }
 
-  const [allProjects, allServices, allPosts] = await Promise.all([
+  const [allProjects, allServices, allPosts, coverAlt, seoMeta] = await Promise.all([
     getProjects(),
     getServices(),
     getPosts(),
+    // Fetched alongside the rest rather than after, and returns `undefined`
+    // for every image committed to `public/` — see `getImageAlt`.
+    getImageAlt(project.image),
+    // Read again here rather than threaded down from `generateMetadata`: the
+    // two run in separate scopes, and passing the value between them would need
+    // a shared cache with its own staleness problem. Same `revalidate` as every
+    // other read, so this is not a second request.
+    getSeo('project', project.slug),
   ]);
 
   const related = allProjects
@@ -83,7 +109,7 @@ export default async function ProjectPage({ params }: PageProps) {
       {/* The breadcrumb trail is rendered by `PageHeader` below, which emits
           its own `BreadcrumbList`. Passing one here as well would publish the
           same trail twice. */}
-      <JsonLd graph={[projectNode(project)]} />
+      <JsonLd graph={[projectNode(project), ...customJsonLdNodes(seoMeta?.customJsonLd)]} />
       <PageHeader
         label={projectCategories(project).join(' · ')}
         badge={project.isPlaceholder ? <PlaceholderBadge /> : null}
@@ -100,7 +126,7 @@ export default async function ProjectPage({ params }: PageProps) {
         <div className="relative aspect-[16/9] overflow-hidden border border-line bg-surface">
           <Image
             src={project.image}
-            alt={projectImageAlt(project)}
+            alt={projectImageAlt(project, coverAlt)}
             fill
             priority
             sizes="(max-width: 1200px) 100vw, 1100px"

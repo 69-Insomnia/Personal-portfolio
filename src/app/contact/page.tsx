@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { Breadcrumb } from '@/components/common/Breadcrumb';
 import { Container } from '@/components/ui/Container';
 import { Reveal } from '@/components/ui/Reveal';
@@ -7,7 +8,8 @@ import { Contact } from '@/sections/Contact';
 import { FAQ } from '@/sections/FAQ';
 import { profile } from '@/data/profile';
 import { buildMetadata } from '@/utils/metadata';
-import { contactSEO } from '@/data/seo';
+import { contactSEO, withSeoMeta } from '@/data/seo';
+import { getSeo, getSiteSettings } from '@/lib/content';
 
 export default function ContactPage() {
   return (
@@ -52,4 +54,7 @@ export default function ContactPage() {
   );
 }
 
-export const metadata = buildMetadata(contactSEO);
+export async function generateMetadata(): Promise<Metadata> {
+  const meta = await getSeo('page', 'contact');
+  return buildMetadata(withSeoMeta(contactSEO, meta), await getSiteSettings());
+}

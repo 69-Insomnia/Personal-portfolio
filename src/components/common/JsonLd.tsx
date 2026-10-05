@@ -28,7 +28,14 @@ export function JsonLd({ graph }: { graph: object[] }) {
 /**
  * The base entity graph: who this is, what the site is, and the service-area
  * business. Mounted once, from `SiteChrome`.
+ *
+ * `socialLinks` arrives from the root layout rather than being read here,
+ * because this renders inside the client tree and the admin's social handles
+ * live in the database. Omitting it falls back to the repo's
+ * `profile.socialLinks` — see `personNode`.
  */
-export function SiteJsonLd() {
-  return <JsonLd graph={[personNode(), websiteNode(), professionalServiceNode()]} />;
+export function SiteJsonLd({ socialLinks }: { socialLinks?: string[] } = {}) {
+  return (
+    <JsonLd graph={[personNode(socialLinks), websiteNode(), professionalServiceNode()]} />
+  );
 }

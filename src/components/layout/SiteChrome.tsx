@@ -15,13 +15,20 @@ import { SiteJsonLd } from '@/components/common/JsonLd';
  * The 404 needs the same chrome, and it resolves at the root not-found
  * boundary rather than inside `(site)`, so it renders this directly.
  */
-export function SiteChrome({ children }: { children: ReactNode }) {
+export function SiteChrome({
+  children,
+  socialLinks,
+}: {
+  children: ReactNode;
+  /** Admin-configured `sameAs` profiles, threaded from the root layout. */
+  socialLinks?: string[];
+}) {
   return (
     <>
       {/* JSON-LD is valid anywhere in the document; Google parses it from the
           body. It is scoped to the site rather than the root layout so the
           admin panel doesn't ship Person/WebSite structured data. */}
-      <SiteJsonLd />
+      <SiteJsonLd socialLinks={socialLinks} />
       <a href="#main-content" className="skip-link">
         Skip to content
       </a>

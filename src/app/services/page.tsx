@@ -1,10 +1,11 @@
+import type { Metadata } from 'next';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Expertise } from '@/sections/Expertise';
 import { Approach } from '@/sections/Approach';
 import { FAQ } from '@/sections/FAQ';
-import { getServices } from '@/lib/content';
+import { getSeo, getServices, getSiteSettings } from '@/lib/content';
 import { buildMetadata } from '@/utils/metadata';
-import { servicesSEO } from '@/data/seo';
+import { servicesSEO, withSeoMeta } from '@/data/seo';
 
 /**
  * Services, read from the database like every other listing.
@@ -44,4 +45,7 @@ export default async function ServicesPage() {
   );
 }
 
-export const metadata = buildMetadata(servicesSEO);
+export async function generateMetadata(): Promise<Metadata> {
+  const meta = await getSeo('page', 'services');
+  return buildMetadata(withSeoMeta(servicesSEO, meta), await getSiteSettings());
+}

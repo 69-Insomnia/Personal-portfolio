@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { ProfileIntro } from '@/sections/Profile';
 import { Experience } from '@/sections/Experience';
 import { Education } from '@/sections/Education';
@@ -6,8 +7,8 @@ import { FAQ } from '@/sections/FAQ';
 import { JsonLd } from '@/components/common/JsonLd';
 import { profilePageNode } from '@/lib/structured-data';
 import { buildMetadata } from '@/utils/metadata';
-import { aboutSEO } from '@/data/seo';
-import { getExperience } from '@/lib/content';
+import { aboutSEO, withSeoMeta } from '@/data/seo';
+import { getExperience, getSeo, getSiteSettings } from '@/lib/content';
 
 /**
  * The profile leads, then the background that supports it.
@@ -37,4 +38,7 @@ export default async function AboutPage() {
   );
 }
 
-export const metadata = buildMetadata(aboutSEO);
+export async function generateMetadata(): Promise<Metadata> {
+  const meta = await getSeo('page', 'about');
+  return buildMetadata(withSeoMeta(aboutSEO, meta), await getSiteSettings());
+}

@@ -1,4 +1,5 @@
 import { profile } from '@/data/profile';
+import { monthlyTiers, oneOffTiers } from '@/data/pricing';
 import { identity, site, socialProfiles } from '@/data/seo';
 import { isoDate } from '@/utils/dates';
 import type { BlogPost, Project, Service } from '@/types';
@@ -65,11 +66,17 @@ const KNOWS_ABOUT = [
   'Conversion Optimization',
 ];
 
-export function personNode(): Node {
+export function personNode(socials?: string[]): Node {
   /* `socialProfiles` filters the empties, so `sameAs` is omitted entirely
      rather than emitted as `["", "", ""]` — which would be worse than absent.
-     It currently resolves to LinkedIn, GitHub, Facebook and Instagram. */
-  const sameAs = socialProfiles;
+
+     `socials` comes from `site_settings.social_links` when the admin has set
+     any, and `socialProfiles` (built from `src/data/profile.ts`) otherwise.
+     The caller passes it rather than this function reading the database,
+     because `SiteJsonLd` renders inside the client tree — see the note on
+     `SiteChrome` — and a client component cannot await a server read. The
+     root layout does the read and threads the value down. */
+  const sameAs = socials && socials.length > 0 ? socials : socialProfiles;
 
   return {
     '@type': 'Person',
@@ -260,6 +267,29 @@ export function projectNode(project: Project): Node {
   };
 }
 
+/**
+ * Normalises the admin's custom JSON-LD into graph nodes.
+ *
+ * The column accepts an object or an array of objects (the migration's check
+ * constraint rejects anything else), and the graph wants an array either way.
+ *
+ * Anything that is not an object is dropped rather than emitted. The database
+ * constraint already prevents a bare scalar reaching here, but this is also
+ * the function that runs against a value typed by hand into a textarea, so it
+ * filters rather than trusts — a stray `null` inside an array would otherwise
+ * serialise into the `@graph` as a node no validator can parse.
+ */
+export function customJsonLdNodes(value: unknown): Node[] {
+  if (value === null || value === undefined) return [];
+  if (Array.isArray(value)) {
+    return value.filter(
+      (node): node is Node => node !== null && typeof node === 'object' && !Array.isArray(node),
+    );
+  }
+  if (typeof value === 'object') return [value as Node];
+  return [];
+}
+
 export function breadcrumbNode(items: Array<{ name: string; path: string }>): Node {
   return {
     '@type': 'BreadcrumbList',
@@ -268,6 +298,54 @@ export function breadcrumbNode(items: Array<{ name: string; path: string }>): No
       position: index + 1,
       name: item.name,
       item: `${site.url}${item.path}`,
+    })),
+  };
+}
+
+/**
+ * The published starting prices, as an `OfferCatalog` on the `/pricing` page.
+ *
+ * **Returns `undefined` when no price is set, and the page emits nothing.**
+ * That is the whole design of this function. An `OfferCatalog` whose every
+ * `Offer` has no price is not a neutral absence — it is markup that asserts a
+ * catalogue exists and then declines to say what anything costs, which is a
+ * worse signal than saying nothing at all. The moment a real figure is filled
+ * into `src/data/pricing.ts`, this begins emitting on its own.
+ *
+ * `minPrice` inside a `PriceSpecification`, rather than a bare `price`. Every
+ * figure on that page is a floor, not a quote — "from NPR 45,000" — and a
+ * plain `price` property would state it as the actual cost. `minPrice` is the
+ * property schema.org provides for exactly this, and getting it wrong is the
+ * kind of inaccuracy that a price-sensitive query is most likely to expose.
+ *
+ * Attached to `#service` by `@id` rather than restated, so the catalogue and
+ * the business stay one entity. `serviceSlug` links an offer to its service
+ * page where one exists; the audit and the SEO audit both point at internal
+ * linking between these pages as the cluster's weakest part.
+ */
+export function pricingOffersNode(): Node | undefined {
+  const priced = [...oneOffTiers, ...monthlyTiers].filter(
+    (tier): tier is typeof tier & { fromNpr: number } => tier.fromNpr !== null,
+  );
+
+  if (priced.length === 0) return undefined;
+
+  return {
+    '@type': 'OfferCatalog',
+    '@id': `${site.url}/pricing#offers`,
+    name: `Starting prices — ${identity.name}`,
+    url: `${site.url}/pricing`,
+    isPartOf: { '@id': websiteId },
+    provider: { '@id': personId },
+    itemListElement: priced.map((tier) => ({
+      '@type': 'Offer',
+      name: tier.name,
+      url: tier.serviceSlug ? `${site.url}/services/${tier.serviceSlug}` : `${site.url}/pricing`,
+      priceSpecification: {
+        '@type': 'PriceSpecification',
+        priceCurrency: 'NPR',
+        minPrice: tier.fromNpr,
+      },
     })),
   };
 }

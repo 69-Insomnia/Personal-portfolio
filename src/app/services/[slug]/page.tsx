@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { SkillCard } from '@/components/cards/SkillCard';
 import { JsonLd } from '@/components/common/JsonLd';
 import { PageHeader } from '@/components/common/PageHeader';
@@ -10,9 +10,9 @@ import { Reveal } from '@/components/ui/Reveal';
 import { Section } from '@/components/ui/Section';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 import { getServiceBySlug, services } from '@/data/services';
-import { getPosts, getProjects, getService, getServices } from '@/lib/content';
+import { getPosts, getProjects, getRedirect, getSeo, getService, getServices, getSiteSettings } from '@/lib/content';
 import { relatedToService } from '@/lib/related';
-import { serviceNode } from '@/lib/structured-data';
+import { customJsonLdNodes, serviceNode } from '@/lib/structured-data';
 import { serviceSEO } from '@/data/seo';
 import { buildMetadata } from '@/utils/metadata';
 
@@ -28,13 +28,14 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const service = (await getService(slug)) ?? getServiceBySlug(slug);
+  const [live, meta] = await Promise.all([getService(slug), getSeo('service', slug)]);
+  const service = live ?? getServiceBySlug(slug);
   if (!service) {
     // `notFound()` renders the root boundary, which sends its own `noindex`.
     // This only has to avoid publishing a title that reads like a real page.
     return { title: 'Service Not Found', robots: { index: false, follow: false } };
   }
-  return buildMetadata(serviceSEO(service));
+  return buildMetadata(serviceSEO(service, meta), await getSiteSettings());
 }
 
 export default async function ServicePage({ params }: PageProps) {
@@ -42,13 +43,20 @@ export default async function ServicePage({ params }: PageProps) {
   const service = (await getService(slug)) ?? getServiceBySlug(slug);
 
   if (!service) {
+    // See the note in `work/[slug]`: the redirect lookup only runs once the
+    // slug has already failed to resolve, so valid URLs pay nothing for it.
+    const target = await getRedirect(`/services/${slug}`);
+    if (target) permanentRedirect(target);
     notFound();
   }
 
-  const [allServices, allProjects, allPosts] = await Promise.all([
+  const [allServices, allProjects, allPosts, seoMeta] = await Promise.all([
     getServices(),
     getProjects(),
     getPosts(),
+    // Cached by the same `revalidate` as the reads above, so this is not a
+    // second round trip — see the note in `work/[slug]`.
+    getSeo('service', service.slug),
   ]);
 
   const related = allServices.filter((item) => item.slug !== service.slug).slice(0, 3);
@@ -63,7 +71,7 @@ export default async function ServicePage({ params }: PageProps) {
       {/* The breadcrumb trail is rendered by `PageHeader` below, which emits
           its own `BreadcrumbList`. Passing one here as well would publish the
           same trail twice. */}
-      <JsonLd graph={[serviceNode(service)]} />
+      <JsonLd graph={[serviceNode(service), ...customJsonLdNodes(seoMeta?.customJsonLd)]} />
       <PageHeader
         label="Service"
         index={service.index}

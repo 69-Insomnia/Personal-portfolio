@@ -280,3 +280,557 @@ insert into public.services (slug, service_index, title, short_description, desc
   ('ecommerce-growth', '05', 'Ecommerce Growth Specialist', 'Storefront, product SEO, ads and analytics treated as one funnel rather than four projects.', 'I work on ecommerce growth, which in practice means treating the storefront, product pages, search visibility, advertising and analytics as one system rather than four projects owned by four people. Most ecommerce problems arrive described as a single problem. Traffic is down, or conversion is down, or ad costs are up, and it usually turns out to be the same problem wearing different hats. A product page that takes four seconds to load on mobile is an SEO issue, an advertising issue and a merchandising issue at once, and because three people each see a different symptom, nobody fixes it. So I start by finding where people actually drop off, using the funnel rather than an opinion, and fix that before sending more traffic into a leaking store.', '[{"heading":"Why do ecommerce problems look like several problems?","paragraphs":["Because each specialist sees the symptom their tool measures. The SEO sees a Core Web Vitals failure. The ads manager sees a high bounce rate and blames the audience. The merchandiser sees a product with views and no carts.","All three are describing the same page and none of them is wrong. That is exactly why it goes unfixed: the problem is not inside anybody''s remit, so it sits in the gap between them."]},{"heading":"What does the funnel work actually involve?","paragraphs":["Unglamorous questions with specific answers. Which products get views but no carts. Which queries land on a page that does not answer them. Which ad sends someone to a category when they wanted one item. Which step of checkout has the highest abandonment.","Those answers usually point at a fix that costs nothing to ship, which is why I look for them before proposing new campaigns. Buying more traffic for a store that loses people at checkout is an expensive way to stay where you are."]},{"heading":"Do you work on Shopify and WooCommerce?","paragraphs":["Yes, and on custom storefronts. The platform changes what is easy, not what matters. The things that decide whether a store grows (page speed, product page clarity, search visibility, checkout friction, trustworthy analytics) are the same on every platform.","Where the platform does matter is in what I can change directly. On Shopify and WooCommerce some fixes are configuration and some need code; on a custom build it is all code. I will tell you which before quoting."]}]'::jsonb, '{Shopify,WooCommerce,"Product SEO","Conversion Optimization","Meta Ads","Google Ads",Analytics,Retargeting}', 'shopping-bag'),
   ('digital-marketing', '06', 'Digital Marketing Specialist', 'One strategy across content, search, paid media and conversion instead of four separate people.', 'I''m a digital marketing specialist, which mostly means refusing to treat content, search, paid media and conversion as separate jobs. They get decided together because they only pay off together. An ad that sends traffic to a page which does not answer the query wastes the budget, and a page nobody can find wastes the writing. The question stays the same across all of it: what brings the right visitors, and what turns them into customers. For a business in Nepal that usually means search first, because demand already exists and it is the cheapest demand to capture, then paid media to reach the people who are not searching yet, then the conversion work that stops both from leaking. One person holding all four is not about doing more. It is about not having to reconcile four reports that disagree.', '[{"heading":"What does a digital marketing specialist actually own?","paragraphs":["The plan and the numbers behind it. Which channel gets the next rupee, what each one is expected to return, and what gets cut when it does not deliver.","That is a different job from running four channels well in isolation. When search, ads and content are optimised separately by different people against different targets, the business can hit every one of those targets and still not grow, because none of them was measuring the thing that mattered."]},{"heading":"Which channel should come first?","paragraphs":["For most small businesses in Nepal, search. The demand already exists and someone is already looking, which makes it far cheaper than creating demand from scratch with advertising.","Paid social comes next, once there is something worth sending people to. Advertising a page that does not convert is the most reliable way to conclude, wrongly, that advertising does not work."]},{"heading":"How do you decide what to stop doing?","paragraphs":["By agreeing in advance what each channel is supposed to return, and on what timeline. Without that, nothing ever gets cut, because every channel can produce an anecdote about the time it worked.","I would rather run three things properly than six badly. Most marketing budgets I see are spread thin enough that no single channel has enough data or enough spend to work at all."]}]'::jsonb, '{Content,Search,Advertising,Conversion,Analytics}', 'megaphone')
 on conflict do nothing;
+
+
+-- ============================================================
+-- SEO layer: seo_meta, redirects, site_settings.
+-- Copied from supabase/migrations/20261005001000_seo_layer.sql so this file
+-- stays the single paste-and-run bootstrap. The migration is the source of
+-- truth; if the two disagree, the migration is right.
+-- Appended here (after the seed data) because the seo_meta seed below selects
+-- from projects, posts and services.
+-- ============================================================
+
+-- SEO layer: per-entity metadata, permanent redirects, and global settings.
+--
+-- This is the database half of moving SEO out of `src/data/seo.ts` and into
+-- something the admin panel can edit. The code half is `getSeo`/`getSeoMap` in
+-- `src/lib/content.ts`, which follow the same DB-first-with-static-fallback
+-- discipline as every other reader there: with no `seo_meta` rows present the
+-- site renders exactly the templates it renders today.
+--
+-- ## Why one side table instead of columns on each content table
+--
+-- Static pages (home, about, contact) have no row to hang columns on, and the
+-- brief asks for SEO control over those too. One polymorphic table means one
+-- editor component and one slug-change hook instead of four of each.
+--
+-- The cost is real and is paid deliberately: there is no foreign key from
+-- `seo_meta` to the entity it describes, so cascade is handled by the triggers
+-- below rather than by the database. `entity_slug` is kept in step by
+-- `on_slug_change` and cleaned up by `on_entity_delete`.
+
+-- ---------------------------------------------------------------- redirects ---
+
+-- Permanent redirects, logged automatically when a slug changes.
+--
+-- Paths are stored normalised: leading slash, lowercase, no trailing slash.
+-- That is enforced here rather than anywhere upstream because this table is
+-- what the router reads, and a stored path that does not match the request
+-- path is a redirect that silently never fires.
+
+create table if not exists public.redirects (
+  id          uuid primary key default gen_random_uuid(),
+  from_path   text not null unique
+              check (from_path like '/%' and from_path = lower(from_path)
+                     and from_path <> '/' and from_path !~ '/$'),
+  -- '/' is a legitimate destination — a dead page is often best sent to the
+  -- homepage — so the trailing-slash rule has to exempt it explicitly. Without
+  -- the exemption the check reads as "no path may end in a slash", which
+  -- rejects the one path that is nothing but a slash.
+  to_path     text not null
+              check (to_path = lower(to_path) and (to_path = '/' or to_path !~ '/$')),
+  -- 308 is what Next's `permanentRedirect()` emits and is the default the
+  -- router relies on. 301 is accepted for rows added by hand.
+  status_code smallint not null default 308 check (status_code in (301, 308)),
+  -- Bumped by the app, not by the triggers. A redirect that still has 0 hits
+  -- long after the rename is one you can safely delete.
+  hit_count   integer not null default 0,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+
+-- ------------------------------------------------------------ site_settings ---
+
+-- Singleton row for the global SEO panel.
+--
+-- `boolean primary key default true check (id)` is the standard singleton
+-- guard: it makes a second settings row impossible rather than merely
+-- discouraged. The `default true` means `insert into site_settings default
+-- values` produces the one row, which is what the seed below relies on.
+
+create table if not exists public.site_settings (
+  id                       boolean primary key default true check (id),
+  title_suffix             text not null default '',
+  default_meta_description text not null default '',
+  default_og_image         text not null default '/og-image.png',
+  person_job_title         text,
+  person_knows_about       text[] not null default '{}',
+  -- Analytics and verification. Every one of these is served in the public
+  -- HTML, so they are readable by anon and there is nothing here to protect.
+  ga4_measurement_id       text,
+  gtm_container_id         text,
+  meta_pixel_id            text,
+  google_site_verification text,
+  bing_site_verification   text,
+  -- Raw robots.txt body. NULL means "render the generated default" — see
+  -- `defaultRobotsTxt` in src/lib/robots.ts. An empty string is treated the
+  -- same way, because a blank file deindexes the whole site.
+  robots_txt               text,
+  updated_at               timestamptz not null default now()
+);
+
+insert into public.site_settings (id) values (true) on conflict (id) do nothing;
+
+-- ----------------------------------------------------------------- seo_meta ---
+
+-- Per-entity search and social metadata. An absent row means "inherit the
+-- template in src/data/seo.ts", which is what keeps the static fallback and
+-- every page that has never been touched in the admin rendering unchanged.
+
+create table if not exists public.seo_meta (
+  id                  uuid primary key default gen_random_uuid(),
+  entity_type         text not null
+                      check (entity_type in ('project', 'post', 'service', 'page')),
+  -- For a static page this is a stable name rather than a URL fragment: the
+  -- home page is stored as 'home', not ''. See STATIC_PAGE_SLUGS in
+  -- src/app/sitemap.ts for the full mapping.
+  entity_slug         text not null
+                      check (entity_slug = lower(entity_slug)
+                             and entity_slug !~ '^/' and entity_slug !~ '/$'),
+
+  meta_title          text,
+  meta_description    text,
+  focus_keyword       text,
+  keywords            text[] not null default '{}',
+
+  og_title            text,
+  og_description      text,
+  og_image            text,
+  twitter_title       text,
+  twitter_description text,
+  twitter_image       text,
+
+  -- Optional. Points at the original source when this was published elsewhere
+  -- first. Constrained to absolute http(s) because a relative value here
+  -- resolves against the *current* page and is therefore worse than no
+  -- canonical at all — the same failure src/data/seo.ts documents at length
+  -- for site.url.
+  canonical_override  text check (canonical_override is null
+                                  or canonical_override ~ '^https?://'),
+
+  -- Drives the admin's "Hide from search engines" toggle. Only `index` and
+  -- `follow` are stored; the rest of the layout's robots directives
+  -- (max-image-preview, max-snippet) are left to be inherited, which is why
+  -- buildMetadata omits the key entirely rather than passing a partial object.
+  noindex             boolean not null default false,
+  nofollow            boolean not null default false,
+
+  created_at          timestamptz not null default now(),
+  updated_at          timestamptz not null default now(),
+  unique (entity_type, entity_slug)
+);
+
+-- The unique constraint above already provides the lookup index for both
+-- `getSeo` (entity_type + entity_slug) and `getSeoMap` (full scan).
+
+-- ------------------------------------------------------ slug lowercase guard ---
+
+-- Automatic lowercase URLs, enforced where they cannot be bypassed. The admin
+-- panel slugifies client-side too, but a constraint is the thing that makes
+-- the guarantee true — including for rows written by scripts/sync-content.ts.
+--
+-- Trailing slashes are not handled here: `trailingSlash: false` is Next's
+-- default and already 308-redirects /about/ to /about before a route runs.
+
+alter table public.projects drop constraint if exists projects_slug_lowercase;
+alter table public.projects add constraint projects_slug_lowercase
+  check (slug = lower(slug) and slug !~ '^/' and slug !~ '/$');
+
+alter table public.posts drop constraint if exists posts_slug_lowercase;
+alter table public.posts add constraint posts_slug_lowercase
+  check (slug = lower(slug) and slug !~ '^/' and slug !~ '/$');
+
+alter table public.services drop constraint if exists services_slug_lowercase;
+alter table public.services add constraint services_slug_lowercase
+  check (slug = lower(slug) and slug !~ '^/' and slug !~ '/$');
+
+-- --------------------------------------------------------- slug change hook ---
+
+-- Fires on every content table whose slug is a URL segment. Three jobs: log
+-- the redirect, collapse any redirect chain that already pointed here, and
+-- keep seo_meta attached to the renamed entity.
+--
+-- Chain collapsing is the part that is easy to omit and expensive to skip. A
+-- slug renamed twice produces A→B and B→C, so A→B→C is a two-hop redirect:
+-- crawlers follow it, but it is a weaker signal and costs a round trip on
+-- every old link. Rewriting any row that pointed at the OLD path to point at
+-- the NEW path keeps every redirect one hop.
+--
+-- The reciprocal delete prevents a loop. Renaming B back to A when A→B already
+-- exists would otherwise leave two rows pointing at each other.
+--
+-- tg_argv: [0] = entity_type, [1] = path prefix ('' for static pages)
+
+create or replace function public.on_slug_change() returns trigger
+language plpgsql as $$
+declare
+  entity   text := tg_argv[0];
+  prefix   text := tg_argv[1];
+  old_path text;
+  new_path text;
+begin
+  if new.slug is not distinct from old.slug then
+    return new;
+  end if;
+
+  old_path := case when prefix = '' then '/' || old.slug
+                   else '/' || prefix || '/' || old.slug end;
+  new_path := case when prefix = '' then '/' || new.slug
+                   else '/' || prefix || '/' || new.slug end;
+
+  delete from public.redirects where from_path = new_path and to_path = old_path;
+
+  update public.redirects
+     set to_path = new_path, updated_at = now()
+   where to_path = old_path;
+
+  insert into public.redirects (from_path, to_path)
+  values (old_path, new_path)
+  on conflict (from_path) do update
+    set to_path = excluded.to_path, updated_at = now();
+
+  -- Clear any row already sitting on the new slug before moving this entity's
+  -- over. Two entities of the same type cannot share a slug (it is the primary
+  -- key), so such a row is necessarily orphaned — but it would still trip the
+  -- `unique (entity_type, entity_slug)` constraint and abort the whole save
+  -- with an error that says nothing about the slug that was actually renamed.
+  delete from public.seo_meta
+   where entity_type = entity and entity_slug = new.slug;
+
+  update public.seo_meta
+     set entity_slug = new.slug, updated_at = now()
+   where entity_type = entity and entity_slug = old.slug;
+
+  return new;
+end;
+$$;
+
+-- `before update of slug` rather than `before update` so an ordinary edit that
+-- does not touch the slug costs nothing.
+
+drop trigger if exists slug_change on public.projects;
+create trigger slug_change before update of slug on public.projects
+  for each row execute function public.on_slug_change('project', 'work');
+
+drop trigger if exists slug_change on public.posts;
+create trigger slug_change before update of slug on public.posts
+  for each row execute function public.on_slug_change('post', 'blog');
+
+drop trigger if exists slug_change on public.services;
+create trigger slug_change before update of slug on public.services
+  for each row execute function public.on_slug_change('service', 'services');
+
+-- ------------------------------------------------------- delete cleanup hook ---
+
+-- A deleted project redirects to its section index instead of 404ing, which
+-- keeps any accumulated link equity inside the site rather than dropping it.
+-- Delete the row from /admin/redirects to turn this back into a 404.
+--
+-- tg_argv: [0] = entity_type, [1] = path prefix, [2] = fallback destination
+
+create or replace function public.on_entity_delete() returns trigger
+language plpgsql as $$
+declare
+  entity text := tg_argv[0];
+  prefix text := tg_argv[1];
+  leaf   text := tg_argv[2];
+  path   text;
+begin
+  path := case when prefix = '' then '/' || old.slug
+               else '/' || prefix || '/' || old.slug end;
+
+  insert into public.redirects (from_path, to_path)
+  values (path, leaf)
+  on conflict (from_path) do update
+    set to_path = excluded.to_path, updated_at = now();
+
+  delete from public.seo_meta where entity_type = entity and entity_slug = old.slug;
+  return old;
+end;
+$$;
+
+drop trigger if exists entity_delete on public.projects;
+create trigger entity_delete after delete on public.projects
+  for each row execute function public.on_entity_delete('project', 'work', '/work');
+
+drop trigger if exists entity_delete on public.posts;
+create trigger entity_delete after delete on public.posts
+  for each row execute function public.on_entity_delete('post', 'blog', '/blog');
+
+drop trigger if exists entity_delete on public.services;
+create trigger entity_delete after delete on public.services
+  for each row execute function public.on_entity_delete('service', 'services', '/services');
+
+-- --------------------------------------------------------------------- rls ---
+
+alter table public.seo_meta      enable row level security;
+alter table public.redirects     enable row level security;
+alter table public.site_settings enable row level security;
+
+-- Same shape as the init migration: `grant all` opens the door, RLS is the
+-- gate. The init migration's `grant all on all tables in schema public` only
+-- covered the tables that existed when it ran, so the new ones need their own.
+grant all on public.seo_meta, public.redirects, public.site_settings
+  to anon, authenticated;
+
+-- Public read on all three. The site reads them with the anon key on the
+-- server (see `db()` in src/lib/content.ts), none of the columns are secret,
+-- and writes stay behind auth.
+do $$
+declare t text;
+begin
+  foreach t in array array['seo_meta', 'redirects', 'site_settings']
+  loop
+    execute format('drop policy if exists "%I public read" on public.%I', t, t);
+    execute format(
+      'create policy "%I public read" on public.%I for select to anon, authenticated using (true)',
+      t, t
+    );
+    execute format('drop policy if exists "%I admin write" on public.%I', t, t);
+    execute format(
+      'create policy "%I admin write" on public.%I for all to authenticated using (true) with check (true)',
+      t, t
+    );
+  end loop;
+end;
+$$;
+
+-- ------------------------------------------------------------- updated_at ---
+
+-- Reuses `touch_updated_at` from the init migration rather than redefining it,
+-- so the four tables in this file cannot drift from the six in that one.
+
+drop trigger if exists touch_seo_meta on public.seo_meta;
+create trigger touch_seo_meta before update on public.seo_meta
+  for each row execute function public.touch_updated_at();
+
+drop trigger if exists touch_redirects on public.redirects;
+create trigger touch_redirects before update on public.redirects
+  for each row execute function public.touch_updated_at();
+
+drop trigger if exists touch_site_settings on public.site_settings;
+create trigger touch_site_settings before update on public.site_settings
+  for each row execute function public.touch_updated_at();
+
+-- --------------------------------------------------------------- seed rows ---
+
+-- Seeded from the copy that is live today, so the admin panel opens showing
+-- what the site actually says rather than blank fields.
+--
+-- Without this, the first save from a half-filled panel would replace a
+-- template title with NULL and the page would fall back to a weaker default.
+-- Seeding makes the panel's starting state and the live state the same thing.
+--
+-- `left(..., 158)` matches DESCRIPTION_LIMIT in src/utils/metadata.ts.
+
+insert into public.seo_meta (entity_type, entity_slug, meta_title, meta_description, noindex)
+select 'project', p.slug,
+       p.title || ' Case Study | ' || p.category || ' in Nepal',
+       left(p.description, 158),
+       false
+from public.projects p
+where p.published = true
+on conflict (entity_type, entity_slug) do nothing;
+
+insert into public.seo_meta (entity_type, entity_slug, meta_title, meta_description, noindex)
+select 'post', b.slug,
+       b.title || ' | Dipendra Guragain',
+       left(b.excerpt, 158),
+       false
+from public.posts b
+where b.published = true
+on conflict (entity_type, entity_slug) do nothing;
+
+insert into public.seo_meta (entity_type, entity_slug, meta_title, meta_description, noindex)
+select 'service', s.slug,
+       s.title || ' in Nepal | Dipendra Guragain',
+       left(s.short_description, 158),
+       false
+from public.services s
+where s.published = true
+on conflict (entity_type, entity_slug) do nothing;
+
+-- Static pages have no table to select from, so they are listed literally.
+-- These match STATIC_PAGE_SLUGS in src/app/sitemap.ts.
+insert into public.seo_meta (entity_type, entity_slug, noindex) values
+  ('page', 'home',     false),
+  ('page', 'about',    false),
+  ('page', 'work',     false),
+  ('page', 'services', false),
+  ('page', 'pricing',  false),
+  ('page', 'blog',     false),
+  ('page', 'contact',  false)
+on conflict (entity_type, entity_slug) do nothing;
+
+
+-- ============================================================
+-- SEO admin schema: media table, social links, custom JSON-LD.
+-- Copied from supabase/migrations/20261006001000_seo_admin.sql.
+-- ============================================================
+
+-- Additive schema for the SEO admin panels.
+--
+-- Runs after `20261005001000_seo_layer.sql`, which created `seo_meta`,
+-- `redirects` and `site_settings`. Everything here is `if not exists` or
+-- `add column if not exists`, so re-running is safe.
+--
+-- Four things, one per admin module that needed storage it did not have:
+--
+--  1. `site_settings.social_links`  — the global panel's social handles.
+--  2. `*.custom_json_ld`            — the JSON-LD panel's raw injection.
+--  3. `site_settings.default_meta_title` — the global title fallback.
+--  4. `public.media`                — uploads, with alt text the DATABASE
+--                                     refuses to store blank.
+
+-- ------------------------------------------------------- global SEO panel ---
+
+-- Social handles move out of `src/data/profile.ts` so the admin can add a
+-- YouTube channel or a new profile without a deploy.
+--
+-- Stored as an object keyed by platform (`{"github": "https://…"}`) rather
+-- than an array of URLs, because the key is what lets the panel render a
+-- labelled field per platform and what lets `sameAs` stay ordered. An array
+-- would lose which URL is which, and `sameAs` order feeds entity resolution.
+--
+-- `not null default '{}'` and not `null`: an empty object is the honest
+-- representation of "no handles set", and it means the reader never has to
+-- distinguish null from empty.
+alter table public.site_settings
+  add column if not exists social_links jsonb not null default '{}'::jsonb;
+
+-- Raw JSON-LD the admin pastes in, merged into the page's graph.
+--
+-- `jsonb` rather than `text` so the database rejects malformed JSON at write
+-- time rather than the page throwing at render time. That is the difference
+-- between a save that fails visibly in the admin and a page that 500s for
+-- every visitor until someone notices.
+--
+-- Valid JSON is not the same as *sensible* schema, so the panel additionally
+-- checks the shape before saving. The column is the floor, not the ceiling.
+alter table public.site_settings
+  add column if not exists custom_json_ld jsonb;
+
+-- The site-wide title fallback, used when a page has no title of its own.
+-- `title_suffix` (which already exists) is the appended brand string; this is
+-- the standalone title for routes that do not set one.
+alter table public.site_settings
+  add column if not exists default_meta_title text;
+
+-- ------------------------------------------------------------ JSON-LD ------
+
+-- Per-entity JSON-LD, for the cases the generated nodes cannot cover: a
+-- `CreativeWork` with custom `award` or `citation`, a `Person` with
+-- `alumniOf`, an `Event` for a talk.
+--
+-- Constrained to an object or array of objects, never a scalar. `'42'::jsonb`
+-- is valid JSON and would be merged into an `@graph` as a bare number, which
+-- produces a graph no validator can make sense of. Rejecting it here is
+-- cheaper than explaining it later.
+alter table public.seo_meta
+  add column if not exists custom_json_ld jsonb
+  constraint seo_meta_custom_json_ld_shape
+  check (custom_json_ld is null or jsonb_typeof(custom_json_ld) in ('object', 'array'));
+
+-- ---------------------------------------------------------------- media ----
+
+-- Uploads, with alt text enforced by the database.
+--
+-- ## Why `alt` is NOT NULL with a check
+--
+-- The requirement was that alt text be mandatory before an image can be
+-- saved. Enforcing that in the form alone would be a suggestion — it holds
+-- only for uploads that go through the form, and this project already has two
+-- other writers (`scripts/sync-content.ts` and the Supabase table editor).
+-- A `not null` plus `length(btrim(alt)) > 0` holds for every writer there
+-- will ever be, and it is the only version of this rule that cannot be
+-- bypassed by adding a new code path later.
+--
+-- `btrim` matters: `'   '` passes a bare `<> ''` check and is exactly the
+-- value a hurried upload produces.
+--
+-- ## Why a separate table rather than `image_alt` columns
+--
+-- `src/utils/images.ts` documents why alt text was a code-side lookup keyed
+-- by slug: a column would be null for every row that existed at the time.
+-- That reasoning was right then and is still right for those rows. This table
+-- is additive — the reader prefers a `media` row when one exists and falls
+-- back to that same lookup when it does not, so nothing that renders today
+-- changes and every new upload has to carry real alt text.
+create table if not exists public.media (
+  id          uuid primary key default gen_random_uuid(),
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now(),
+
+  -- Path inside the `media` storage bucket, or an absolute URL for assets
+  -- that live elsewhere (the existing `/images/*` files in `public/`).
+  src         text not null unique check (length(btrim(src)) > 0),
+
+  -- The whole point of the table. See the note above.
+  alt         text not null check (length(btrim(alt)) > 0),
+
+  -- Intrinsic dimensions, so the admin can warn about a missing size before
+  -- it becomes a CLS problem on the public site. Nullable because an
+  -- absolute URL to someone else's asset cannot be measured at insert time.
+  width       integer check (width is null or width > 0),
+  height      integer check (height is null or height > 0),
+  mime_type   text,
+  bytes       bigint check (bytes is null or bytes >= 0),
+
+  -- Optional attribution. `site` covers the default OG image and favicons,
+  -- which belong to no single entity.
+  entity_type text check (entity_type in ('project', 'post', 'service', 'page', 'site')),
+  entity_slug text,
+
+  uploaded_by uuid references auth.users (id) on delete set null,
+
+  -- An `alt` that merely restates the filename is the most common way to
+  -- satisfy a mandatory-alt rule without writing useful alt text. Rejecting
+  -- an exact match with the filename stem is a cheap nudge that costs nothing
+  -- legitimate — a real description is never identical to `hero-final-v2`.
+  constraint media_alt_not_filename
+    check (alt <> regexp_replace(src, '^.*/|\.[a-z0-9]+$', '', 'gi'))
+);
+
+create index if not exists media_entity_idx on public.media (entity_type, entity_slug);
+create index if not exists media_created_idx on public.media (created_at desc);
+
+drop trigger if exists touch_media on public.media;
+create trigger touch_media before update on public.media
+  for each row execute function public.touch_updated_at();
+
+alter table public.media enable row level security;
+
+-- Public read: the site serves these images to anonymous visitors, and alt
+-- text is read on the server through the same anon key as every other reader.
+grant all on public.media to anon, authenticated;
+
+drop policy if exists "media public read" on public.media;
+create policy "media public read" on public.media
+  for select to anon, authenticated using (true);
+
+drop policy if exists "media admin write" on public.media;
+create policy "media admin write" on public.media
+  for all to authenticated using (true) with check (true);
+
+-- -------------------------------------------------------- storage bucket ---
+
+-- The bucket uploads land in. Public because these are portfolio images
+-- served to anonymous visitors; a private bucket would mean signing every URL
+-- and giving up caching.
+insert into storage.buckets (id, name, public)
+values ('media', 'media', true)
+on conflict (id) do nothing;
+
+-- Storage has its own RLS, on `storage.objects`, separate from the table
+-- policies above. Without these two the upload fails and the row insert
+-- succeeds, which produces a media record pointing at a file that was never
+-- written — so they are required, not optional.
+drop policy if exists "media bucket public read" on storage.objects;
+create policy "media bucket public read" on storage.objects
+  for select to anon, authenticated using (bucket_id = 'media');
+
+drop policy if exists "media bucket admin write" on storage.objects;
+create policy "media bucket admin write" on storage.objects
+  for all to authenticated
+  using (bucket_id = 'media') with check (bucket_id = 'media');

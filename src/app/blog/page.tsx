@@ -1,12 +1,13 @@
+import type { Metadata } from 'next';
 import { PageHeader } from '@/components/common/PageHeader';
 import { BlogCard } from '@/components/cards/BlogCard';
 import { Container } from '@/components/ui/Container';
 import { Reveal } from '@/components/ui/Reveal';
 import { Section } from '@/components/ui/Section';
 import { blogPosts } from '@/data/blog';
-import { getPosts } from '@/lib/content';
+import { getPosts, getSeo, getSiteSettings } from '@/lib/content';
 import { buildMetadata } from '@/utils/metadata';
-import { blogSEO } from '@/data/seo';
+import { blogSEO, withSeoMeta } from '@/data/seo';
 
 export default async function BlogPage() {
   const posts = await getPosts();
@@ -37,4 +38,7 @@ export default async function BlogPage() {
   );
 }
 
-export const metadata = buildMetadata(blogSEO);
+export async function generateMetadata(): Promise<Metadata> {
+  const meta = await getSeo('page', 'blog');
+  return buildMetadata(withSeoMeta(blogSEO, meta), await getSiteSettings());
+}

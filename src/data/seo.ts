@@ -1,4 +1,4 @@
-import type { BlogPost, Project, SEOData, Service } from '@/types';
+import type { BlogPost, Project, SEOData, SeoMeta, Service } from '@/types';
 import { profile } from '@/data/profile';
 import { isoDate } from '@/utils/dates';
 
@@ -260,6 +260,37 @@ export const servicesSEO: SEOData = {
   canonical: `${site.url}/services`,
 };
 
+/**
+ * The pricing page.
+ *
+ * The title leads with "Cost" rather than "Pricing" because that is the word
+ * people type: "SEO cost in Nepal", "website cost Nepal", "SEO price Nepal".
+ * "Pricing" is the vendor's word for the page and "cost" is the buyer's word
+ * for the query, and this is one of the few places where the two are not
+ * interchangeable.
+ *
+ * The description names the concrete services and a price-adjacent promise
+ * ("starting points") rather than saying "competitive pricing" — a phrase that
+ * appears in so many results it has stopped carrying information, and which
+ * gives a search engine nothing to distinguish this page with.
+ */
+export const pricingSEO: SEOData = {
+  title: 'SEO, Web Development & Ads Cost in Nepal | Starting Prices',
+  description:
+    'What SEO, website builds, ecommerce stores and Google or Meta Ads management cost in Nepal, what changes the price, and what each service actually includes.',
+  keywords: [
+    'SEO cost Nepal',
+    'SEO price Nepal',
+    'website cost Nepal',
+    'web development cost Nepal',
+    'digital marketing cost Nepal',
+    'ecommerce website price Nepal',
+    'Google Ads management cost Nepal',
+    'SEO package price Kathmandu',
+  ],
+  canonical: `${site.url}/pricing`,
+};
+
 export const blogSEO: SEOData = {
   title: 'Insights | SEO, Ecommerce & Web Development | Dipendra Guragain',
   description:
@@ -277,6 +308,71 @@ export const contactSEO: SEOData = {
 };
 
 /**
+ * Overlays the admin's `seo_meta` row onto a page's generated template.
+ *
+ * The templates below stay exactly as they are, and this is what lets them:
+ * every field the admin has not touched resolves to the template's value, so
+ * the two hundred-odd lines of reasoning in this file — why a project title
+ * names its real category, why a service title strips its role suffix, why
+ * dates lead rather than the name — keep applying to pages nobody has opened
+ * in the panel.
+ *
+ * `??` rather than `||` throughout, because `getSeo` normalises blank strings
+ * to `undefined` (see `mapSeoMeta`). That means an empty field in the admin is
+ * indistinguishable from an untouched one, which is the intended behaviour:
+ * an empty `<title>` is never what anyone wants, so there is no case where
+ * "explicitly blank" needs to mean something different from "not set".
+ *
+ * **Canonical is the one override that moves `og:url` too.** That is correct
+ * rather than a side effect: the Open Graph spec defines `og:url` as the
+ * canonical URL of the object, and for a piece of writing syndicated from
+ * somewhere else, the canonical copy genuinely is the other URL. `buildMetadata`
+ * derives `openGraph.url` from `canonical`, so overriding one moves both, and
+ * they cannot end up disagreeing about where the real page lives.
+ *
+ * **Robots is spread in, never passed as `undefined`.** Next merges page
+ * metadata over the layout's by key, and a key that is present but undefined
+ * still overwrites — so emitting `robots: undefined` would silently discard the
+ * layout's `max-image-preview:large` and `max-snippet: -1` on every page that
+ * has a `seo_meta` row. `buildMetadata` documents the same hazard from the
+ * other side.
+ *
+ * Only `index` and `follow` are set when a toggle is on. `nofollow` without
+ * `noindex` is a legitimate combination — a page you want found but whose
+ * outbound links you do not vouch for — so the two are read independently
+ * rather than one implying the other.
+ *
+ * Exported because the routes with no content table (home, about, work,
+ * services, blog, contact) hold their base `SEOData` as a plain constant
+ * instead of building it from a row, and they need exactly this overlay
+ * applied to it.
+ */
+export function withSeoMeta(base: SEOData, meta: SeoMeta | undefined): SEOData {
+  if (!meta) return base;
+
+  return {
+    ...base,
+    title: meta.metaTitle ?? base.title,
+    description: meta.metaDescription ?? base.description,
+    keywords: meta.keywords ?? base.keywords,
+    canonical: meta.canonicalOverride ?? base.canonical,
+    ogTitle: meta.ogTitle,
+    ogDescription: meta.ogDescription,
+    ogImage: meta.ogImage ?? base.ogImage,
+    twitterTitle: meta.twitterTitle,
+    twitterDescription: meta.twitterDescription,
+    twitterImage: meta.twitterImage,
+    // Carried through so the page can add the admin's nodes to its `@graph`.
+    // This function does not emit them itself — it returns metadata, not
+    // markup — so the value travels to the page component via `getSeo`.
+    customJsonLd: meta.customJsonLd,
+    ...(meta.noindex || meta.nofollow
+      ? { robots: { index: !meta.noindex, follow: !meta.nofollow } }
+      : {}),
+  };
+}
+
+/**
  * Project pages.
  *
  * The title named every project a "Website & SEO Project in Nepal", which was
@@ -289,13 +385,16 @@ export const contactSEO: SEOData = {
  * is clamped by `buildMetadata` because several of these run past the length a
  * result will display.
  */
-export function projectSEO(project: Project): SEOData {
-  return {
-    title: `${project.title} Case Study | ${project.category} in Nepal`,
-    description: project.description,
-    keywords: [project.title, `${project.category} Nepal`, ...project.technologies],
-    canonical: `${site.url}/work/${project.slug}`,
-  };
+export function projectSEO(project: Project, meta?: SeoMeta): SEOData {
+  return withSeoMeta(
+    {
+      title: `${project.title} Case Study | ${project.category} in Nepal`,
+      description: project.description,
+      keywords: [project.title, `${project.category} Nepal`, ...project.technologies],
+      canonical: `${site.url}/work/${project.slug}`,
+    },
+    meta,
+  );
 }
 
 /**
@@ -312,20 +411,23 @@ export function projectSEO(project: Project): SEOData {
  * miss the shorter version of its own name because of the longer one it chose.
  * Nothing here is invented: every term is a prefix of the page's own title.
  */
-export function serviceSEO(service: Service): SEOData {
+export function serviceSEO(service: Service, meta?: SeoMeta): SEOData {
   const base = service.title.replace(/\s+(Services|Specialist)$/i, '');
 
-  return {
-    title: `${service.title} in Nepal | ${profile.name}`,
-    description: service.shortDescription,
-    keywords: [
-      `${service.title} Nepal`,
-      `${service.title} Kathmandu`,
-      `${base} Nepal`,
-      `${base} Kathmandu`,
-    ],
-    canonical: `${site.url}/services/${service.slug}`,
-  };
+  return withSeoMeta(
+    {
+      title: `${service.title} in Nepal | ${profile.name}`,
+      description: service.shortDescription,
+      keywords: [
+        `${service.title} Nepal`,
+        `${service.title} Kathmandu`,
+        `${base} Nepal`,
+        `${base} Kathmandu`,
+      ],
+      canonical: `${site.url}/services/${service.slug}`,
+    },
+    meta,
+  );
 }
 
 /**
@@ -335,16 +437,19 @@ export function serviceSEO(service: Service): SEOData {
  * modified times existed in the BlogPosting JSON-LD and nowhere in the metadata
  * a social crawler or an aggregator actually reads.
  */
-export function postSEO(post: BlogPost): SEOData {
-  return {
-    title: `${post.title} | ${profile.name}`,
-    description: post.excerpt,
-    keywords: post.tags,
-    canonical: `${site.url}/blog/${post.slug}`,
-    ogType: 'article',
-    authors: [profile.name],
-    publishedTime: isoDate(post.date),
-    modifiedTime: isoDate(post.updatedAt),
-    tags: post.tags,
-  };
+export function postSEO(post: BlogPost, meta?: SeoMeta): SEOData {
+  return withSeoMeta(
+    {
+      title: `${post.title} | ${profile.name}`,
+      description: post.excerpt,
+      keywords: post.tags,
+      canonical: `${site.url}/blog/${post.slug}`,
+      ogType: 'article',
+      authors: [profile.name],
+      publishedTime: isoDate(post.date),
+      modifiedTime: isoDate(post.updatedAt),
+      tags: post.tags,
+    },
+    meta,
+  );
 }

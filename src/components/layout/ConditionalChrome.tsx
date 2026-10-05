@@ -22,12 +22,23 @@ import { SiteChrome } from '@/components/layout/SiteChrome';
  * `(site)/layout.tsx` own the chrome instead. Do not do both: the two would
  * stack and the site would render two Navbars.
  */
-export function ConditionalChrome({ children }: { children: ReactNode }) {
+export function ConditionalChrome({
+  children,
+  socialLinks,
+}: {
+  children: ReactNode;
+  /**
+   * Read from `site_settings` by the root layout, which is the only component
+   * here that can await a database read. This one is a client component, and
+   * `SiteJsonLd` sits below it in the client tree.
+   */
+  socialLinks?: string[];
+}) {
   const pathname = usePathname();
 
   if (pathname === '/admin' || pathname.startsWith('/admin/')) {
     return <>{children}</>;
   }
 
-  return <SiteChrome>{children}</SiteChrome>;
+  return <SiteChrome socialLinks={socialLinks}>{children}</SiteChrome>;
 }

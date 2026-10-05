@@ -1,5 +1,7 @@
+import type { Metadata } from 'next';
 import { NotFoundView } from '@/components/common/NotFoundView';
 import { profile } from '@/data/profile';
+import { getSiteSettings } from '@/lib/content';
 import { buildMetadata } from '@/utils/metadata';
 
 const notFoundSEO = {
@@ -34,4 +36,6 @@ export default function NotFound() {
   return <NotFoundView />;
 }
 
-export const metadata = buildMetadata(notFoundSEO);
+export async function generateMetadata(): Promise<Metadata> {
+  return buildMetadata(notFoundSEO, await getSiteSettings());
+}

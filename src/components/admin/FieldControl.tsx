@@ -4,7 +4,12 @@ import { Plus, Trash2 } from 'lucide-react';
 import type { Field } from './config';
 import { cn } from '@/utils/cn';
 
-const inputClass =
+/**
+ * Shared with `SeoPanel`, which renders its own inputs. Exported rather than
+ * duplicated so a change to the admin's field styling cannot land in one panel
+ * and miss the other.
+ */
+export const inputClass =
   'w-full border border-line-strong bg-surface px-3 py-2.5 text-sm text-ink transition-colors placeholder:text-faint focus:border-accent focus:ring-4 focus:ring-accent-soft';
 
 interface FieldControlProps {

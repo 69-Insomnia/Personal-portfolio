@@ -21,6 +21,15 @@ const ADMIN_NAV = [
   { href: '/admin/experience', label: 'Experience' },
   { href: '/admin/testimonials', label: 'Testimonials' },
   { href: '/admin/services', label: 'Services' },
+  { href: '/admin/media', label: 'Media' },
+  /**
+   * The three SEO entries sit together at the bottom, after the content
+   * collections. They are not content — they change how the content is
+   * interpreted — and grouping them makes that distinction visible in the nav
+   * rather than leaving Redirects to be discovered.
+   */
+  { href: '/admin/redirects', label: 'Redirects' },
+  { href: '/admin/seo', label: 'SEO settings' },
 ] as const;
 
 interface AdminShellProps {

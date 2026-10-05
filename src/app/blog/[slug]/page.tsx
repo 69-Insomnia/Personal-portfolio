@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { Clock } from 'lucide-react';
 import { ArticleBody } from '@/components/common/ArticleBody';
 import { AuthorByline } from '@/components/common/AuthorByline';
@@ -16,9 +16,9 @@ import { RevealText } from '@/components/ui/RevealText';
 import { Section } from '@/components/ui/Section';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 import { blogPosts, getPostBySlug } from '@/data/blog';
-import { getPost, getPosts, getProjects, getServices } from '@/lib/content';
+import { getImageAlt, getPost, getPosts, getProjects, getRedirect, getSeo, getServices, getSiteSettings } from '@/lib/content';
 import { relatedToPost } from '@/lib/related';
-import { articleNode } from '@/lib/structured-data';
+import { articleNode, customJsonLdNodes } from '@/lib/structured-data';
 import { postSEO } from '@/data/seo';
 import { buildMetadata } from '@/utils/metadata';
 import { postImageAlt } from '@/utils/images';
@@ -35,12 +35,13 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = (await getPost(slug)) ?? getPostBySlug(slug);
+  const [live, meta] = await Promise.all([getPost(slug), getSeo('post', slug)]);
+  const post = live ?? getPostBySlug(slug);
   if (!post) {
     // `notFound()` renders the root boundary, which sends its own `noindex`.
     return { title: 'Article Not Found', robots: { index: false, follow: false } };
   }
-  return buildMetadata(postSEO(post));
+  return buildMetadata(postSEO(post, meta), await getSiteSettings());
 }
 
 export default async function BlogPostPage({ params }: PageProps) {
@@ -48,13 +49,21 @@ export default async function BlogPostPage({ params }: PageProps) {
   const post = (await getPost(slug)) ?? getPostBySlug(slug);
 
   if (!post) {
+    // See the note in `work/[slug]`: the redirect lookup only runs once the
+    // slug has already failed to resolve, so valid URLs pay nothing for it.
+    const target = await getRedirect(`/blog/${slug}`);
+    if (target) permanentRedirect(target);
     notFound();
   }
 
-  const [allPosts, allServices, allProjects] = await Promise.all([
+  const [allPosts, allServices, allProjects, coverAlt, seoMeta] = await Promise.all([
     getPosts(),
     getServices(),
     getProjects(),
+    // `undefined` for anything committed to `public/` — see `getImageAlt`.
+    getImageAlt(post.image),
+    // Cached by the same `revalidate` as the reads above — see `work/[slug]`.
+    getSeo('post', post.slug),
   ]);
 
   const related = allPosts
@@ -74,7 +83,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       {/* The breadcrumb trail is rendered by `PageHeader` below, which emits
           its own `BreadcrumbList`. Passing one here as well would publish the
           same trail twice. */}
-      <JsonLd graph={[articleNode(post)]} />
+      <JsonLd graph={[articleNode(post), ...customJsonLdNodes(seoMeta?.customJsonLd)]} />
       <PageHeader
         label={post.category}
         badge={post.isPlaceholder ? <PlaceholderBadge /> : null}
@@ -100,7 +109,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       <Container className="mt-10 md:mt-14">
         <ImageLightbox
           src={post.image}
-          alt={postImageAlt(post)}
+          alt={postImageAlt(post, coverAlt)}
           sizes="(max-width: 1200px) 100vw, 1100px"
         />
       </Container>
