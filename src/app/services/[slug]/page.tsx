@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { SkillCard } from '@/components/cards/SkillCard';
+import { ServiceSpecTable } from '@/components/common/ComparisonTable';
+import { AnswerBlock, FaqBlock, StatBlock } from '@/components/common/GeoBlocks';
 import { JsonLd } from '@/components/common/JsonLd';
 import { PageHeader } from '@/components/common/PageHeader';
 import { RelatedBlock } from '@/components/common/RelatedBlock';
@@ -12,8 +14,14 @@ import { SectionLabel } from '@/components/ui/SectionLabel';
 import { getServiceBySlug, services } from '@/data/services';
 import { getPosts, getProjects, getRedirect, getSeo, getService, getServices, getSiteSettings } from '@/lib/content';
 import { relatedToService } from '@/lib/related';
-import { customJsonLdNodes, serviceNode } from '@/lib/structured-data';
-import { serviceSEO } from '@/data/seo';
+import {
+  customJsonLdNodes,
+  definedTermNodes,
+  definedTermSetNode,
+  serviceNode,
+  webPageNode,
+} from '@/lib/structured-data';
+import { serviceSEO, site } from '@/data/seo';
 import { buildMetadata } from '@/utils/metadata';
 
 interface PageProps {
@@ -66,12 +74,40 @@ export default async function ServicePage({ params }: PageProps) {
   });
   const body = service.body ?? [];
 
+  /**
+   * The extra graph nodes, all optional.
+   *
+   * Each is emitted only when the admin has filled in the field behind it, so a
+   * service page that has never been opened in the SEO panel publishes exactly
+   * the graph it published before any of this existed. `serviceWebPageNode`
+   * returns `undefined` — rather than an empty node — when there is nothing to
+   * say, which is why it is spread conditionally instead of pushed and filtered.
+   */
+  const terms = seoMeta?.entitySignals?.definedTerms;
+  const pageNode = webPageNode({
+    url: `${site.url}/services/${service.slug}`,
+    name: service.title,
+    mainEntityId: `${site.url}/services/${service.slug}/#service`,
+    signals: seoMeta?.entitySignals,
+    aiAnswer: seoMeta?.aiAnswer,
+  });
+
   return (
     <article>
       {/* The breadcrumb trail is rendered by `PageHeader` below, which emits
           its own `BreadcrumbList`. Passing one here as well would publish the
           same trail twice. */}
-      <JsonLd graph={[serviceNode(service), ...customJsonLdNodes(seoMeta?.customJsonLd)]} />
+      <JsonLd
+        graph={[
+          serviceNode(service),
+          ...(pageNode ? [pageNode] : []),
+          ...definedTermNodes(terms),
+          // The set is emitted only alongside terms, since it exists to give
+          // them something to belong to.
+          ...(terms?.length ? [definedTermSetNode()] : []),
+          ...customJsonLdNodes(seoMeta?.customJsonLd),
+        ]}
+      />
       <PageHeader
         label="Service"
         index={service.index}
@@ -96,6 +132,17 @@ export default async function ServicePage({ params }: PageProps) {
               <Reveal>
                 <p className="max-w-2xl text-lead text-muted">{service.description}</p>
               </Reveal>
+
+              {/* The passage written to be quoted, when the admin has written
+                  one. Rendered outside `Reveal` — this block exists for
+                  crawlers that do not run scripts, and `Reveal` ships
+                  `opacity:0` in the raw HTML. See `src/components/common/
+                  GeoBlocks.tsx`. */}
+              {seoMeta?.aiAnswer ? (
+                <div className="mt-8">
+                  <AnswerBlock answer={seoMeta.aiAnswer} />
+                </div>
+              ) : null}
             </div>
           </div>
 
@@ -111,6 +158,20 @@ export default async function ServicePage({ params }: PageProps) {
                   ))}
                 </ul>
               </Reveal>
+
+              {/* Scope, timeline, starting price and who this is for. Not
+                  wrapped in `Reveal`, unlike everything around it — the table
+                  exists to be extracted by crawlers that do not run scripts,
+                  and `Reveal` ships `opacity:0` in the raw HTML. See the note
+                  in src/sections/Comparison/index.tsx. */}
+              {service.deliverables?.length ||
+              service.timeline ||
+              service.bestFor ||
+              service.fromNpr !== undefined ? (
+                <div className="mt-10">
+                  <ServiceSpecTable service={service} />
+                </div>
+              ) : null}
 
               <Reveal delay={0.14}>
                 <div className="mt-10 flex flex-wrap gap-3">
@@ -138,6 +199,21 @@ export default async function ServicePage({ params }: PageProps) {
             </div>
           </div>
 
+          {/* Sourced statistics, when the admin has entered any. The audit's
+              finding was that this site published no figure a reader could
+              check, anywhere — the single biggest reason a page gets passed
+              over for AI citation. */}
+          {seoMeta?.stats?.length ? (
+            <div className="mt-14 grid gap-10 border-t border-line pt-14 lg:grid-cols-12">
+              <div className="lg:col-span-3">
+                <SectionLabel label="By The Numbers" />
+              </div>
+              <div className="lg:col-span-8 lg:col-start-5">
+                <StatBlock stats={seoMeta.stats} />
+              </div>
+            </div>
+          ) : null}
+
           {/* Long-form body. Headings are written as questions because that is
               the shape answer engines and featured snippets extract. */}
           {body.length > 0 ? (
@@ -163,6 +239,19 @@ export default async function ServicePage({ params }: PageProps) {
                     </section>
                   </Reveal>
                 ))}
+              </div>
+            </div>
+          ) : null}
+
+          {/* Page-level Q&A. Content only — deliberately no `FAQPage` schema,
+              which Google retired for all sites on 2026-05-07. See `FaqBlock`. */}
+          {seoMeta?.faqs?.length ? (
+            <div className="mt-14 grid gap-10 border-t border-line pt-14 lg:grid-cols-12">
+              <div className="lg:col-span-3">
+                <SectionLabel label="Questions" />
+              </div>
+              <div className="lg:col-span-8 lg:col-start-5">
+                <FaqBlock faqs={seoMeta.faqs} />
               </div>
             </div>
           ) : null}

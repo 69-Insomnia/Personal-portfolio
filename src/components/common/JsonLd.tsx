@@ -1,7 +1,9 @@
 import {
+  customJsonLdNodes,
   personNode,
   professionalServiceNode,
   websiteNode,
+  type PersonOverrides,
 } from '@/lib/structured-data';
 
 /**
@@ -29,13 +31,36 @@ export function JsonLd({ graph }: { graph: object[] }) {
  * The base entity graph: who this is, what the site is, and the service-area
  * business. Mounted once, from `SiteChrome`.
  *
- * `socialLinks` arrives from the root layout rather than being read here,
- * because this renders inside the client tree and the admin's social handles
- * live in the database. Omitting it falls back to the repo's
- * `profile.socialLinks` — see `personNode`.
+ * Every value here arrives from the root layout rather than being read in this
+ * component, because this renders inside the client tree and the admin's
+ * settings live in the database. Omission is always safe: each falls back to
+ * the repo constant, so a site with an unreachable database and a site whose
+ * admin has never opened the SEO panel both emit exactly what they emitted
+ * before these props existed.
+ *
+ * `customJsonLd` is the *site-wide* field from `site_settings`. Per-page
+ * custom nodes are a separate column on `seo_meta`, merged by each page as
+ * `customJsonLdNodes(seoMeta?.customJsonLd)` — see `services/[slug]/page.tsx`.
+ * This one used to have no consumer at all.
  */
-export function SiteJsonLd({ socialLinks }: { socialLinks?: string[] } = {}) {
+export function SiteJsonLd({
+  socialLinks,
+  person,
+  customJsonLd,
+}: {
+  socialLinks?: string[];
+  /** Admin overrides for the Person node. See `PersonOverrides`. */
+  person?: Omit<PersonOverrides, 'socials'>;
+  customJsonLd?: unknown;
+} = {}) {
   return (
-    <JsonLd graph={[personNode(socialLinks), websiteNode(), professionalServiceNode()]} />
+    <JsonLd
+      graph={[
+        personNode({ socials: socialLinks, ...person }),
+        websiteNode(),
+        professionalServiceNode(),
+        ...customJsonLdNodes(customJsonLd),
+      ]}
+    />
   );
 }

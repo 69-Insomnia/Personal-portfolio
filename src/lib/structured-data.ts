@@ -1,8 +1,9 @@
 import { profile } from '@/data/profile';
-import { monthlyTiers, oneOffTiers } from '@/data/pricing';
+import { monthlyTiers, oneOffTiers, serviceStartingPrice } from '@/data/pricing';
 import { identity, site, socialProfiles } from '@/data/seo';
+import { slugify } from '@/utils/slug';
 import { isoDate } from '@/utils/dates';
-import type { BlogPost, Project, Service } from '@/types';
+import type { BlogPost, EntitySignals, Project, Service } from '@/types';
 
 /**
  * Schema.org nodes for the site.
@@ -66,16 +67,37 @@ const KNOWS_ABOUT = [
   'Conversion Optimization',
 ];
 
-export function personNode(socials?: string[]): Node {
+/**
+ * Admin overrides for the `Person` node, read from `site_settings`.
+ *
+ * Each is optional and each falls back to the repo constant below, so an
+ * install that has never opened the SEO panel emits exactly the node it always
+ * did. These exist because the panel has always offered `person_job_title` and
+ * `person_knows_about` as editable fields, and neither was read by anything —
+ * `jobTitle` came from `identity.role` and `knowsAbout` from `KNOWS_ABOUT`,
+ * both hardcoded here. The fields saved to the database and changed nothing.
+ *
+ * The caller supplies these rather than this module reading the database,
+ * because `SiteJsonLd` renders inside the client tree — see the note on
+ * `SiteChrome` — and a client component cannot await a server read.
+ */
+export interface PersonOverrides {
+  /** Ordered URLs for `sameAs`. Falls back to `profile.socialLinks`. */
+  socials?: string[];
+  /** Falls back to `identity.role`. */
+  jobTitle?: string;
+  /** Falls back to `KNOWS_ABOUT`. An empty list is treated as unset. */
+  knowsAbout?: string[];
+}
+
+export function personNode(overrides: PersonOverrides = {}): Node {
+  const { socials, jobTitle, knowsAbout } = overrides;
+
   /* `socialProfiles` filters the empties, so `sameAs` is omitted entirely
      rather than emitted as `["", "", ""]` — which would be worse than absent.
 
      `socials` comes from `site_settings.social_links` when the admin has set
-     any, and `socialProfiles` (built from `src/data/profile.ts`) otherwise.
-     The caller passes it rather than this function reading the database,
-     because `SiteJsonLd` renders inside the client tree — see the note on
-     `SiteChrome` — and a client component cannot await a server read. The
-     root layout does the read and threads the value down. */
+     any, and `socialProfiles` (built from `src/data/profile.ts`) otherwise. */
   const sameAs = socials && socials.length > 0 ? socials : socialProfiles;
 
   return {
@@ -83,13 +105,14 @@ export function personNode(socials?: string[]): Node {
     '@id': personId,
     name: identity.name,
     /**
-     * `identity.role`, not `profile.title`. The navbar renders a shortened
-     * title ("Web Developer · SEO · Digital Growth") because it has to fit
-     * under a name at 10px; that string was being published as this person's
-     * `jobTitle`, so the entity described itself differently from every heading
-     * and meta description on the site.
+     * The admin's job title when set, then `identity.role`, never
+     * `profile.title`. The navbar renders a shortened title ("Web Developer ·
+     * SEO · Digital Growth") because it has to fit under a name at 10px; that
+     * string was once published as this person's `jobTitle`, so the entity
+     * described itself differently from every heading and meta description on
+     * the site. The repo fallback is the full role, not the navbar's.
      */
-    jobTitle: identity.role,
+    jobTitle: jobTitle || identity.role,
     description: profile.description,
     url: site.url,
     image: `${site.url}${profile.profileImage}`,
@@ -104,7 +127,11 @@ export function personNode(socials?: string[]): Node {
       { '@type': 'Country', name: country },
       { '@type': 'City', name: locality },
     ],
-    knowsAbout: KNOWS_ABOUT,
+    // An empty array is unset, not a claim of no expertise — the admin panel
+    // stores `[]` when every line is deleted, and `knowsAbout: []` would tell a
+    // search engine this person knows nothing in particular.
+    knowsAbout:
+      knowsAbout && knowsAbout.length > 0 ? knowsAbout : KNOWS_ABOUT,
     ...(sameAs.length > 0 ? { sameAs } : {}),
   };
 }
@@ -225,6 +252,7 @@ export function articleNode(post: BlogPost): Node {
 
 export function serviceNode(service: Service): Node {
   const url = `${site.url}/services/${service.slug}`;
+  const price = serviceStartingPrice(service.slug, service.fromNpr);
 
   return {
     '@type': 'Service',
@@ -239,6 +267,43 @@ export function serviceNode(service: Service): Node {
       { '@type': 'Country', name: country },
       { '@type': 'City', name: locality },
     ],
+    /**
+     * Emitted only when a real figure exists.
+     *
+     * Same reasoning as `pricingOffersNode` below, and it is worth restating
+     * because the failure is quiet: an `Offer` with no price, or one carrying
+     * `minPrice: 0`, is not a neutral absence. The first asserts a price exists
+     * and declines to say what it is; the second tells a search engine the work
+     * is free. Today every tier in `src/data/pricing.ts` is `null`, so this
+     * whole node is absent — and it starts emitting on its own the moment a
+     * figure is published, which is the point.
+     *
+     * `minPrice` inside a `PriceSpecification` rather than a bare `price`,
+     * because every figure this site would publish is a floor ("from NPR
+     * 45,000") and `price` would state it as the actual cost.
+     */
+    ...(price !== null
+      ? {
+          offers: {
+            '@type': 'Offer',
+            url,
+            availability: 'https://schema.org/InStock',
+            priceSpecification: {
+              '@type': 'PriceSpecification',
+              priceCurrency: 'NPR',
+              minPrice: price,
+            },
+          },
+        }
+      : {}),
+    /**
+     * Who the service is for, when the page says. This is `bestFor` — the
+     * comparison table's decision column — and it is the one property here that
+     * answers "is this me?" rather than "what is this?".
+     */
+    ...(service.bestFor
+      ? { audience: { '@type': 'Audience', audienceType: service.bestFor } }
+      : {}),
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
       name: `${service.title} capabilities`,
@@ -247,6 +312,104 @@ export function serviceNode(service: Service): Node {
         itemOffered: { '@type': 'Service', name: capability },
       })),
     },
+  };
+}
+
+/**
+ * Glossary entries, as `DefinedTerm` nodes.
+ *
+ * The audit recommends this specifically for the AI-search vocabulary — AEO,
+ * GEO, LLMO, AIO — and the reasoning is worth keeping: those are genuinely
+ * ambiguous acronyms that different sources expand differently, and several of
+ * the expansions describe overlapping work. Claiming the term a page uses is
+ * what connects it to the right concept instead of whichever expansion a
+ * retrieval system happens to have seen more often.
+ *
+ * `inDefinedTermSet` points every term at one set rather than omitting it, so
+ * the terms are understood as a glossary this site maintains rather than as
+ * unrelated one-off definitions. The set has no page of its own; it is an
+ * entity, not a route.
+ *
+ * `@id` is derived from the term name, so re-saving the same term does not mint
+ * a second node. `slugify` is the same function the admin uses for URL slugs,
+ * which means a term name with an ampersand or an accent produces the same
+ * stable id in both places.
+ */
+export function definedTermNodes(terms: EntitySignals['definedTerms']): Node[] {
+  if (!terms?.length) return [];
+
+  return terms.map((term) => ({
+    '@type': 'DefinedTerm',
+    '@id': `${site.url}/#term-${slugify(term.name)}`,
+    name: term.name,
+    ...(term.description ? { description: term.description } : {}),
+    inDefinedTermSet: { '@id': `${site.url}/#glossary` },
+  }));
+}
+
+/** The set the nodes above belong to. Emitted once, alongside them. */
+export function definedTermSetNode(): Node {
+  return {
+    '@type': 'DefinedTermSet',
+    '@id': `${site.url}/#glossary`,
+    name: `${identity.name} — glossary`,
+    url: `${site.url}/services`,
+  };
+}
+
+/**
+ * A `WebPage` node for a content route, carrying the two properties that only
+ * make sense on a page rather than on the entity it describes.
+ *
+ * - **`abstract`** is the AI answer passage. That is exactly what the property
+ *   is for — a short summary of the work — and it gives the passage a
+ *   machine-readable home instead of leaving it as loose prose the page hopes
+ *   gets extracted.
+ * - **`about`** carries the per-page `knowsAbout` entries and links the page to
+ *   its main entity by `@id`. The site-wide expertise claims live on the
+ *   `Person`; these are the ones true of this page alone.
+ *
+ * Returns `undefined` when there is nothing to say, and the caller spreads it
+ * conditionally. That is deliberate rather than returning a bare node: a
+ * `WebPage` with no `abstract`, no `about` and no `mainEntity` restates the URL
+ * and adds nothing, and this codebase's rule is that markup asserting nothing
+ * is worse than markup that is absent.
+ *
+ * Used by the service and blog detail routes. Project case studies could adopt
+ * it the same way; they do not use these fields today.
+ */
+export function webPageNode({
+  url,
+  name,
+  mainEntityId,
+  signals,
+  aiAnswer,
+}: {
+  url: string;
+  name: string;
+  /** The `@id` of this page's main entity, when it has one. */
+  mainEntityId?: string;
+  signals?: EntitySignals;
+  aiAnswer?: string;
+}): Node | undefined {
+  const knowsAbout = signals?.knowsAbout ?? [];
+  if (knowsAbout.length === 0 && !aiAnswer) return undefined;
+
+  const about = [
+    ...(mainEntityId ? [{ '@id': mainEntityId }] : []),
+    ...knowsAbout.map((term) => ({ '@type': 'Thing', name: term })),
+  ];
+
+  return {
+    '@type': 'WebPage',
+    '@id': `${url}#webpage`,
+    url,
+    name,
+    isPartOf: { '@id': websiteId },
+    ...(mainEntityId ? { mainEntity: { '@id': mainEntityId } } : {}),
+    ...(about.length > 0 ? { about } : {}),
+    ...(aiAnswer ? { abstract: aiAnswer } : {}),
+    inLanguage: 'en',
   };
 }
 

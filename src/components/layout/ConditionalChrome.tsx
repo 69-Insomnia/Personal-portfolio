@@ -3,6 +3,8 @@
 import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import { SiteChrome } from '@/components/layout/SiteChrome';
+import type { AnalyticsConfig } from '@/types';
+import type { PersonOverrides } from '@/lib/structured-data';
 
 /**
  * Applies the public site chrome to everything except `/admin`.
@@ -21,18 +23,32 @@ import { SiteChrome } from '@/components/layout/SiteChrome';
  * If the pages are ever moved into `(site)/`, delete this and let
  * `(site)/layout.tsx` own the chrome instead. Do not do both: the two would
  * stack and the site would render two Navbars.
+ *
+ * ## Why the admin values are passed straight through
+ *
+ * This component is the client boundary — everything below it is in the client
+ * tree and cannot await a database read. The root layout reads `site_settings`
+ * once and hands the values here, and this forwards them unchanged. It makes
+ * no decisions about them, which is deliberate: defaulting and merging belong
+ * in one place each (`resolveAnalytics`, `personNode`), not in a layout
+ * component that happens to be in the way.
  */
 export function ConditionalChrome({
   children,
   socialLinks,
+  analytics,
+  person,
+  customJsonLd,
 }: {
   children: ReactNode;
-  /**
-   * Read from `site_settings` by the root layout, which is the only component
-   * here that can await a database read. This one is a client component, and
-   * `SiteJsonLd` sits below it in the client tree.
-   */
+  /** Read from `site_settings` by the root layout. */
   socialLinks?: string[];
+  /** Resolved measurement IDs — see `resolveAnalytics`. */
+  analytics?: AnalyticsConfig;
+  /** Admin overrides for the Person node. */
+  person?: Omit<PersonOverrides, 'socials'>;
+  /** Site-wide custom JSON-LD. Plain JSON, so it crosses the boundary safely. */
+  customJsonLd?: unknown;
 }) {
   const pathname = usePathname();
 
@@ -40,5 +56,14 @@ export function ConditionalChrome({
     return <>{children}</>;
   }
 
-  return <SiteChrome socialLinks={socialLinks}>{children}</SiteChrome>;
+  return (
+    <SiteChrome
+      socialLinks={socialLinks}
+      analytics={analytics}
+      person={person}
+      customJsonLd={customJsonLd}
+    >
+      {children}
+    </SiteChrome>
+  );
 }

@@ -81,6 +81,18 @@ const serviceOrder: UnnumberedService[] = [
       },
     ],
     capabilities: webDevelopmentCapabilities,
+    deliverables: [
+      'Custom marketing site or web application',
+      'Responsive layouts tested on a mid-range Android phone',
+      'On-page SEO built in rather than added later',
+      'Analytics and conversion tracking wired up and verified',
+      'Handover notes and a walkthrough of how to edit it yourself',
+    ],
+    timeline: '3–8 weeks',
+    bestFor: 'A business that needs the site built properly the first time',
+    // `null` means "not published", which renders as "Contact for a quote".
+    // See `Service.fromNpr` and the module note in `src/data/pricing.ts`.
+    fromNpr: null,
     icon: 'code',
   },
   {
@@ -120,6 +132,21 @@ const serviceOrder: UnnumberedService[] = [
       },
     ],
     capabilities: seoCapabilities,
+    deliverables: [
+      'Technical audit, with the fixes sequenced by impact',
+      'Keyword research and page-level targeting',
+      'On-page work on the pages that already exist',
+      'Content plan and briefs',
+      'Internal linking',
+      'Monthly reporting on rankings, traffic and enquiries',
+    ],
+    // Deliberately longer than the other services. The page's own copy says
+    // "Technical fixes can show up within days … content and authority work is
+    // measured in months, not weeks", and a shorter figure here would promise
+    // something the page then contradicts.
+    timeline: '3–6 months before rankings move',
+    bestFor: 'A site with pages that exist but do not rank',
+    fromNpr: null,
     icon: 'search',
   },
   {
@@ -160,6 +187,16 @@ const serviceOrder: UnnumberedService[] = [
       },
     ],
     capabilities: aiSearchCapabilities,
+    deliverables: [
+      'AI crawler access review',
+      'Citable passage structure across key pages',
+      'Entity and brand signal work',
+      'Structured data review',
+      'Monitoring of what AI systems currently say about you',
+    ],
+    timeline: '2–4 months',
+    bestFor: 'A business whose buyers already ask AI assistants',
+    fromNpr: null,
     icon: 'sparkles',
   },
   {
@@ -193,6 +230,16 @@ const serviceOrder: UnnumberedService[] = [
       },
     ],
     capabilities: metaAdsCapabilities,
+    deliverables: [
+      'Audience and campaign structure',
+      'Creative testing in controlled batches',
+      'Meta Pixel and event setup, verified against a test conversion',
+      'Retargeting for people who already engaged',
+      'Monthly reporting on cost per result',
+    ],
+    timeline: 'Setup in 1–2 weeks',
+    bestFor: 'A store or lead-generation business already on Instagram and Facebook',
+    fromNpr: null,
     icon: 'target',
   },
   {
@@ -225,6 +272,16 @@ const serviceOrder: UnnumberedService[] = [
       },
     ],
     capabilities: googleAdsCapabilities,
+    deliverables: [
+      'Account structure and keyword strategy',
+      'Ad copy writing and testing',
+      'Negative keyword maintenance',
+      'Conversion tracking setup and verification',
+      'Landing page recommendations',
+    ],
+    timeline: 'Setup in 1–2 weeks',
+    bestFor: 'A business whose customers are already searching for it',
+    fromNpr: null,
     icon: 'chart',
   },
   {
@@ -266,6 +323,16 @@ const serviceOrder: UnnumberedService[] = [
       },
     ],
     capabilities: ecommerceCapabilities,
+    deliverables: [
+      'Storefront and product page work',
+      'Category structure built for search',
+      'Conversion work on the checkout path',
+      'Paid campaigns run as one funnel with the store',
+      'Analytics verified against a real test order',
+    ],
+    timeline: '4–10 weeks for a build, ongoing after',
+    bestFor: 'An online store losing people before checkout',
+    fromNpr: null,
     icon: 'shopping-bag',
   },
   {
@@ -299,6 +366,16 @@ const serviceOrder: UnnumberedService[] = [
       },
     ],
     capabilities: digitalMarketingCapabilities,
+    deliverables: [
+      'One plan across search, ads and content',
+      'Channel budget allocation',
+      'Conversion work on the pages those channels land on',
+      'Analytics you can trust before anything is optimised',
+      'A monthly review of what to keep and what to cut',
+    ],
+    timeline: 'Ongoing, reviewed monthly',
+    bestFor: 'A business currently coordinating several suppliers',
+    fromNpr: null,
     icon: 'megaphone',
   },
 ];

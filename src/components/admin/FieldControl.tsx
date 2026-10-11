@@ -94,6 +94,36 @@ export function FieldControl({ field, value, error, disabled, onChange }: FieldC
         />
       ) : null}
 
+      {/*
+        Blank means `null`, not `0`. The difference is the whole reason this
+        type exists — see the note on `FieldType` in `config.ts`. An empty
+        number input reads as `''`, and `Number('')` is `0`, so the coercion has
+        to happen explicitly rather than through `type="number"` alone.
+      */}
+      {field.type === 'price' ? (
+        <input
+          id={`field-${field.name}`}
+          type="number"
+          min={0}
+          step={1}
+          // `''` rather than `0` when unset, so the field renders empty and its
+          // placeholder is visible instead of showing a price of zero.
+          value={typeof value === 'number' ? value : ''}
+          disabled={disabled}
+          placeholder={field.placeholder}
+          onChange={(event) => {
+            const raw = event.target.value.trim();
+            const parsed = Number(raw);
+            onChange(
+              raw === '' || !Number.isFinite(parsed)
+                ? null
+                : Math.max(0, Math.trunc(parsed)),
+            );
+          }}
+          className={cn('mt-2', inputClass)}
+        />
+      ) : null}
+
       {field.type === 'textarea' ? (
         <textarea
           id={`field-${field.name}`}

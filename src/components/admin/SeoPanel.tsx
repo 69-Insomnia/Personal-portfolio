@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { AlertTriangle, Check, Wand2 } from 'lucide-react';
+import { AlertTriangle, Check, Plus, Trash2, Wand2 } from 'lucide-react';
 import { inputClass } from './FieldControl';
 import { isValidSlug, slugify } from '@/utils/slug';
 import { cn } from '@/utils/cn';
+import type { SeoFaq, SeoStat } from '@/types';
 
 /**
  * The Project-Level SEO panel.
@@ -63,6 +64,30 @@ export interface SeoFormValues {
    * what the user is typing and move their cursor.
    */
   custom_json_ld: string;
+
+  /* -------------------------------------------------- GEO / AI search --- */
+
+  /** The self-contained passage written to be quoted. See `SeoMeta.aiAnswer`. */
+  ai_answer: string;
+  /** One-line summary for `/llms.txt`. */
+  llm_summary: string;
+  /** Target queries beyond the focus keyword. One per line. */
+  keyword_cluster: string[];
+  /**
+   * Sourced statistics, and page-level Q&A.
+   *
+   * Held as arrays of objects rather than as JSON text, unlike `custom_json_ld`.
+   * That field is genuinely freeform — any schema node the admin wants — and
+   * cannot be edited as anything but text. These two have a fixed shape, so a
+   * row editor gives them validation and a drag-free add/remove that a JSON
+   * textarea cannot, and the shape is what makes the rendered output stable.
+   */
+  stats: SeoStat[];
+  faqs: SeoFaq[];
+  /** `DefinedTerm` nodes — name plus an optional description. */
+  defined_terms: Array<{ name: string; description: string }>;
+  /** Expertise claims for this page alone, one per line. */
+  page_knows_about: string[];
 }
 
 export function emptySeoValues(): SeoFormValues {
@@ -81,6 +106,13 @@ export function emptySeoValues(): SeoFormValues {
     noindex: false,
     nofollow: false,
     custom_json_ld: '',
+    ai_answer: '',
+    llm_summary: '',
+    keyword_cluster: [],
+    stats: [],
+    faqs: [],
+    defined_terms: [],
+    page_knows_about: [],
   };
 }
 
@@ -91,6 +123,67 @@ export function seoValuesFromRow(row: Record<string, unknown> | null): SeoFormVa
   if (!row) return emptySeoValues();
   const keywords = Array.isArray(row.keywords)
     ? row.keywords.filter((k): k is string => typeof k === 'string')
+    : [];
+  const keywordCluster = Array.isArray(row.keyword_cluster)
+    ? row.keyword_cluster.filter((k): k is string => typeof k === 'string')
+    : [];
+
+  /**
+   * Each jsonb column is walked rather than cast. A `jsonb` column accepts any
+   * valid JSON, and its check constraint only asserts the top-level type — so
+   * an array of strings, or an entry missing the keys this form edits, is
+   * reachable through the Supabase table editor even though this panel would
+   * never produce it. Dropping what cannot be edited beats rendering an input
+   * bound to `undefined`.
+   */
+  const stats = Array.isArray(row.stats)
+    ? row.stats.flatMap((entry): SeoStat[] => {
+        if (!entry || typeof entry !== 'object') return [];
+        const { label, value, source, url } = entry as Record<string, unknown>;
+        return [
+          {
+            label: typeof label === 'string' ? label : '',
+            value: typeof value === 'string' ? value : '',
+            source: typeof source === 'string' ? source : '',
+            url: typeof url === 'string' ? url : '',
+          },
+        ];
+      })
+    : [];
+
+  const faqs = Array.isArray(row.faqs)
+    ? row.faqs.flatMap((entry): SeoFaq[] => {
+        if (!entry || typeof entry !== 'object') return [];
+        const { question, answer } = entry as Record<string, unknown>;
+        return [
+          {
+            question: typeof question === 'string' ? question : '',
+            answer: typeof answer === 'string' ? answer : '',
+          },
+        ];
+      })
+    : [];
+
+  const signals =
+    row.entity_signals && typeof row.entity_signals === 'object' && !Array.isArray(row.entity_signals)
+      ? (row.entity_signals as Record<string, unknown>)
+      : {};
+
+  const definedTerms = Array.isArray(signals.definedTerms)
+    ? signals.definedTerms.flatMap((entry) => {
+        if (!entry || typeof entry !== 'object') return [];
+        const { name, description } = entry as Record<string, unknown>;
+        return [
+          {
+            name: typeof name === 'string' ? name : '',
+            description: typeof description === 'string' ? description : '',
+          },
+        ];
+      })
+    : [];
+
+  const pageKnowsAbout = Array.isArray(signals.knowsAbout)
+    ? signals.knowsAbout.filter((k): k is string => typeof k === 'string')
     : [];
 
   return {
@@ -113,6 +206,13 @@ export function seoValuesFromRow(row: Record<string, unknown> | null): SeoFormVa
     custom_json_ld: row.custom_json_ld
       ? JSON.stringify(row.custom_json_ld, null, 2)
       : '',
+    ai_answer: str(row.ai_answer),
+    llm_summary: str(row.llm_summary),
+    keyword_cluster: keywordCluster,
+    stats,
+    faqs,
+    defined_terms: definedTerms,
+    page_knows_about: pageKnowsAbout,
   };
 }
 
@@ -134,6 +234,60 @@ export function seoRowFromValues(
     return trimmed === '' ? null : trimmed;
   };
 
+  /**
+   * An empty repeatable list is stored as `null`, not `[]`.
+   *
+   * The two are different statements. `null` means "this page has no
+   * statistics", and the column's shape constraint accepts it. `[]` means "this
+   * page has a statistics block containing nothing", which would render an
+   * empty section. The reader collapses both to `undefined`, but storing the
+   * honest one keeps the database readable.
+   */
+  const rowsOrNull = <T,>(rows: T[]): T[] | null => (rows.length > 0 ? rows : null);
+
+  const stats = values.stats
+    .map((stat) => ({
+      label: stat.label.trim(),
+      value: stat.value.trim(),
+      source: (stat.source ?? '').trim(),
+      url: (stat.url ?? '').trim(),
+    }))
+    // A row with no label or no value renders nothing, so it is dropped rather
+    // than saved as a half-filled entry.
+    .filter((stat) => stat.label !== '' && stat.value !== '')
+    // Blank optional fields are omitted rather than stored as `""`, so the
+    // rendered output never emits an empty attribution.
+    .map((stat) => ({
+      label: stat.label,
+      value: stat.value,
+      ...(stat.source ? { source: stat.source } : {}),
+      ...(stat.url ? { url: stat.url } : {}),
+    }));
+
+  const faqs = values.faqs
+    .map((faq) => ({
+      question: faq.question.trim(),
+      answer: faq.answer.trim(),
+    }))
+    .filter((faq) => faq.question !== '' && faq.answer !== '');
+
+  const definedTerms = values.defined_terms
+    .map((term) => ({
+      name: term.name.trim(),
+      description: term.description.trim(),
+    }))
+    .filter((term) => term.name !== '')
+    .map((term) => ({
+      name: term.name,
+      ...(term.description ? { description: term.description } : {}),
+    }));
+
+  const pageKnowsAbout = values.page_knows_about
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  const hasSignals = definedTerms.length > 0 || pageKnowsAbout.length > 0;
+
   return {
     entity_type: entityType,
     entity_slug: entitySlug,
@@ -151,6 +305,17 @@ export function seoRowFromValues(
     noindex: values.noindex,
     nofollow: values.nofollow,
     custom_json_ld: parseCustomJsonLd(values.custom_json_ld).value,
+    ai_answer: nullable(values.ai_answer),
+    llm_summary: nullable(values.llm_summary),
+    keyword_cluster: values.keyword_cluster.map((k) => k.trim()).filter(Boolean),
+    stats: rowsOrNull(stats),
+    faqs: rowsOrNull(faqs),
+    entity_signals: hasSignals
+      ? {
+          ...(definedTerms.length > 0 ? { definedTerms } : {}),
+          ...(pageKnowsAbout.length > 0 ? { knowsAbout: pageKnowsAbout } : {}),
+        }
+      : null,
   };
 }
 
@@ -199,14 +364,26 @@ export function parseCustomJsonLd(raw: string): {
   return { value: parsed };
 }
 
-/** Validation for the whole panel. Returns a map of field name to message. */
+/**
+ * Validation for the whole panel. Returns a map of field name to message.
+ *
+ * `skipSlug` is for entities whose address is fixed and which therefore have
+ * no slug to validate — the static pages edited at `/admin/seo/pages`, whose
+ * `seo_meta` row is keyed by a stable name (`pricing`) while the URL is
+ * whatever the route file serves at. Their panel is called with an empty slug,
+ * because the slug is the segment appended to `canonicalBase` and these pages
+ * append nothing; see `StaticPageSeoForm`. Without this flag, `isValidSlug('')`
+ * is false and every save on those pages would fail with a slug error against
+ * a field that is not on screen.
+ */
 export function seoErrors(
   values: SeoFormValues,
   slug: string,
+  { skipSlug = false }: { skipSlug?: boolean } = {},
 ): Record<string, string> {
   const errors: Record<string, string> = {};
 
-  if (!isValidSlug(slug)) {
+  if (!skipSlug && !isValidSlug(slug)) {
     errors.slug =
       'Lowercase letters, numbers and hyphens only, no leading or trailing slash.';
   }
@@ -446,6 +623,19 @@ interface SeoPanelProps {
   entityLabel: string;
   errors: Record<string, string>;
   disabled?: boolean;
+  /**
+   * Hide the URL/slug section, for entities whose address is fixed.
+   *
+   * Static pages (`/admin/seo/pages`) have no content row and no slug of their
+   * own — their `seo_meta` row is keyed by a stable name like `pricing`, and
+   * the URL is whatever the route file serves at. Rendering an editable "Custom
+   * URL slug" field there would invite an edit that rewrites
+   * `seo_meta.entity_slug` and orphans the row, with nothing on screen to
+   * explain why the page stopped picking up its overrides.
+   *
+   * The value is still passed in and still validated; only the input goes away.
+   */
+  hideSlug?: boolean;
 }
 
 export function SeoPanel({
@@ -460,6 +650,7 @@ export function SeoPanel({
   entityLabel,
   errors,
   disabled,
+  hideSlug,
 }: SeoPanelProps) {
   /**
    * Locked when the entity already has a slug. See the module note: following
@@ -499,50 +690,53 @@ export function SeoPanel({
       </div>
 
       {/* ---------------------------------------------------------- slug --- */}
-      <Section title="URL">
-        <div>
-          <label
-            htmlFor="seo-slug"
-            className="text-label font-medium uppercase text-muted"
-          >
-            Custom URL slug
-          </label>
-          <div className="mt-2 flex gap-2">
-            <input
-              id="seo-slug"
-              type="text"
-              value={slug}
-              disabled={disabled}
-              onChange={(event) => {
-                setSlugLocked(true);
-                onSlugChange(event.target.value);
-              }}
-              className={cn(inputClass, 'font-mono', errors.slug && 'border-danger')}
-            />
-            <button
-              type="button"
-              disabled={disabled || titleSource.trim() === ''}
-              onClick={() => {
-                setSlugLocked(false);
-                onSlugChange(slugify(titleSource));
-              }}
-              className="inline-flex shrink-0 items-center gap-1.5 border border-line px-3 text-xs font-medium text-muted transition-colors hover:border-ink hover:text-ink disabled:opacity-50"
+      {/* Omitted where the URL is fixed — see `hideSlug`. */}
+      {hideSlug ? null : (
+        <Section title="URL">
+          <div>
+            <label
+              htmlFor="seo-slug"
+              className="text-label font-medium uppercase text-muted"
             >
-              <Wand2 size={13} aria-hidden />
-              From title
-            </button>
+              Custom URL slug
+            </label>
+            <div className="mt-2 flex gap-2">
+              <input
+                id="seo-slug"
+                type="text"
+                value={slug}
+                disabled={disabled}
+                onChange={(event) => {
+                  setSlugLocked(true);
+                  onSlugChange(event.target.value);
+                }}
+                className={cn(inputClass, 'font-mono', errors.slug && 'border-danger')}
+              />
+              <button
+                type="button"
+                disabled={disabled || titleSource.trim() === ''}
+                onClick={() => {
+                  setSlugLocked(false);
+                  onSlugChange(slugify(titleSource));
+                }}
+                className="inline-flex shrink-0 items-center gap-1.5 border border-line px-3 text-xs font-medium text-muted transition-colors hover:border-ink hover:text-ink disabled:opacity-50"
+              >
+                <Wand2 size={13} aria-hidden />
+                From title
+              </button>
+            </div>
+            <p className="mt-1.5 text-xs leading-relaxed text-muted">
+              {canonicalBase}/{slug || '…'}
+              {slugLocked
+                ? ' — locked to the existing URL. Editing this logs a 301 redirect from the old address.'
+                : ' — follows the title until you type here.'}
+            </p>
+            {errors.slug ? (
+              <p className="mt-1.5 text-xs font-medium text-danger">{errors.slug}</p>
+            ) : null}
           </div>
-          <p className="mt-1.5 text-xs leading-relaxed text-muted">
-            {canonicalBase}/{slug || '…'}
-            {slugLocked
-              ? ' — locked to the existing URL. Editing this logs a 301 redirect from the old address.'
-              : ' — follows the title until you type here.'}
-          </p>
-          {errors.slug ? (
-            <p className="mt-1.5 text-xs font-medium text-danger">{errors.slug}</p>
-          ) : null}
-        </div>
-      </Section>
+        </Section>
+      )}
 
       {/* -------------------------------------------------------- search --- */}
       <Section title="Search result">
@@ -743,6 +937,172 @@ export function SeoPanel({
         />
       </Section>
 
+      {/* --------------------------------------------------- AI / GEO ------ */}
+      <Section title="AI search (GEO / LLMO)">
+        <div>
+          <label
+            htmlFor="seo-ai-answer"
+            className="text-label font-medium uppercase text-muted"
+          >
+            Answer passage
+          </label>
+          <textarea
+            id="seo-ai-answer"
+            rows={6}
+            value={values.ai_answer}
+            disabled={disabled}
+            placeholder="A self-contained answer, roughly 134–167 words, that still makes sense quoted on its own."
+            onChange={(event) => set('ai_answer', event.target.value)}
+            className={cn('mt-2 resize-y', inputClass)}
+          />
+          <p className="mt-1.5 text-xs leading-relaxed text-muted">
+            Written to be lifted out of the page whole. This is different from the meta
+            description, which exists to earn a click. Aim for 134–167 words — the length
+            AI citations tend to pull — and make the first sentence the answer, not the
+            preamble.
+          </p>
+        </div>
+
+        <div>
+          <label
+            htmlFor="seo-llm-summary"
+            className="text-label font-medium uppercase text-muted"
+          >
+            llms.txt summary
+          </label>
+          <input
+            id="seo-llm-summary"
+            type="text"
+            value={values.llm_summary}
+            disabled={disabled}
+            placeholder="One line describing this page, for /llms.txt"
+            onChange={(event) => set('llm_summary', event.target.value)}
+            className={cn('mt-2', inputClass)}
+          />
+          <p className="mt-1.5 text-xs leading-relaxed text-muted">
+            Optional. Filling this in replaces the generated description{' '}
+            <em>in llms.txt only</em> — the page itself is unchanged. Google states
+            llms.txt does not help or hurt Google Search; it may serve other systems.
+          </p>
+        </div>
+
+        <div>
+          <label
+            htmlFor="seo-keyword-cluster"
+            className="text-label font-medium uppercase text-muted"
+          >
+            Supporting queries
+          </label>
+          <textarea
+            id="seo-keyword-cluster"
+            rows={4}
+            value={values.keyword_cluster.join('\n')}
+            disabled={disabled}
+            placeholder={'seo cost in nepal\nseo retainer kathmandu'}
+            onChange={(event) =>
+              set(
+                'keyword_cluster',
+                event.target.value
+                  .split('\n')
+                  .map((line) => line.trim())
+                  .filter(Boolean),
+              )
+            }
+            className={cn('mt-2 resize-y font-mono text-[13px]', inputClass)}
+          />
+          <p className="mt-1.5 text-xs leading-relaxed text-muted">
+            One per line. The queries this page should also pick up, beyond the single
+            focus keyword above. Kept separate so the page&rsquo;s primary target stays
+            unambiguous.
+          </p>
+        </div>
+      </Section>
+
+      {/* ------------------------------------------------------ statistics --- */}
+      <Section title="Sourced statistics">
+        <p className="text-xs leading-relaxed text-muted">
+          Numbers a reader can check. The audit found none anywhere on this site and
+          called that the biggest single reason a page gets passed over for AI citation —
+          a claim with a source is quotable, a claim without one is not.
+        </p>
+        <StatRows
+          rows={values.stats}
+          disabled={disabled}
+          onChange={(next) => set('stats', next)}
+        />
+      </Section>
+
+      {/* ------------------------------------------------------- questions --- */}
+      <Section title="Questions and answers">
+        <p className="text-xs leading-relaxed text-muted">
+          Rendered as content on the page — a question-shaped heading with a
+          self-contained answer. This deliberately does <strong>not</strong> emit FAQPage
+          schema: Google retired FAQ rich results for all sites on 2026-05-07. The content
+          is still what answer engines extract; the markup is not.
+        </p>
+        <FaqRows
+          rows={values.faqs}
+          disabled={disabled}
+          onChange={(next) => set('faqs', next)}
+        />
+      </Section>
+
+      {/* --------------------------------------------------- entity signals --- */}
+      <Section title="Entity signals">
+        <div>
+          <label
+            htmlFor="seo-defined-terms"
+            className="text-label font-medium uppercase text-muted"
+          >
+            Defined terms
+          </label>
+          <p className="mt-1.5 text-xs leading-relaxed text-muted">
+            Glossary entries this page defines, published as <code className="font-mono">DefinedTerm</code>{' '}
+            nodes. Worth using for the AI-search acronyms — AEO, GEO, LLMO, AIO — which
+            different sources expand differently, so stating which one this page means is
+            what connects it to the right concept.
+          </p>
+          <div className="mt-3">
+            <DefinedTermRows
+              rows={values.defined_terms}
+              disabled={disabled}
+              onChange={(next) => set('defined_terms', next)}
+            />
+          </div>
+        </div>
+
+        <div>
+          <label
+            htmlFor="seo-page-knows-about"
+            className="text-label font-medium uppercase text-muted"
+          >
+            Knows about, on this page
+          </label>
+          <textarea
+            id="seo-page-knows-about"
+            rows={4}
+            value={values.page_knows_about.join('\n')}
+            disabled={disabled}
+            placeholder={'Ecommerce SEO\nTechnical SEO'}
+            onChange={(event) =>
+              set(
+                'page_knows_about',
+                event.target.value
+                  .split('\n')
+                  .map((line) => line.trim())
+                  .filter(Boolean),
+              )
+            }
+            className={cn('mt-2 resize-y font-mono text-[13px]', inputClass)}
+          />
+          <p className="mt-1.5 text-xs leading-relaxed text-muted">
+            One per line. Adds to the site-wide <code className="font-mono">knowsAbout</code>{' '}
+            list for this page only, so a page about ecommerce SEO can say so without every
+            other page claiming it too.
+          </p>
+        </div>
+      </Section>
+
       {/* -------------------------------------------------------- json-ld --- */}
       <Section title="Custom JSON-LD">
         <div>
@@ -778,5 +1138,258 @@ export function SeoPanel({
         </div>
       </Section>
     </div>
+  );
+}
+
+/* ------------------------------------------------- repeatable row editors --- */
+
+/**
+ * The shared shell for the three row editors below.
+ *
+ * They are separate components rather than one generic `rows.map` because each
+ * edits a different shape — a statistic has four fields, a question has two of
+ * one kind and a term has two of another — and a generic version would need a
+ * field-descriptor DSL to express three cases. The shell is what is genuinely
+ * common: the add button, the remove button, and the row spacing.
+ */
+function RowShell({
+  addLabel,
+  onAdd,
+  disabled,
+  children,
+}: {
+  addLabel: string;
+  onAdd: () => void;
+  disabled?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-2">
+      {children}
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={onAdd}
+        className="inline-flex items-center gap-1.5 border border-line px-3 py-2 text-xs font-medium text-muted transition-colors hover:border-ink hover:text-ink"
+      >
+        <Plus size={13} aria-hidden />
+        {addLabel}
+      </button>
+    </div>
+  );
+}
+
+/** The remove control, shared by all three editors. */
+function RemoveButton({
+  label,
+  disabled,
+  onClick,
+}: {
+  label: string;
+  disabled?: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      disabled={disabled}
+      onClick={onClick}
+      className="flex h-9 w-9 shrink-0 items-center justify-center border border-line text-muted transition-colors hover:border-danger hover:text-danger"
+    >
+      <Trash2 size={15} aria-hidden />
+    </button>
+  );
+}
+
+/**
+ * Sourced statistics.
+ *
+ * `source` and `url` are optional and the panel does not block on them — but it
+ * says so, because an unsourced number is a weaker claim than a sourced one and
+ * the whole point of this field is citability. Blocking the save would be worse:
+ * it would push people to type "Google" into the box to get past it, which is a
+ * source in name only.
+ */
+function StatRows({
+  rows,
+  disabled,
+  onChange,
+}: {
+  rows: SeoStat[];
+  disabled?: boolean;
+  onChange: (next: SeoStat[]) => void;
+}) {
+  const update = (index: number, patch: Partial<SeoStat>) =>
+    onChange(rows.map((row, i) => (i === index ? { ...row, ...patch } : row)));
+
+  return (
+    <RowShell
+      addLabel="Add statistic"
+      disabled={disabled}
+      onAdd={() => onChange([...rows, { label: '', value: '', source: '', url: '' }])}
+    >
+      {rows.map((row, index) => (
+        <div key={index} className="border border-line p-3">
+          <div className="flex items-start gap-2">
+            <input
+              type="text"
+              aria-label={`Statistic value ${index + 1}`}
+              placeholder="47%"
+              value={row.value}
+              disabled={disabled}
+              onChange={(event) => update(index, { value: event.target.value })}
+              className={cn(inputClass, 'w-28 shrink-0 font-mono')}
+            />
+            <input
+              type="text"
+              aria-label={`What statistic ${index + 1} means`}
+              placeholder="of searches end without a click, according to…"
+              value={row.label}
+              disabled={disabled}
+              onChange={(event) => update(index, { label: event.target.value })}
+              className={inputClass}
+            />
+            <RemoveButton
+              label={`Remove statistic ${index + 1}`}
+              disabled={disabled}
+              onClick={() => onChange(rows.filter((_, i) => i !== index))}
+            />
+          </div>
+
+          <div className="mt-2 grid gap-2 sm:grid-cols-2">
+            <input
+              type="text"
+              aria-label={`Source for statistic ${index + 1}`}
+              placeholder="Source — e.g. SparkToro, 2025"
+              value={row.source ?? ''}
+              disabled={disabled}
+              onChange={(event) => update(index, { source: event.target.value })}
+              className={inputClass}
+            />
+            <input
+              type="url"
+              aria-label={`Source URL for statistic ${index + 1}`}
+              placeholder="https://…"
+              value={row.url ?? ''}
+              disabled={disabled}
+              onChange={(event) => update(index, { url: event.target.value })}
+              className={cn(inputClass, 'font-mono text-[13px]')}
+            />
+          </div>
+
+          {!(row.source ?? '').trim() ? (
+            <p className="mt-2 flex items-center gap-1.5 text-xs text-muted">
+              <AlertTriangle size={12} aria-hidden />
+              No source yet. A number with a source attached is what gets quoted.
+            </p>
+          ) : null}
+        </div>
+      ))}
+    </RowShell>
+  );
+}
+
+/** Page-level questions and answers. Content only — no FAQPage schema. */
+function FaqRows({
+  rows,
+  disabled,
+  onChange,
+}: {
+  rows: SeoFaq[];
+  disabled?: boolean;
+  onChange: (next: SeoFaq[]) => void;
+}) {
+  const update = (index: number, patch: Partial<SeoFaq>) =>
+    onChange(rows.map((row, i) => (i === index ? { ...row, ...patch } : row)));
+
+  return (
+    <RowShell
+      addLabel="Add question"
+      disabled={disabled}
+      onAdd={() => onChange([...rows, { question: '', answer: '' }])}
+    >
+      {rows.map((row, index) => (
+        <div key={index} className="flex items-start gap-2 border border-line p-3">
+          <div className="grid flex-1 gap-2">
+            <input
+              type="text"
+              aria-label={`Question ${index + 1}`}
+              placeholder="How much does SEO cost in Nepal?"
+              value={row.question}
+              disabled={disabled}
+              onChange={(event) => update(index, { question: event.target.value })}
+              className={inputClass}
+            />
+            <textarea
+              aria-label={`Answer ${index + 1}`}
+              rows={3}
+              placeholder="Answer it directly in the first sentence, then explain."
+              value={row.answer}
+              disabled={disabled}
+              onChange={(event) => update(index, { answer: event.target.value })}
+              className={cn('resize-y', inputClass)}
+            />
+          </div>
+          <RemoveButton
+            label={`Remove question ${index + 1}`}
+            disabled={disabled}
+            onClick={() => onChange(rows.filter((_, i) => i !== index))}
+          />
+        </div>
+      ))}
+    </RowShell>
+  );
+}
+
+/** Glossary terms, published as `DefinedTerm` nodes. */
+function DefinedTermRows({
+  rows,
+  disabled,
+  onChange,
+}: {
+  rows: Array<{ name: string; description: string }>;
+  disabled?: boolean;
+  onChange: (next: Array<{ name: string; description: string }>) => void;
+}) {
+  const update = (index: number, patch: Partial<{ name: string; description: string }>) =>
+    onChange(rows.map((row, i) => (i === index ? { ...row, ...patch } : row)));
+
+  return (
+    <RowShell
+      addLabel="Add term"
+      disabled={disabled}
+      onAdd={() => onChange([...rows, { name: '', description: '' }])}
+    >
+      {rows.map((row, index) => (
+        <div key={index} className="flex items-start gap-2 border border-line p-3">
+          <div className="grid flex-1 gap-2">
+            <input
+              type="text"
+              aria-label={`Term ${index + 1}`}
+              placeholder="Generative Engine Optimization"
+              value={row.name}
+              disabled={disabled}
+              onChange={(event) => update(index, { name: event.target.value })}
+              className={inputClass}
+            />
+            <input
+              type="text"
+              aria-label={`Definition of term ${index + 1}`}
+              placeholder="What it means, in one sentence"
+              value={row.description}
+              disabled={disabled}
+              onChange={(event) => update(index, { description: event.target.value })}
+              className={inputClass}
+            />
+          </div>
+          <RemoveButton
+            label={`Remove term ${index + 1}`}
+            disabled={disabled}
+            onClick={() => onChange(rows.filter((_, i) => i !== index))}
+          />
+        </div>
+      ))}
+    </RowShell>
   );
 }

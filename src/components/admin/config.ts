@@ -10,6 +10,21 @@ export type FieldType =
   | 'array'
   | 'select'
   | 'number'
+  /**
+   * A number that can be blank, storing `NULL` rather than `0`.
+   *
+   * Separate from `number` because the two need opposite behaviour on an empty
+   * input. `number` coerces blank to `0`, which is right for `sort_order` — the
+   * column is `not null default 0` and "no order" is meaningfully zero.
+   *
+   * It is exactly wrong for a price. `services.from_npr` of `0` is not an
+   * absence, it is a claim: the comparison table would render "NPR 0" and the
+   * page would publish `"minPrice": 0` into its `Offer` schema, telling every
+   * search engine this work is free. So a blank price field stores `NULL`,
+   * which the reader treats as "not published" and renders as "Contact for a
+   * quote" — the behaviour `src/data/pricing.ts` already documents.
+   */
+  | 'price'
   | 'toggle'
   | 'results'
   /**
@@ -350,6 +365,41 @@ export const COLLECTIONS: Record<string, Collection> = {
       { name: 'short_description', label: 'Short description', type: 'textarea', required: true },
       { name: 'description', label: 'Full description', type: 'textarea', required: true },
       { name: 'capabilities', label: 'Capabilities', type: 'array', help: 'One per line.' },
+      /**
+       * The comparison-table columns.
+       *
+       * `deliverables` is the table's widest cell, so it is worth writing in
+       * parallel phrasing across services — "Technical audit…", "Keyword
+       * research…" — because a table is read down a column far more often than
+       * across a row, and mismatched grammar makes that impossible.
+       */
+      {
+        name: 'deliverables',
+        label: 'Deliverables (comparison table)',
+        type: 'array',
+        help: 'One per line. These are the table rows on /services. Write them as parallel items across services so the column reads cleanly.',
+      },
+      {
+        name: 'timeline',
+        label: 'Typical timeline',
+        type: 'text',
+        placeholder: '3–8 weeks',
+        help: 'Prose, not a date. Ranges are the honest answer for most of this work.',
+      },
+      {
+        name: 'best_for',
+        label: 'Best for',
+        type: 'text',
+        placeholder: 'A business that needs the site built properly the first time',
+        help: 'One phrase. This is the column people read to decide whether the service is for them.',
+      },
+      {
+        name: 'from_npr',
+        label: 'Starting price (NPR)',
+        type: 'price',
+        placeholder: '45000',
+        help: 'Whole rupees. Leave blank for “Contact for a quote” — do not enter 0, which would publish a real price of zero.',
+      },
       { name: 'icon', label: 'Icon', type: 'select', options: ICONS, required: true },
       publishedField,
       sortField,
@@ -365,6 +415,12 @@ export const COLLECTIONS: Record<string, Collection> = {
       short_description: '',
       description: '',
       capabilities: [],
+      deliverables: [],
+      timeline: '',
+      best_for: '',
+      // `null`, not `0` — see the `price` field type note. This is the value a
+      // brand-new service starts with, and it has to mean "no published price".
+      from_npr: null,
       icon: 'code',
       published: true,
       sort_order: 0,

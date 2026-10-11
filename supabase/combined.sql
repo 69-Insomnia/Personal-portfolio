@@ -383,8 +383,8 @@ create table if not exists public.seo_meta (
   entity_type         text not null
                       check (entity_type in ('project', 'post', 'service', 'page')),
   -- For a static page this is a stable name rather than a URL fragment: the
-  -- home page is stored as 'home', not ''. See STATIC_PAGE_SLUGS in
-  -- src/app/sitemap.ts for the full mapping.
+  -- home page is stored as 'home', not ''. See `staticPages` in
+  -- src/data/static-pages.ts for the full mapping.
   entity_slug         text not null
                       check (entity_slug = lower(entity_slug)
                              and entity_slug !~ '^/' and entity_slug !~ '/$'),
@@ -834,3 +834,56 @@ drop policy if exists "media bucket admin write" on storage.objects;
 create policy "media bucket admin write" on storage.objects
   for all to authenticated
   using (bucket_id = 'media') with check (bucket_id = 'media');
+
+-- ============================================================
+-- Mirrors migration 20261010001000_seo_geo_layer.sql
+-- ============================================================
+--
+-- Kept byte-identical to the migration rather than paraphrased. This file
+-- exists because the project's database host is IPv6-only, so schema changes
+-- are pasted into the Supabase SQL Editor by hand instead of applied with the
+-- CLI — which means every migration is duplicated here, and a summary that
+-- drifts from the real DDL would be worse than no copy at all.
+
+-- ------------------------------------------------- comparison table content ---
+
+alter table public.services
+  add column if not exists deliverables text[];
+
+alter table public.services
+  add column if not exists timeline text;
+
+alter table public.services
+  add column if not exists best_for text;
+
+alter table public.services
+  add column if not exists from_npr integer
+  constraint services_from_npr_non_negative check (from_npr is null or from_npr >= 0);
+
+-- --------------------------------------------------- per-page GEO additions ---
+
+alter table public.seo_meta
+  add column if not exists ai_answer text;
+
+alter table public.seo_meta
+  add column if not exists keyword_cluster text[];
+
+alter table public.seo_meta
+  add column if not exists stats jsonb
+  constraint seo_meta_stats_shape
+  check (stats is null or jsonb_typeof(stats) = 'array');
+
+alter table public.seo_meta
+  add column if not exists faqs jsonb
+  constraint seo_meta_faqs_shape
+  check (faqs is null or jsonb_typeof(faqs) = 'array');
+
+alter table public.seo_meta
+  add column if not exists entity_signals jsonb
+  constraint seo_meta_entity_signals_shape
+  check (entity_signals is null or jsonb_typeof(entity_signals) = 'object');
+
+alter table public.seo_meta
+  add column if not exists llm_summary text;
+
+notify pgrst, 'reload schema';

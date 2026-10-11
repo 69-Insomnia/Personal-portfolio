@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import Script from 'next/script';
 import { SocialIcon } from '@/components/common/SocialIcon';
 import { Container } from '@/components/ui/Container';
 import { footerNavigation } from '@/data/navigation';
@@ -160,19 +159,6 @@ export function Footer() {
           <p className="text-sm text-muted">{profile.title}</p>
         </div>
       </Container>
-
-      <Script
-        src="https://www.googletagmanager.com/gtag/js?id=G-DVZRS8DRWT"
-        strategy="afterInteractive"
-      />
-      <Script id="google-analytics" strategy="afterInteractive">
-        {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-DVZRS8DRWT');
-        `}
-      </Script>
     </footer>
   );
 }

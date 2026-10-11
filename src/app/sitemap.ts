@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { site } from '@/data/seo';
+import { staticPages } from '@/data/static-pages';
 import { getPosts, getProjects, getSeoMap, getServices, seoKey } from '@/lib/content';
 import { isoDate } from '@/utils/dates';
 
@@ -53,25 +54,11 @@ import { isoDate } from '@/utils/dates';
  * The routes that have no database table, paired with the stable name
  * `seo_meta` uses to attach overrides to them (`entity_type = 'page'`).
  *
- * The slug is a name rather than a URL fragment because the home page has no
- * fragment to use — `''` would be a valid key and a poor one to read in the
- * admin panel. Exported so the admin's page list and this file cannot disagree
- * about what a static page is called.
+ * Defined in `src/data/static-pages.ts` rather than here, so `/admin/seo/pages`
+ * can list the same seven pages without importing a Next.js metadata route
+ * from a component. See that file for why the slug is a name and not a URL
+ * fragment.
  */
-export const STATIC_PAGE_SLUGS = [
-  { path: '', slug: 'home', priority: 1 },
-  { path: '/about', slug: 'about', priority: 0.8 },
-  { path: '/work', slug: 'work', priority: 0.8 },
-  { path: '/services', slug: 'services', priority: 0.8 },
-  // Higher than the other subpages: this one targets a commercial query
-  // cluster ("SEO cost in Nepal") where the intent is late-stage and the
-  // competitor set is thin, which makes it the most winnable non-service page
-  // on the site. Priority is ignored by Google, so this is documentation of
-  // intent rather than a ranking lever.
-  { path: '/pricing', slug: 'pricing', priority: 0.9 },
-  { path: '/blog', slug: 'blog', priority: 0.8 },
-  { path: '/contact', slug: 'contact', priority: 0.8 },
-] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [projects, posts, services, seo] = await Promise.all([
@@ -107,7 +94,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const stamped = (lastModified: string | undefined): { lastModified?: string } =>
     lastModified ? { lastModified } : {};
 
-  const staticRoutes = STATIC_PAGE_SLUGS.filter(
+  const staticRoutes = staticPages.filter(
     ({ slug }) => !excluded('page', slug),
   ).map(({ path, priority }) => ({
     url: `${site.url}${path}`,

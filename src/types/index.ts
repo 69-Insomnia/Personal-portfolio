@@ -86,6 +86,59 @@ export interface SEOData {
 }
 
 /**
+ * A sourced statistic, for the `stats` field on `seo_meta`.
+ *
+ * The audit's §3 finding is that this site published no figure a reader could
+ * check, anywhere, and named it the single biggest reason a page gets passed
+ * over for AI citation. `value` and `label` are the claim; `source` and `url`
+ * are what make it checkable, and a claim without a source attached is not
+ * quotable.
+ *
+ * `source` is optional in the type and strongly discouraged in practice — the
+ * admin panel warns when it is missing rather than blocking the save, because
+ * an unsourced statistic is still better than none, and a hard block would
+ * encourage people to type "Google" into the field to get past it.
+ */
+export interface SeoStat {
+  label: string;
+  value: string;
+  source?: string;
+  url?: string;
+}
+
+/**
+ * One question and answer, for the `faqs` field on `seo_meta`.
+ *
+ * **Content only.** These deliberately do not emit `FAQPage` schema — Google
+ * retired FAQ rich results for all sites on 2026-05-07, which
+ * `src/lib/structured-data.ts` already documents. What remains useful is the
+ * shape: a question-shaped heading with a self-contained answer under it is
+ * what answer engines extract, whether or not a rich result is attached.
+ */
+export interface SeoFaq {
+  question: string;
+  answer: string;
+}
+
+/**
+ * Widens how the page's subject is understood, for `seo_meta.entity_signals`.
+ *
+ * `definedTerms` becomes `DefinedTerm` nodes. The audit recommends this
+ * specifically for the AI-search vocabulary — AEO, GEO, LLMO, AIO — because
+ * those are genuinely ambiguous acronyms that different sources expand
+ * differently, so stating which one a page means is what connects it to the
+ * right concept rather than the wrong expansion.
+ *
+ * `knowsAbout` adds expertise claims for this page alone, on top of the
+ * site-wide list, so a page about ecommerce SEO can say so without every other
+ * page claiming it too.
+ */
+export interface EntitySignals {
+  definedTerms?: Array<{ name: string; description?: string }>;
+  knowsAbout?: string[];
+}
+
+/**
  * One row of `seo_meta` — the admin-editable overrides for a single entity.
  *
  * Every field is optional because an absent row, and an unset column inside a
@@ -121,6 +174,25 @@ export interface SeoMeta {
    * the shape.
    */
   customJsonLd?: unknown;
+  /**
+   * The self-contained passage written for this page to be quoted from.
+   *
+   * Distinct from `metaDescription`, which is written to earn a click from a
+   * search result. This one is written to survive being lifted out of the page
+   * with no surrounding context, at the 134–167 words AI citations tend to
+   * extract.
+   */
+  aiAnswer?: string;
+  /** Target queries beyond `focusKeyword`, which holds only the primary. */
+  keywordCluster?: string[];
+  /** Sourced statistics. See `SeoStat`. */
+  stats?: SeoStat[];
+  /** Page-level Q&A, rendered as content and never as `FAQPage`. */
+  faqs?: SeoFaq[];
+  /** `DefinedTerm` and per-page `knowsAbout`. See `EntitySignals`. */
+  entitySignals?: EntitySignals;
+  /** One-line summary for `/llms.txt`, overriding the generated description. */
+  llmSummary?: string;
   noindex: boolean;
   nofollow: boolean;
   /** ISO-8601 last edit, from the `touch_seo_meta` trigger. */
@@ -163,6 +235,21 @@ export interface SiteSettings {
   robotsTxt?: string;
   /** Raw JSON-LD merged into the site-wide graph. */
   customJsonLd?: unknown;
+}
+
+/**
+ * The analytics IDs as the renderer needs them: resolved, not raw.
+ *
+ * Distinct from the three `site_settings` columns it is built from because the
+ * database value is optional and the repo holds a working default — see
+ * `src/data/analytics.ts`. Threading the raw `SiteSettings` down to the
+ * components would push that fallback decision into every one of them and let
+ * them disagree about what "unset" means.
+ */
+export interface AnalyticsConfig {
+  ga4MeasurementId?: string;
+  gtmContainerId?: string;
+  metaPixelId?: string;
 }
 
 export interface Stat {
@@ -211,6 +298,33 @@ export interface Service {
   body?: ServiceSection[];
   capabilities: string[];
   icon: IconName;
+  /**
+   * Comparison-table columns. See `ComparisonTable`.
+   *
+   * These are separate from `capabilities` rather than derived from it.
+   * `capabilities` is the marketing grid — short noun phrases ("Technical SEO",
+   * "Schema") rendered as chips under "What's Included". These are the table's
+   * cells and are written as deliverables in parallel grammatical form across
+   * every service, because that is what makes a table readable down a column
+   * rather than row by row.
+   *
+   * All four are optional and every renderer treats an absent value as "leave
+   * that cell out". A service with none of them produces no table at all,
+   * which is preferable to a table with empty cells in it.
+   */
+  deliverables?: string[];
+  /** Typical duration, as prose — "3–8 weeks". Ranges are the honest answer. */
+  timeline?: string;
+  /** Who the service is for, in one phrase. The column a table is read for. */
+  bestFor?: string;
+  /**
+   * Starting price in whole rupees, or `null` for "Contact for a quote".
+   *
+   * `null` is a real value meaning "not published", and must not be confused
+   * with `undefined`, which means "not set on this row — fall back to the
+   * pricing tiers in `src/data/pricing.ts`". Nothing here invents a figure.
+   */
+  fromNpr?: number | null;
   /** ISO-8601 last-edit timestamp from Supabase; absent on static fallback data. */
   updatedAt?: string;
 }

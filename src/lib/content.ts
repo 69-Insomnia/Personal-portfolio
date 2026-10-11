@@ -6,10 +6,13 @@ import { numberServices, services as staticServices, type UnnumberedService } fr
 import { testimonials as staticTestimonials } from '@/data/testimonials';
 import type {
   BlogPost,
+  EntitySignals,
   ExperienceItem,
   Project,
   SeoEntityType,
+  SeoFaq,
   SeoMeta,
+  SeoStat,
   Service,
   ServiceSection,
   SiteSettings,
@@ -221,6 +224,10 @@ interface ServiceRow {
   description: string;
   body: unknown;
   capabilities: unknown;
+  deliverables: unknown;
+  timeline: string | null;
+  best_for: string | null;
+  from_npr: number | null;
   icon: string;
   updated_at: string | null;
 }
@@ -242,6 +249,8 @@ function serviceSections(value: unknown): ServiceSection[] {
 }
 
 function mapService(row: ServiceRow): UnnumberedService {
+  const deliverables = strList(row.deliverables);
+
   return {
     slug: row.slug,
     title: row.title,
@@ -249,6 +258,22 @@ function mapService(row: ServiceRow): UnnumberedService {
     description: row.description,
     body: serviceSections(row.body),
     capabilities: strList(row.capabilities),
+    // `undefined`, not `[]`, for the same reason `mapSeoMeta` does it with
+    // keywords: the comparison table must be able to tell "this row has no
+    // deliverables yet" from "this row deliberately has none", because the
+    // first should render no table and the second should render nothing in
+    // that cell.
+    deliverables: deliverables.length > 0 ? deliverables : undefined,
+    timeline: strOr(row.timeline),
+    bestFor: strOr(row.best_for),
+    /**
+     * A NULL column becomes `undefined`, which means "not set on this row —
+     * fall back to the pricing tiers in src/data/pricing.ts". It is
+     * deliberately not converted to `null`, because `null` is a real value in
+     * this field meaning "this work is not quoted publicly", and collapsing
+     * the two would stop the pricing fallback ever running.
+     */
+    fromNpr: typeof row.from_npr === 'number' ? row.from_npr : undefined,
     icon: row.icon as Service['icon'],
     updatedAt: strOr(row.updated_at),
   };
@@ -295,8 +320,95 @@ export async function getService(slug: string): Promise<Service | undefined> {
  * every page renders what it rendered before this table existed.
  */
 
+/**
+ * Parsers for the `seo_meta` jsonb columns.
+ *
+ * These are defensive in the same way `serviceSections` and `customJsonLdNodes`
+ * are, and for the same reason: the values arrive from `jsonb` columns a human
+ * typed into, and a `jsonb` column accepts any valid JSON. The database
+ * constraints only assert the top-level shape — `jsonb_typeof(stats) = 'array'`
+ * says nothing about whether the array's entries are objects, or whether they
+ * have the keys the renderer reads. So each of these walks the value and drops
+ * anything it cannot use, rather than trusting it and throwing at render time.
+ *
+ * Every one returns `undefined` rather than an empty array when nothing
+ * survives, so a caller cannot distinguish "the admin cleared this" from "the
+ * row predates the column" — which is correct, because both mean "render
+ * nothing".
+ */
+function seoStats(value: unknown): SeoStat[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+
+  const rows = value.flatMap((entry): SeoStat[] => {
+    if (!entry || typeof entry !== 'object') return [];
+    const { label, value: amount, source, url } = entry as Record<string, unknown>;
+    if (typeof label !== 'string' || typeof amount !== 'string') return [];
+    if (!label.trim() || !amount.trim()) return [];
+
+    return [
+      {
+        label,
+        value: amount,
+        source: typeof source === 'string' && source.trim() ? source : undefined,
+        url: typeof url === 'string' && url.trim() ? url : undefined,
+      },
+    ];
+  });
+
+  return rows.length > 0 ? rows : undefined;
+}
+
+function seoFaqs(value: unknown): SeoFaq[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+
+  const rows = value.flatMap((entry): SeoFaq[] => {
+    if (!entry || typeof entry !== 'object') return [];
+    const { question, answer } = entry as Record<string, unknown>;
+    if (typeof question !== 'string' || typeof answer !== 'string') return [];
+    if (!question.trim() || !answer.trim()) return [];
+
+    return [{ question, answer }];
+  });
+
+  return rows.length > 0 ? rows : undefined;
+}
+
+function seoEntitySignals(value: unknown): EntitySignals | undefined {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
+  const { definedTerms, knowsAbout } = value as Record<string, unknown>;
+
+  const terms = Array.isArray(definedTerms)
+    ? definedTerms.flatMap((entry) => {
+        if (!entry || typeof entry !== 'object') return [];
+        const { name, description } = entry as Record<string, unknown>;
+        if (typeof name !== 'string' || !name.trim()) return [];
+        return [
+          {
+            name,
+            description:
+              typeof description === 'string' && description.trim()
+                ? description
+                : undefined,
+          },
+        ];
+      })
+    : undefined;
+
+  const about = strList(knowsAbout).filter((item) => item.trim() !== '');
+
+  // `undefined` sub-fields rather than empty arrays, so the consumer can tell
+  // "no defined terms" from "an empty list of them".
+  if (!terms?.length && about.length === 0) return undefined;
+
+  return {
+    definedTerms: terms?.length ? terms : undefined,
+    knowsAbout: about.length > 0 ? about : undefined,
+  };
+}
+
 function mapSeoMeta(row: Record<string, unknown>): SeoMeta {
   const keywords = strList(row.keywords);
+  const keywordCluster = strList(row.keyword_cluster);
 
   return {
     metaTitle: strOr(row.meta_title),
@@ -313,6 +425,12 @@ function mapSeoMeta(row: Record<string, unknown>): SeoMeta {
     twitterImage: strOr(row.twitter_image),
     canonicalOverride: strOr(row.canonical_override),
     customJsonLd: row.custom_json_ld ?? undefined,
+    aiAnswer: strOr(row.ai_answer),
+    keywordCluster: keywordCluster.length > 0 ? keywordCluster : undefined,
+    stats: seoStats(row.stats),
+    faqs: seoFaqs(row.faqs),
+    entitySignals: seoEntitySignals(row.entity_signals),
+    llmSummary: strOr(row.llm_summary),
     noindex: row.noindex === true,
     nofollow: row.nofollow === true,
     updatedAt: strOr(row.updated_at),

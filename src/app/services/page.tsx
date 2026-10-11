@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { PageHeader } from '@/components/common/PageHeader';
+import { Comparison } from '@/sections/Comparison';
 import { Expertise } from '@/sections/Expertise';
 import { Approach } from '@/sections/Approach';
 import { FAQ } from '@/sections/FAQ';
@@ -39,6 +40,10 @@ export default async function ServicesPage() {
         description="Web development, SEO, advertising and ecommerce growth, built as one connected system."
       />
       <Expertise showAllServices={false} data={services} />
+      {/* The cards say what each service is; this says how they differ. The
+          audit's §7 finding was that the site had no tables anywhere, and that
+          comparative data is what answer engines lift most readily. */}
+      <Comparison data={services} />
       <Approach />
       <FAQ />
     </>

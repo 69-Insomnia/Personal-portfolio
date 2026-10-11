@@ -382,7 +382,11 @@ export function SiteSettingsForm() {
         Analytics &amp; verification
       </h2>
       <div className="mt-4 grid gap-5 border border-line bg-surface p-5 md:grid-cols-2">
-        <Field id="settings-ga4" label="GA4 measurement ID" help="Looks like G-XXXXXXXXXX.">
+        <Field
+          id="settings-ga4"
+          label="GA4 measurement ID"
+          help="Looks like G-XXXXXXXXXX. Leave blank to keep the built-in tag. Not loaded when a Tag Manager container is set below — a container is expected to own your tags, and running both double-counts every page view."
+        >
           <input
             id="settings-ga4"
             type="text"
@@ -391,7 +395,11 @@ export function SiteSettingsForm() {
             className={cn('mt-2 font-mono', inputClass)}
           />
         </Field>
-        <Field id="settings-gtm" label="Google Tag Manager ID" help="Looks like GTM-XXXXXXX.">
+        <Field
+          id="settings-gtm"
+          label="Google Tag Manager ID"
+          help="Looks like GTM-XXXXXXX. Setting this turns the standalone GA4 tag off — see above."
+        >
           <input
             id="settings-gtm"
             type="text"
@@ -400,7 +408,11 @@ export function SiteSettingsForm() {
             className={cn('mt-2 font-mono', inputClass)}
           />
         </Field>
-        <Field id="settings-pixel" label="Meta Pixel ID">
+        <Field
+          id="settings-pixel"
+          label="Meta Pixel ID"
+          help="Numeric only. Leave blank if you deploy the pixel through a Tag Manager container."
+        >
           <input
             id="settings-pixel"
             type="text"

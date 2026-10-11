@@ -18,8 +18,9 @@ import { SectionLabel } from '@/components/ui/SectionLabel';
 import { blogPosts, getPostBySlug } from '@/data/blog';
 import { getImageAlt, getPost, getPosts, getProjects, getRedirect, getSeo, getServices, getSiteSettings } from '@/lib/content';
 import { relatedToPost } from '@/lib/related';
-import { articleNode, customJsonLdNodes } from '@/lib/structured-data';
-import { postSEO } from '@/data/seo';
+import { AnswerBlock, FaqBlock, StatBlock } from '@/components/common/GeoBlocks';
+import { articleNode, customJsonLdNodes, definedTermNodes, definedTermSetNode, webPageNode } from '@/lib/structured-data';
+import { postSEO, site } from '@/data/seo';
 import { buildMetadata } from '@/utils/metadata';
 import { postImageAlt } from '@/utils/images';
 
@@ -78,12 +79,34 @@ export default async function BlogPostPage({ params }: PageProps) {
     projects: allProjects,
   });
 
+  /**
+   * The extra graph nodes, all optional — see the same pattern in
+   * `services/[slug]`. The article node is always emitted; these two appear
+   * only once the admin has filled in the fields behind them.
+   */
+  const terms = seoMeta?.entitySignals?.definedTerms;
+  const pageNode = webPageNode({
+    url: `${site.url}/blog/${post.slug}`,
+    name: post.title,
+    mainEntityId: `${site.url}/blog/${post.slug}/#article`,
+    signals: seoMeta?.entitySignals,
+    aiAnswer: seoMeta?.aiAnswer,
+  });
+
   return (
     <article>
       {/* The breadcrumb trail is rendered by `PageHeader` below, which emits
           its own `BreadcrumbList`. Passing one here as well would publish the
           same trail twice. */}
-      <JsonLd graph={[articleNode(post), ...customJsonLdNodes(seoMeta?.customJsonLd)]} />
+      <JsonLd
+        graph={[
+          articleNode(post),
+          ...(pageNode ? [pageNode] : []),
+          ...definedTermNodes(terms),
+          ...(terms?.length ? [definedTermSetNode()] : []),
+          ...customJsonLdNodes(seoMeta?.customJsonLd),
+        ]}
+      />
       <PageHeader
         label={post.category}
         badge={post.isPlaceholder ? <PlaceholderBadge /> : null}
@@ -122,6 +145,24 @@ export default async function BlogPostPage({ params }: PageProps) {
           <div className="flex flex-col gap-6 lg:col-span-8 lg:col-start-5">
             <ArticleBody content={post.content ?? []} />
 
+            {/* The quotable passage, when one has been written — rendered
+                outside `Reveal` so it is present in the raw HTML that
+                non-JavaScript crawlers receive. */}
+            {seoMeta?.aiAnswer ? (
+              <div className="mt-2">
+                <AnswerBlock answer={seoMeta.aiAnswer} />
+              </div>
+            ) : null}
+
+            {/* Sourced statistics. The audit measured zero figures across all
+                three posts and named that the single biggest reason a page gets
+                passed over for AI citation. */}
+            {seoMeta?.stats?.length ? (
+              <div className="mt-6">
+                <StatBlock stats={seoMeta.stats} />
+              </div>
+            ) : null}
+
             {post.tags && post.tags.length > 0 ? (
               <Reveal>
                 <div className="mt-4 flex flex-wrap gap-2 border-t border-line pt-6">
@@ -135,6 +176,14 @@ export default async function BlogPostPage({ params }: PageProps) {
                   ))}
                 </div>
               </Reveal>
+            ) : null}
+
+            {/* Page-level Q&A. Content only — no `FAQPage` schema, which Google
+                retired for all sites on 2026-05-07. */}
+            {seoMeta?.faqs?.length ? (
+              <div className="mt-8">
+                <FaqBlock faqs={seoMeta.faqs} />
+              </div>
             ) : null}
           </div>
         </div>

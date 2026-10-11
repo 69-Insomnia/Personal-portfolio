@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { Space_Grotesk } from 'next/font/google';
 import { MotionConfig } from 'framer-motion';
 import { ConditionalChrome } from '@/components/layout/ConditionalChrome';
+import { resolveAnalytics } from '@/data/analytics';
 import { DEFAULT_OG_IMAGE, defaultSEO, identity, site } from '@/data/seo';
 import { getSiteSettings } from '@/lib/content';
 import { searchConsoleVerification } from '@/utils/metadata';
@@ -140,25 +141,53 @@ export const viewport: Viewport = {
  */
 export default async function RootLayout({ children }: { children: ReactNode }) {
   /**
-   * The social profiles for `sameAs`, read here because this is the outermost
-   * server component. `SiteJsonLd` renders inside the client tree (via
-   * `ConditionalChrome`) and cannot await a database read of its own, so the
-   * value is threaded down as a prop.
+   * Everything the chrome needs, read once here.
    *
-   * `{}`-to-array here rather than passing the object: `sameAs` wants ordered
-   * URLs and nothing else, and the object's keys are only meaningful in the
-   * admin form.
+   * This is the outermost — and only — server component above the client
+   * boundary, so it is the only place in the tree that can await a database
+   * read. `SiteChrome`, `SiteJsonLd` and `Analytics` all sit below
+   * `ConditionalChrome`, which is a client component, so each of them receives
+   * its values as a prop rather than looking them up. That constraint is the
+   * reason this function reads four separate things.
+   *
+   * Each value is passed in the form its consumer expects, and none of them is
+   * defaulted here:
+   *
+   *  - `socialLinks` is flattened from `{}` to an ordered array because
+   *    `sameAs` wants URLs and the object's keys are only meaningful in the
+   *    admin form.
+   *  - `analytics` is resolved against the repo defaults by
+   *    `resolveAnalytics`, which is where the GA4 fallback lives.
+   *  - `person` carries the admin's job title and knows-about list; `personNode`
+   *    falls back to the repo constants for either one.
+   *
+   * Defaulting in this component as well would mean two places deciding what
+   * an unset field means, which is exactly how they drift apart.
    */
   const settings = await getSiteSettings();
   const socialLinks = Object.entries(settings.socialLinks)
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([, href]) => href);
 
+  const analytics = resolveAnalytics(settings);
+
+  const person = {
+    jobTitle: settings.personJobTitle,
+    knowsAbout: settings.personKnowsAbout,
+  };
+
   return (
     <html lang="en" className={spaceGrotesk.variable}>
       <body>
         <MotionConfig reducedMotion="user">
-          <ConditionalChrome socialLinks={socialLinks}>{children}</ConditionalChrome>
+          <ConditionalChrome
+            socialLinks={socialLinks}
+            analytics={analytics}
+            person={person}
+            customJsonLd={settings.customJsonLd}
+          >
+            {children}
+          </ConditionalChrome>
         </MotionConfig>
       </body>
     </html>

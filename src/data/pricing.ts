@@ -254,3 +254,41 @@ export function formatNpr(amount: number | null): string | null {
 export const hasPublishedPrices = [...oneOffTiers, ...monthlyTiers].some(
   (tier) => tier.fromNpr !== null,
 );
+
+/**
+ * Every tier, in the order they are displayed. Used by the resolver below,
+ * which has to search both lists.
+ */
+const allTiers: PricingTier[] = [...oneOffTiers, ...monthlyTiers];
+
+/**
+ * The starting price for a service, resolved from one place.
+ *
+ * Three inputs, and the distinction between the last two is the whole point:
+ *
+ *  - a **number** — a price the admin has published on the service row, which
+ *    wins outright;
+ *  - **`null`** — a published decision that this work is not quoted publicly.
+ *    It stops the search rather than falling through it, because a deliberate
+ *    "no price" must not be silently replaced by a figure from the tiers;
+ *  - **`undefined`** — the row does not set one, so fall back to the tier in
+ *    this file that names the same `serviceSlug`.
+ *
+ * That is the same DB-first / repo-fallback rule `readAll` in
+ * `src/lib/content.ts` applies to every other reader, and it is what stops
+ * `services.from_npr` and this file being two sources of truth that can
+ * disagree: one is defined as the fallback for the other.
+ *
+ * The return is a number or `null`, never `undefined`, so every caller has one
+ * thing to check. `formatNpr` renders `null` as "Contact for a quote".
+ */
+export function serviceStartingPrice(
+  serviceSlug: string,
+  value?: number | null,
+): number | null {
+  if (value === null) return null;
+  if (typeof value === 'number') return value;
+
+  const tier = allTiers.find((entry) => entry.serviceSlug === serviceSlug);
+  return tier?.fromNpr ?? null;
+}

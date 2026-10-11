@@ -10,11 +10,20 @@ import { getSupabase } from '@/lib/supabase-browser';
 import { cn } from '@/utils/cn';
 
 /**
- * The admin nav. Dashboard is an exact match; every other entry owns the
- * subtree beneath it, so `/admin/projects/new` still lights up "Projects".
+ * The admin nav. An entry owns the subtree beneath it, so `/admin/projects/new`
+ * still lights up "Projects".
+ *
+ * `exact` opts an entry out of that, for the case where one route is a prefix
+ * of another. `/admin/seo` is the prefix of `/admin/seo/pages`, so without it
+ * both entries would light up on the pages screen and the nav would show two
+ * current pages at once. Dashboard is `exact` for the same reason it always
+ * was: `/admin` is a prefix of every other entry here.
+ *
+ * `/admin/seo/pages` is deliberately *not* exact, so it stays lit while editing
+ * an individual page at `/admin/seo/pages/pricing`.
  */
 const ADMIN_NAV = [
-  { href: '/admin', label: 'Dashboard' },
+  { href: '/admin', label: 'Dashboard', exact: true },
   { href: '/admin/messages', label: 'Messages', badge: true },
   { href: '/admin/projects', label: 'Projects' },
   { href: '/admin/posts', label: 'Posts' },
@@ -23,13 +32,15 @@ const ADMIN_NAV = [
   { href: '/admin/services', label: 'Services' },
   { href: '/admin/media', label: 'Media' },
   /**
-   * The three SEO entries sit together at the bottom, after the content
-   * collections. They are not content — they change how the content is
-   * interpreted — and grouping them makes that distinction visible in the nav
-   * rather than leaving Redirects to be discovered.
+   * The SEO entries sit together at the bottom, after the content collections.
+   * They are not content — they change how the content is interpreted — and
+   * grouping them makes that distinction visible in the nav rather than
+   * leaving Redirects to be discovered.
    */
   { href: '/admin/redirects', label: 'Redirects' },
-  { href: '/admin/seo', label: 'SEO settings' },
+  { href: '/admin/seo', label: 'SEO settings', exact: true },
+  { href: '/admin/seo/pages', label: 'Static pages' },
+  { href: '/admin/seo/health', label: 'SEO health' },
 ] as const;
 
 interface AdminShellProps {
@@ -80,6 +91,7 @@ export function AdminShell({ user, onSignOut, children }: AdminShellProps) {
       href={item.href}
       label={item.label}
       badge={'badge' in item && item.badge ? unread : 0}
+      exact={'exact' in item && item.exact === true}
       pathname={pathname}
       onNavigate={() => setMenuOpen(false)}
     />
@@ -182,12 +194,14 @@ interface NavLinkProps {
   href: string;
   label: string;
   badge: number;
+  /** Match the path exactly rather than owning the subtree beneath it. */
+  exact: boolean;
   pathname: string;
   onNavigate: () => void;
 }
 
-function NavLink({ href, label, badge, pathname, onNavigate }: NavLinkProps) {
-  const active = href === '/admin' ? pathname === '/admin' : pathname.startsWith(href);
+function NavLink({ href, label, badge, exact, pathname, onNavigate }: NavLinkProps) {
+  const active = exact ? pathname === href : pathname.startsWith(href);
 
   return (
     <Link
