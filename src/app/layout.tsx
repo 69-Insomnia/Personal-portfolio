@@ -176,8 +176,24 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     knowsAbout: settings.personKnowsAbout,
   };
 
+  /**
+   * `data-scroll-behavior="smooth"` pairs with the `scroll-behavior: smooth`
+   * on `html` in `globals.css`.
+   *
+   * Without it, Next warns on every route transition and — the actual problem,
+   * which the warning is the symptom of — cannot suppress the smooth scroll
+   * during navigation. The result is that clicking a nav link animates a long
+   * scroll to the top of the new page instead of jumping to it, and browser
+   * back/forward does the same, which is disorienting on a long page.
+   *
+   * The attribute does not turn smooth scrolling off. It tells the router it
+   * may disable it *for the duration of a transition*, so in-page anchors — the
+   * skip link, the section ids the nav scrolls to — keep the behaviour
+   * `globals.css` asks for. That file still disables it entirely under
+   * `prefers-reduced-motion`.
+   */
   return (
-    <html lang="en" className={spaceGrotesk.variable}>
+    <html lang="en" className={spaceGrotesk.variable} data-scroll-behavior="smooth">
       <body>
         <MotionConfig reducedMotion="user">
           <ConditionalChrome
