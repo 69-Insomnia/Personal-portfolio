@@ -267,6 +267,10 @@ export function AdminForm({ collection, id }: { collection: Collection; id: stri
                 value={values?.[field.name]}
                 error={errors[field.name]}
                 disabled={saving || (field.pk === true && !isNew)}
+                // Lets an upload record what it belongs to, so the media
+                // library can say which post or project an image came from.
+                entityType={collection.seo?.entityType}
+                entitySlug={id ?? undefined}
                 onChange={(value) => set(field.name, value)}
               />
             );

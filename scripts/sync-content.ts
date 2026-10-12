@@ -58,8 +58,9 @@ async function syncServices() {
     const result = await client.query(
       `insert into services
          (slug, service_index, title, short_description, description, body,
-          capabilities, icon, published, sort_order)
-       values ($1, $2, $3, $4, $5, $6, $7, $8, true, $9)
+          capabilities, deliverables, timeline, best_for, from_npr, icon,
+          published, sort_order)
+       values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, true, $13)
        on conflict (slug) do update set
          service_index     = excluded.service_index,
          title             = excluded.title,
@@ -67,6 +68,10 @@ async function syncServices() {
          description       = excluded.description,
          body              = excluded.body,
          capabilities      = excluded.capabilities,
+         deliverables      = excluded.deliverables,
+         timeline          = excluded.timeline,
+         best_for          = excluded.best_for,
+         from_npr          = excluded.from_npr,
          icon              = excluded.icon,
          sort_order        = excluded.sort_order
        returning (xmax = 0) as inserted`,
@@ -78,6 +83,26 @@ async function syncServices() {
         service.description,
         JSON.stringify(service.body ?? []),
         service.capabilities,
+        /**
+         * The four comparison-table columns.
+         *
+         * These were missing from this statement, and the omission was not
+         * cosmetic: `readAll` in `src/lib/content.ts` prefers database rows
+         * over the static file whenever the table has any, so the four fields
+         * in `src/data/services.ts` were shadowed by NULLs and the comparison
+         * table rendered nothing at all — silently, because
+         * `hasComparisonData` treats an absent value as "no row for this
+         * service" rather than as an error.
+         *
+         * `?? null` on each: the JS field is `undefined` when unset, and `pg`
+         * would send that as the string "undefined" for a `text` column.
+         * `fromNpr` is already `null` rather than `undefined` when a price is
+         * deliberately unpublished, and stays null.
+         */
+        service.deliverables ?? null,
+        service.timeline ?? null,
+        service.bestFor ?? null,
+        service.fromNpr ?? null,
         service.icon,
         position,
       ],

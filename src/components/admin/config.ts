@@ -28,6 +28,16 @@ export type FieldType =
   | 'toggle'
   | 'results'
   /**
+   * An image path or URL, with an upload button beside it.
+   *
+   * Not a replacement for the text input — every existing image on this site is
+   * a committed file (`/images/…`), so typing a path has to keep working. This
+   * adds the other direction: pick a file from the machine, upload it to the
+   * `media` bucket, and have the resulting URL filled into the field. See
+   * `ImageControl` and `imageUpload.ts`.
+   */
+  | 'image'
+  /**
    * The Project-Level SEO panel.
    *
    * A field type rather than a fixed part of the form, so the panel's position
@@ -161,7 +171,7 @@ export const COLLECTIONS: Record<string, Collection> = {
       { name: 'category', label: 'Category', type: 'select', options: PROJECT_CATEGORIES, required: true },
       { name: 'secondary_categories', label: 'Extra categories', type: 'array', options: PROJECT_CATEGORIES, help: 'One per line — project also appears under these filters.' },
       { name: 'description', label: 'Short description', type: 'textarea', required: true },
-      { name: 'image', label: 'Card image path or URL', type: 'text', required: true, placeholder: '/images/project-x.png' },
+      { name: 'image', label: 'Cover image', type: 'image', required: true },
       { name: 'images', label: 'Gallery images', type: 'array', help: 'One path or URL per line.' },
       { name: 'technologies', label: 'Technologies', type: 'array', help: 'One per line.' },
       { name: 'year', label: 'Year', type: 'text', placeholder: '2026' },
@@ -237,7 +247,7 @@ export const COLLECTIONS: Record<string, Collection> = {
       { name: 'category', label: 'Category', type: 'select', options: BLOG_CATEGORIES, required: true },
       { name: 'date', label: 'Date', type: 'text', required: true, placeholder: 'March 12, 2026' },
       { name: 'reading_time', label: 'Reading time', type: 'text', placeholder: '6 min read' },
-      { name: 'image', label: 'Cover image path or URL', type: 'text', required: true },
+      { name: 'image', label: 'Cover image', type: 'image', required: true },
       { name: 'content', label: 'Article body', type: 'paragraphs', help: 'One paragraph per blank line.' },
       { name: 'tags', label: 'Tags', type: 'array', help: 'One per line.' },
       placeholderField,

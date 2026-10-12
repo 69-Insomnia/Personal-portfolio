@@ -57,16 +57,73 @@ async function readAll<T>(
   fallback: T[],
 ): Promise<T[]> {
   const c = db();
-  if (!c) return fallback;
+  if (!c) {
+    /**
+     * No credentials, so every reader on the site is serving repo content and
+     * nothing added in the admin will ever appear. That is the correct
+     * behaviour for an unconfigured install and a catastrophe for a configured
+     * one, and the two are indistinguishable without saying so out loud.
+     */
+    console.error(
+      `[content] ${table}: no Supabase client (NEXT_PUBLIC_SUPABASE_URL or ` +
+        `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY unset) — serving the static ` +
+        `fallback. Nothing added in /admin will appear on the site.`,
+    );
+    return fallback;
+  }
   try {
     const { data, error } = await c
       .from(table)
       .select('*')
       .eq('published', true)
       .order('sort_order', { ascending: true });
-    if (error || !data || data.length === 0) return fallback;
+
+    /**
+     * ## Why each fallback branch logs
+     *
+     * This function used to swallow every failure into the same silent
+     * `return fallback`. The consequence is worth stating plainly: a query that
+     * errors — a renamed column, a dropped table, a revoked grant — serves the
+     * repo's static content with **no error anywhere**. The site looks healthy,
+     * and content added in the admin simply never appears. Diagnosing that from
+     * the outside is guesswork, which is exactly what it produced.
+     *
+     * The fallback itself is still correct: an unreachable database must not
+     * take the site down. What changes is that the reason is now stated, in the
+     * Vercel function logs and in the dev server output, instead of being
+     * inferred.
+     */
+    if (error) {
+      console.error(
+        `[content] ${table}: query failed (${error.message}) — serving the ` +
+          `static fallback. Anything added in /admin is invisible until this ` +
+          `is fixed.`,
+      );
+      return fallback;
+    }
+
+    if (!data || data.length === 0) {
+      /**
+       * Zero *published* rows is the ordinary state for a table nobody has
+       * filled in, and the reason the static files exist. It is logged at warn
+       * because it is also what an unpublished draft looks like: a post saved
+       * with the toggle off leaves this table empty, the site serves the three
+       * articles from `src/data/blog.ts`, and the author sees their work
+       * missing with no indication that it was saved at all.
+       */
+      console.warn(
+        `[content] ${table}: no published rows — serving the static fallback. ` +
+          `If you have just saved an item here, check its Published toggle.`,
+      );
+      return fallback;
+    }
+
     return data.map(map);
-  } catch {
+  } catch (e) {
+    console.error(
+      `[content] ${table}: threw (${e instanceof Error ? e.message : String(e)}) ` +
+        `— serving the static fallback.`,
+    );
     return fallback;
   }
 }

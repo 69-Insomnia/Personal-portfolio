@@ -5,6 +5,7 @@ import { AlertTriangle, ImagePlus, LoaderCircle, Trash2, Upload } from 'lucide-r
 import { getSupabase } from '@/lib/supabase-browser';
 import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 import { inputClass } from '@/components/admin/FieldControl';
+import { altProblem, imageDimensions, uploadImage } from '@/components/admin/imageUpload';
 import { cn } from '@/utils/cn';
 
 /**
@@ -55,42 +56,12 @@ interface PendingUpload {
   height: number | null;
 }
 
-/** Mirrors the `media_alt_not_filename` check so the error shows on the field. */
-function altProblem(alt: string, filename: string): string | null {
-  const trimmed = alt.trim();
-  if (trimmed === '') return 'Required. An image cannot be saved without alt text.';
-
-  const stem = filename.replace(/\.[a-z0-9]+$/i, '');
-  if (trimmed.toLowerCase() === stem.toLowerCase()) {
-    return 'This just repeats the filename. Describe what the picture shows.';
-  }
-  return null;
-}
-
+/** Mirrors the `media` table's byte column for display. */
 function humanBytes(bytes: number | null): string {
   if (bytes === null) return '—';
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
-/**
- * A storage-safe filename.
- *
- * Supabase Storage keys reject anything outside a conservative character set,
- * and the original name is user-supplied. The timestamp prefix keeps uploads
- * of the same filename from colliding, which matters because `media.src` is
- * unique and a collision would otherwise be a confusing constraint error.
- */
-function storagePath(file: File): string {
-  const stem = file.name
-    .replace(/\.[a-z0-9]+$/i, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 60);
-  const ext = (file.name.match(/\.([a-z0-9]+)$/i)?.[1] ?? 'bin').toLowerCase();
-  return `${Date.now()}-${stem || 'image'}.${ext}`;
 }
 
 export function MediaManager() {
@@ -136,7 +107,7 @@ export function MediaManager() {
     };
   }, [pending]);
 
-  const choose = (file: File | null) => {
+  const choose = async (file: File | null) => {
     if (pending) URL.revokeObjectURL(pending.previewUrl);
     setSaveError(null);
     setAlt('');
@@ -150,15 +121,12 @@ export function MediaManager() {
 
     // Dimensions come from the decoded image, so the admin can see — before
     // saving — whether this is going to be a CLS problem on the public site.
-    const img = new window.Image();
-    img.onload = () => {
-      setPending((prev) =>
-        prev && prev.file === file
-          ? { ...prev, width: img.naturalWidth, height: img.naturalHeight }
-          : prev,
-      );
-    };
-    img.src = previewUrl;
+    const size = await imageDimensions(file);
+    setPending((prev) =>
+      prev && prev.file === file
+        ? { ...prev, width: size?.width ?? null, height: size?.height ?? null }
+        : prev,
+    );
   };
 
   const upload = async () => {
@@ -171,49 +139,15 @@ export function MediaManager() {
 
     setSaving(true);
     setSaveError(null);
-    const supabase = getSupabase();
-    const path = storagePath(pending.file);
 
-    const { error: uploadError } = await supabase.storage
-      .from('media')
-      .upload(path, pending.file, {
-        cacheControl: '31536000',
-        contentType: pending.file.type || undefined,
-        upsert: false,
-      });
-
-    if (uploadError) {
-      setSaving(false);
-      setSaveError(`Upload failed: ${uploadError.message}`);
-      return;
-    }
-
-    const { data: publicUrl } = supabase.storage.from('media').getPublicUrl(path);
-
-    const { error: insertError } = await supabase.from('media').insert({
-      src: publicUrl.publicUrl,
-      alt: alt.trim(),
-      width: pending.width,
-      height: pending.height,
-      bytes: pending.file.size,
-      mime_type: pending.file.type || null,
-      entity_type: 'site',
-    });
+    const result = await uploadImage(pending.file, alt);
 
     setSaving(false);
 
-    if (insertError) {
-      /**
-       * The object is already in the bucket and the row is not. That is the
-       * safe order, but it leaves an orphan, so the message says so rather
-       * than reporting a bare database error — otherwise the next person
-       * deletes nothing and the bucket accumulates files nobody can account
-       * for.
-       */
-      setSaveError(
-        `${insertError.message}\n\nThe file was uploaded but the record was not saved. ` +
-          `Remove ${path} from the media bucket, or fix the description and try again.`,
-      );
+    if (result.error) {
+      // The message already says whether this left an orphan in the bucket —
+      // see the ordering note in imageUpload.ts.
+      setSaveError(result.error);
       return;
     }
 
