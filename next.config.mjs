@@ -41,6 +41,49 @@ const securityHeaders = [
   { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains' },
 ];
 
+/**
+ * The hostname `next/image` is allowed to optimise remote images from.
+ *
+ * ## Without this, every image uploaded through /admin is invisible
+ *
+ * The upload control on the post and project forms stores a Supabase Storage
+ * URL — `https://<project-ref>.supabase.co/storage/v1/object/public/media/…` —
+ * and `BlogCard`, `ProjectCard` and `ImageLightbox` all render that value
+ * through `next/image`. Next **refuses any remote src whose hostname is not
+ * listed here**, and it refuses loudly: `Invalid src prop … is not configured
+ * under images`. The page throws rather than showing a broken image, and
+ * nothing in the admin panel suggests why.
+ *
+ * Every other image on this site is a file committed to `public/`, which is
+ * why no `remotePatterns` entry was ever needed. The comment in `SeoPanel`
+ * about routing an arbitrary admin-entered URL through the optimiser having to
+ * "throw for any host not on that list" describes this exact mechanism — the
+ * list simply never existed, because until uploads were added nothing needed
+ * it.
+ *
+ * ## Why the project host is resolved rather than wildcarded
+ *
+ * `NEXT_PUBLIC_SUPABASE_URL` names the one project whose storage this site
+ * writes to, so the pattern can be exact. The `?? '*.supabase.co'` is a floor
+ * for the case where the variable is not visible when this file is evaluated
+ * — a missing pattern here is a broken page, which is a far worse failure than
+ * a pattern that is one project too broad.
+ *
+ * ## The gap this does not close
+ *
+ * The image field is free text, so an image pasted from an unrelated host will
+ * still throw. Anything that lands there from the upload control is covered;
+ * an arbitrary external URL is not. See the note on `BlogCard` if that needs
+ * handling.
+ */
+const supabaseHost = (() => {
+  try {
+    return new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? '').hostname || null;
+  } catch {
+    return null;
+  }
+})();
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Scope Turbopack to this repo. Without it, the parent folder's package.json
@@ -56,6 +99,15 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     formats: ['image/avif', 'image/webp'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: supabaseHost ?? '*.supabase.co',
+        // Scoped to public storage objects rather than the whole host, so this
+        // cannot be used to proxy the Supabase API or a signed private URL.
+        pathname: '/storage/v1/object/public/**',
+      },
+    ],
   },
 
   async headers() {
