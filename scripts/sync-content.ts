@@ -56,11 +56,32 @@ const client = new pg.Client({
 async function syncServices() {
   for (const [position, service] of services.entries()) {
     const result = await client.query(
+      /**
+       * `deliverables`, `timeline`, `best_for` and `from_npr` are deliberately
+       * NOT written here, and this is the one place in the script where that is
+       * true.
+       *
+       * They are the comparison-table columns, and they are owned by the admin
+       * panel rather than by `src/data/services.ts`. The database holds the
+       * real values — real timelines, real starting prices — while the file
+       * holds the placeholder copy this repository shipped with. Sync would
+       * push the placeholders over the real figures.
+       *
+       * Note what that means for a *new* service: adding one to the static file
+       * and syncing creates the row without comparison data, so it renders no
+       * row in the table on `/services` until someone fills the four fields in
+       * at `/admin/services`. That is the correct trade. A service missing from
+       * a table is visible and fixable in a minute; a published price silently
+       * replaced by an invented one is neither, and it is the kind of figure a
+       * customer quotes back at you.
+       *
+       * To make the file authoritative again, the file has to be updated to
+       * match the database first — then these four can join the statement.
+       */
       `insert into services
          (slug, service_index, title, short_description, description, body,
-          capabilities, deliverables, timeline, best_for, from_npr, icon,
-          published, sort_order)
-       values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, true, $13)
+          capabilities, icon, published, sort_order)
+       values ($1, $2, $3, $4, $5, $6, $7, $8, true, $9)
        on conflict (slug) do update set
          service_index     = excluded.service_index,
          title             = excluded.title,
@@ -68,10 +89,6 @@ async function syncServices() {
          description       = excluded.description,
          body              = excluded.body,
          capabilities      = excluded.capabilities,
-         deliverables      = excluded.deliverables,
-         timeline          = excluded.timeline,
-         best_for          = excluded.best_for,
-         from_npr          = excluded.from_npr,
          icon              = excluded.icon,
          sort_order        = excluded.sort_order
        returning (xmax = 0) as inserted`,
@@ -83,26 +100,6 @@ async function syncServices() {
         service.description,
         JSON.stringify(service.body ?? []),
         service.capabilities,
-        /**
-         * The four comparison-table columns.
-         *
-         * These were missing from this statement, and the omission was not
-         * cosmetic: `readAll` in `src/lib/content.ts` prefers database rows
-         * over the static file whenever the table has any, so the four fields
-         * in `src/data/services.ts` were shadowed by NULLs and the comparison
-         * table rendered nothing at all — silently, because
-         * `hasComparisonData` treats an absent value as "no row for this
-         * service" rather than as an error.
-         *
-         * `?? null` on each: the JS field is `undefined` when unset, and `pg`
-         * would send that as the string "undefined" for a `text` column.
-         * `fromNpr` is already `null` rather than `undefined` when a price is
-         * deliberately unpublished, and stays null.
-         */
-        service.deliverables ?? null,
-        service.timeline ?? null,
-        service.bestFor ?? null,
-        service.fromNpr ?? null,
         service.icon,
         position,
       ],

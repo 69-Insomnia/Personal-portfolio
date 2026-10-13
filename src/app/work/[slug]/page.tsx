@@ -46,7 +46,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ProjectPage({ params }: PageProps) {
   const { slug } = await params;
-  const project = (await getProject(slug)) ?? getProjectBySlug(slug);
+  const live = await getProject(slug);
+  const project = live ?? getProjectBySlug(slug);
 
   if (!project) {
     /**
@@ -64,6 +65,22 @@ export default async function ProjectPage({ params }: PageProps) {
     const target = await getRedirect(`/work/${slug}`);
     if (target) permanentRedirect(target);
     notFound();
+  }
+
+  /**
+   * Resolved from the repo's static file while the database is healthy, which
+   * means the slug was renamed in the admin and `on_slug_change` logged a 308
+   * for the old address — which the static fallback above would otherwise
+   * shadow. See the longer note in `services/[slug]` for the production case
+   * that exposed this.
+   *
+   * The rationale above still holds: this is only reached when the database
+   * returned rows but not this slug, so a project whose row exists costs no
+   * extra query.
+   */
+  if (!live) {
+    const target = await getRedirect(`/work/${slug}`);
+    if (target) permanentRedirect(target);
   }
 
   const [allProjects, allServices, allPosts, coverAlt, seoMeta] = await Promise.all([

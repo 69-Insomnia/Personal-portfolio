@@ -48,7 +48,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ServicePage({ params }: PageProps) {
   const { slug } = await params;
-  const service = (await getService(slug)) ?? getServiceBySlug(slug);
+  const live = await getService(slug);
+  const service = live ?? getServiceBySlug(slug);
 
   if (!service) {
     // See the note in `work/[slug]`: the redirect lookup only runs once the
@@ -56,6 +57,27 @@ export default async function ServicePage({ params }: PageProps) {
     const target = await getRedirect(`/services/${slug}`);
     if (target) permanentRedirect(target);
     notFound();
+  }
+
+  /**
+   * Resolved from the repo's static file while the database is healthy — which
+   * means the slug exists in `src/data/services.ts` but not in the `services`
+   * table. That is what a slug rename in the admin looks like from here:
+   * `on_slug_change` moved the row and logged a 308 for the old address, and
+   * the static fallback above then shadowed it.
+   *
+   * The consequence was visible in production. `seo` (the repo's slug) and
+   * `seo-services` (the database's) both returned 200, serving different
+   * content — the fallback's timeline and price on one, the admin's on the
+   * other — and each canonicalised to itself. The footer and nav linked to one
+   * address while `sitemap.xml` and `llms.txt` published the other.
+   *
+   * The redirect is only consulted here, never on the happy path, so a page
+   * whose slug is in the database still costs exactly what it did before.
+   */
+  if (!live) {
+    const target = await getRedirect(`/services/${slug}`);
+    if (target) permanentRedirect(target);
   }
 
   const [allServices, allProjects, allPosts, seoMeta] = await Promise.all([

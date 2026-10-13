@@ -47,7 +47,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params;
-  const post = (await getPost(slug)) ?? getPostBySlug(slug);
+  const live = await getPost(slug);
+  const post = live ?? getPostBySlug(slug);
 
   if (!post) {
     // See the note in `work/[slug]`: the redirect lookup only runs once the
@@ -55,6 +56,21 @@ export default async function BlogPostPage({ params }: PageProps) {
     const target = await getRedirect(`/blog/${slug}`);
     if (target) permanentRedirect(target);
     notFound();
+  }
+
+  /**
+   * Resolved from the repo's static file while the database is healthy, which
+   * means the slug was renamed in the admin and `on_slug_change` logged a 308
+   * for the old address — which the static fallback would otherwise shadow.
+   * See the longer note in `services/[slug]` for the production case that
+   * exposed this.
+   *
+   * Only reached when the database returned rows but not this slug, so an
+   * article whose row exists still costs no extra query.
+   */
+  if (!live) {
+    const target = await getRedirect(`/blog/${slug}`);
+    if (target) permanentRedirect(target);
   }
 
   const [allPosts, allServices, allProjects, coverAlt, seoMeta] = await Promise.all([
