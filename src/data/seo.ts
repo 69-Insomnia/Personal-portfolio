@@ -168,7 +168,21 @@ function resolveSiteUrl(): string {
  */
 export const identity = {
   name: profile.name,
-  role: 'Web Developer & SEO Specialist',
+  /**
+   * The entity's positioning line, and the reason it changed.
+   *
+   * This read "Web Developer & SEO Specialist". The site was telling search
+   * engines two different things: the homepage title and meta description
+   * already said "Ecommerce Growth Specialist", while `jobTitle` on the Person
+   * node — the strongest machine-readable statement of what this entity is —
+   * said web developer. Google and AI assistants rank and cite an entity for
+   * what it consistently proves, so the two had to agree.
+   *
+   * It is deliberately different from `profile.title` (the navbar's tracked
+   * micro-type, which has to stay short enough to sit under a name). This is
+   * the version that goes into a heading, a `jobTitle` and a meta description.
+   */
+  role: 'Ecommerce Growth Specialist',
   location: profile.location,
   email: profile.email,
   telephone: profile.whatsapp,
@@ -197,36 +211,36 @@ export const DEFAULT_OG_IMAGE = '/og-image.png';
 /**
  * Titles lead with the query, not the name. A portfolio for someone who is not
  * yet a known entity gains nothing from brand-first titles, and everything the
- * site is trying to rank for is a generic-plus-place query: web developer
- * Nepal, SEO specialist Kathmandu, ecommerce growth Nepal.
+ * site is trying to rank for is a generic-plus-place query: ecommerce growth
+ * specialist Kathmandu, ecommerce SEO Nepal, Meta ads Kathmandu.
+ *
+ * The `keywords` array that used to live on these objects is gone. Google has
+ * ignored the keywords meta tag for years, so it was never a ranking lever —
+ * it was a list of the terms the page was aiming at, published in the one place
+ * a competitor can read them for free. `buildMetadata` no longer emits the tag;
+ * these arrays had no reader left.
  */
 export const defaultSEO: SEOData = {
-  title: 'Web Developer & SEO Specialist in Nepal | Dipendra Guragain',
+  title: 'Ecommerce Growth Specialist in Kathmandu | Dipendra Guragain',
   description:
-    'Dipendra Guragain builds websites and then gets them found. Web development, SEO and ecommerce growth for businesses in Kathmandu and across Nepal.',
-  keywords: [
-    'web developer Nepal',
-    'SEO specialist Nepal',
-    'SEO expert Kathmandu',
-    'ecommerce growth Nepal',
-    'digital marketing Nepal',
-    'Next.js developer Nepal',
-  ],
+    'Dipendra Guragain is an ecommerce growth specialist in Kathmandu. Ecommerce SEO, Meta & Google Ads, and Shopify/WooCommerce store builds that turn visitors into customers.',
   canonical: site.url,
 };
 
+/**
+ * The homepage.
+ *
+ * Title and description are identical to `defaultSEO` on purpose rather than by
+ * accident: this is the page that owns the target query, and the site-wide
+ * default exists so that any page without its own metadata still says the right
+ * thing. They are separate constants because they are separate decisions —
+ * changing what the site says by default should not silently rewrite the
+ * homepage, and the reverse.
+ */
 export const homeSEO: SEOData = {
-  title: 'Web Developer & SEO Specialist in Nepal | Dipendra Guragain',
+  title: 'Ecommerce Growth Specialist in Kathmandu | Dipendra Guragain',
   description:
-    'I build websites, get them found in search, and run the paid campaigns that bring people to them. Kathmandu-based, working with businesses across Nepal.',
-  keywords: [
-    'web developer Nepal',
-    'SEO specialist Nepal',
-    'SEO expert Kathmandu',
-    'ecommerce growth Nepal',
-    'digital marketing Kathmandu',
-    'freelance web developer Nepal',
-  ],
+    'Dipendra Guragain is an ecommerce growth specialist in Kathmandu. Ecommerce SEO, Meta & Google Ads, and Shopify/WooCommerce store builds that turn visitors into customers.',
   canonical: `${site.url}/`,
 };
 
@@ -416,7 +430,9 @@ export function serviceSEO(service: Service, meta?: SeoMeta): SEOData {
 
   return withSeoMeta(
     {
-      title: `${service.title} in Nepal | ${profile.name}`,
+      // `seoTitle` first: one service targets a city-level query that the
+      // generic pattern cannot express. See the field's note in `types`.
+      title: service.seoTitle ?? `${service.title} in Nepal | ${profile.name}`,
       description: service.shortDescription,
       keywords: [
         `${service.title} Nepal`,

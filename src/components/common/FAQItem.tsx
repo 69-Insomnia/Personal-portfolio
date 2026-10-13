@@ -1,6 +1,6 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Minus, Plus } from 'lucide-react';
 
 interface FAQItemProps {
@@ -43,22 +43,38 @@ export function FAQItem({ question, answer, index, isOpen, onToggle }: FAQItemPr
           </span>
         </button>
       </h3>
-      <AnimatePresence initial={false}>
-        {isOpen ? (
-          <motion.div
-            id={panelId}
-            role="region"
-            aria-labelledby={buttonId}
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.35, ease: 'easeOut' }}
-            className="overflow-hidden"
-          >
-            <p className="max-w-3xl pb-7 pl-0 text-muted md:pl-12">{answer}</p>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
+
+      {/*
+        The answer is **always rendered**, and animated between a closed height
+        and its natural one rather than mounted and unmounted.
+
+        This used to be an `<AnimatePresence>` branch that returned `null` when
+        closed, which meant a collapsed answer was not merely hidden — it was
+        absent from the HTML entirely. Six of the seven answers were therefore
+        invisible to any crawler that does not execute JavaScript, which is all
+        of the ones this block exists for: GPTBot, PerplexityBot, ClaudeBot and
+        Google-Extended. The questions were readable and the answers were not,
+        which is precisely the wrong half.
+
+        Animating `height` between `0` and `auto` keeps the movement and the
+        same easing, so the section looks and behaves as it did.
+
+        `aria-hidden` while closed, to match what a native `<details>` does:
+        the content stays in the DOM for machines, and out of the accessibility
+        tree for people, who hear the expanded state from the button instead.
+      */}
+      <motion.div
+        id={panelId}
+        role="region"
+        aria-labelledby={buttonId}
+        aria-hidden={!isOpen}
+        initial={false}
+        animate={{ height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
+        transition={{ duration: 0.35, ease: 'easeOut' }}
+        className="overflow-hidden"
+      >
+        <p className="max-w-3xl pb-7 pl-0 text-muted md:pl-12">{answer}</p>
+      </motion.div>
     </li>
   );
 }

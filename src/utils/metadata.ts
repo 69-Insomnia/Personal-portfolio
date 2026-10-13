@@ -45,7 +45,6 @@ export function buildMetadata(seo: SEOData, settings?: SiteSettings): Metadata {
   const {
     title,
     description,
-    keywords,
     canonical,
     ogImage,
     ogType,
@@ -100,7 +99,13 @@ export function buildMetadata(seo: SEOData, settings?: SiteSettings): Metadata {
   return {
     title: suffixed,
     description: summary,
-    keywords,
+    /**
+     * No `keywords`. Google has ignored the keywords meta tag for years, so it
+     * was never a ranking lever — and publishing a list of the terms a page is
+     * targeting gives competitors and scrapers that strategy for free. The
+     * `keywords` field still exists on `SEOData` because `seo_meta` stores one
+     * per entity and the admin panel edits it; it is simply no longer emitted.
+     */
     /**
      * Spread in only when a page actually sets it, never as `robots: undefined`.
      *

@@ -299,6 +299,20 @@ export interface Service {
   capabilities: string[];
   icon: IconName;
   /**
+   * Overrides the generated `<title>` for this service page.
+   *
+   * `serviceSEO` builds a title from the pattern `${title} in Nepal |
+   * ${profile.name}`, which is right for most services and wrong for one: the
+   * page that has to rank for "ecommerce growth specialist in Kathmandu" needs
+   * the city in the title, and needs it as the phrase people actually type
+   * rather than as a suffix appended to a generic pattern.
+   *
+   * Kept as an optional field rather than a special case inside `serviceSEO`,
+   * so the exception is visible on the row it applies to and the generator
+   * stays a rule rather than a rule with a hole in it.
+   */
+  seoTitle?: string;
+  /**
    * Comparison-table columns. See `ComparisonTable`.
    *
    * These are separate from `capabilities` rather than derived from it.

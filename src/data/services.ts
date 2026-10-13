@@ -287,6 +287,13 @@ const serviceOrder: UnnumberedService[] = [
   {
     slug: 'ecommerce-growth',
     title: 'Ecommerce Growth Specialist',
+    /**
+     * The one service with a hand-written title. Every other page follows the
+     * `${title} in Nepal | ${name}` pattern; this one targets a city-level
+     * query, and "in Kathmandu" is the part that has to be in the title
+     * verbatim. See `Service.seoTitle`.
+     */
+    seoTitle: 'Ecommerce Growth Specialist in Kathmandu | Services',
     shortDescription:
       'Ecommerce growth specialist in Nepal. Storefront, ecommerce SEO, product pages, ads and analytics run as one funnel rather than four projects.',
     description:

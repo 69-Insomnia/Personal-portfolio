@@ -18,6 +18,7 @@ import {
   customJsonLdNodes,
   definedTermNodes,
   definedTermSetNode,
+  faqPageNode,
   serviceNode,
   webPageNode,
 } from '@/lib/structured-data';
@@ -114,6 +115,14 @@ export default async function ServicePage({ params }: PageProps) {
     aiAnswer: seoMeta?.aiAnswer,
   });
 
+  /**
+   * The page's Q&A as structured data, from the same array `FaqBlock` renders
+   * below — and only when the admin has actually written some. A `FAQPage`
+   * node on a page with no visible FAQ would be a claim the page does not
+   * support, which is why this is conditional rather than always emitted.
+   */
+  const faqNode = faqPageNode(seoMeta?.faqs ?? [], `${site.url}/services/${service.slug}`);
+
   return (
     <article>
       {/* The breadcrumb trail is rendered by `PageHeader` below, which emits
@@ -127,6 +136,7 @@ export default async function ServicePage({ params }: PageProps) {
           // The set is emitted only alongside terms, since it exists to give
           // them something to belong to.
           ...(terms?.length ? [definedTermSetNode()] : []),
+          ...(faqNode ? [faqNode] : []),
           ...customJsonLdNodes(seoMeta?.customJsonLd),
         ]}
       />

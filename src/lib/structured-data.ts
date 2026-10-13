@@ -3,7 +3,7 @@ import { monthlyTiers, oneOffTiers, serviceStartingPrice } from '@/data/pricing'
 import { identity, site, socialProfiles } from '@/data/seo';
 import { slugify } from '@/utils/slug';
 import { isoDate } from '@/utils/dates';
-import type { BlogPost, EntitySignals, Project, Service } from '@/types';
+import type { BlogPost, EntitySignals, FAQ, Project, Service } from '@/types';
 
 /**
  * Schema.org nodes for the site.
@@ -49,22 +49,23 @@ const COUNTRY_CODE = 'NP';
  * for them rather than as schema.org types.
  */
 const KNOWS_ABOUT = [
-  'Web Development',
-  'React',
-  'Next.js',
-  'WordPress',
+  'Ecommerce SEO',
+  'Ecommerce Development',
+  'Meta Ads',
+  'Google Ads',
+  'Email Marketing',
   'Shopify',
   'WooCommerce',
-  'Ecommerce Development',
+  'Conversion Optimization',
   'Search Engine Optimization',
   'Technical SEO',
   'Local SEO',
-  'Ecommerce SEO',
   'AI Search Optimization',
-  'Google Ads',
-  'Meta Ads',
+  'Next.js',
+  'React',
+  'WordPress',
+  'Web Development',
   'Digital Marketing',
-  'Conversion Optimization',
 ];
 
 /**
@@ -188,7 +189,11 @@ export function professionalServiceNode(): Node {
   return {
     '@type': 'ProfessionalService',
     '@id': `${site.url}/#service`,
-    name: identity.name,
+    /* Brand name plus role, rather than the bare name. The `Person` node
+       already establishes "Dipendra Guragain"; this node is the business, and
+       naming what the business does means the two are not forced to be
+       identical just because they share an owner. */
+    name: `${identity.name} – ${identity.role}`,
     description: profile.description,
     url: site.url,
     image: `${site.url}${profile.profileImage}`,
@@ -451,6 +456,49 @@ export function customJsonLdNodes(value: unknown): Node[] {
   }
   if (typeof value === 'object') return [value as Node];
   return [];
+}
+
+/**
+ * The FAQ block, as `FAQPage`.
+ *
+ * ## Why both the markup and the visible text come from `src/data/faqs.ts`
+ *
+ * A `FAQPage` node whose answers differ from the ones on the page is worse than
+ * no node: the structured data is the claim a search engine reads, and if the
+ * two disagree the page is describing something it does not show. Passing the
+ * same array to both the renderer and this function is what makes that
+ * impossible rather than merely unlikely — there is one copy of the text, so
+ * there is nothing to keep in sync.
+ *
+ * ## On the rich result
+ *
+ * Google retired FAQ rich results for **all sites on 2026-05-07**, so this will
+ * not produce the expandable questions in a search result. It is still valid
+ * schema.org and it is still the clearest machine-readable statement of what
+ * the page answers, which is what AI answer engines read. The distinction
+ * matters: the *content* is the asset, the snippet was the bonus.
+ *
+ * Returns `undefined` for an empty list, so a page that renders no FAQ emits no
+ * node rather than an empty `mainEntity`.
+ */
+export function faqPageNode(items: FAQ[], pageUrl: string): Node | undefined {
+  const usable = items.filter(
+    (item) => item.question.trim().length > 0 && item.answer.trim().length > 0,
+  );
+  if (usable.length === 0) return undefined;
+
+  return {
+    '@type': 'FAQPage',
+    '@id': `${pageUrl}#faq`,
+    mainEntity: usable.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  };
 }
 
 export function breadcrumbNode(items: Array<{ name: string; path: string }>): Node {

@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ToolChip } from '@/components/cards/ToolChip';
 import { Button } from '@/components/ui/Button';
@@ -26,20 +27,27 @@ const HEADLINE = ['I Build Websites.', 'Then I Get Them', 'FOUND'];
  * A heading is the strongest statement a page makes about what it is, and
  * "I Build Websites. Then I Get Them FOUND" — memorable as it is — names no
  * person, no role and no place. It told a search engine nothing it could match
- * against "web developer Kathmandu" or resolve against the Person entity
- * defined at `#person`, so the site's own identity was absent from the one
- * element that carries the most weight.
+ * against a query or resolve against the Person entity defined at `#person`, so
+ * the site's own identity was absent from the one element that carries the most
+ * weight.
  *
- * The role line now sits in the heading position and the tagline keeps its
- * display type directly beneath it, so nothing moves: this is the same
- * `<motion>` treatment, the same classes and the same vertical rhythm. Only
- * which element wraps which has changed. It also reads better in a screen
- * reader, which announces the identity before the slogan rather than after.
+ * The text is now the exact target query, "Ecommerce Growth Specialist in
+ * Kathmandu", because a heading that matches the query verbatim is the
+ * strongest thing this page can say about what it is for. It replaced a
+ * three-part label — "Web Developer / SEO Specialist / Kathmandu, Nepal" —
+ * which named a different role and hedged the location with a slash instead of
+ * saying "in".
  *
- * Kept in sync with `identity.role` and `identity.location` in
- * `src/data/seo.ts` — this string is the visible half of that same claim.
+ * Note that the label and the heading are the same element in this design, so
+ * merging them is not a loss: the visible label now reads the target phrase
+ * rather than a role list, which is better for the keyword and no worse for a
+ * reader. The location is still stated directly beneath, in the "Based in
+ * Kathmandu, Nepal" line and again in the availability note.
+ *
+ * The tagline keeps its display type directly below, so nothing moves: this is
+ * the same `<motion>` treatment, the same classes and the same vertical rhythm.
  */
-const ROLE = ['Web Developer', 'SEO Specialist', 'Kathmandu, Nepal'];
+const H1 = 'Ecommerce Growth Specialist in Kathmandu';
 
 export function Hero() {
   const whatsappHref = profile.whatsapp
@@ -51,9 +59,10 @@ export function Hero() {
       <Container>
         <div className="grid items-center gap-14 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-7">
-            {/* The h1. Split across three spans with the separators hidden from
-                assistive tech, so it announces as one sentence — "Web Developer
-                SEO Specialist Kathmandu, Nepal" — rather than as a list. */}
+            {/* The h1. A single string rather than the three spans it used to
+                be split into: the separators only existed to render a role list
+                with slashes between the parts, and the text is now one phrase
+                that has to be published exactly as written. */}
             <motion.h1
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
@@ -61,19 +70,7 @@ export function Hero() {
               className="eyebrow flex-wrap"
             >
               <span aria-hidden className="h-px w-8 bg-accent" />
-              {/* Separate flex children rather than inline text with margin:
-                  `.eyebrow` already carries gap-3, and JSX strips the
-                  whitespace around a newline next to a tag, so inline spans
-                  collapsed together. */}
-              <span>{ROLE[0]}</span>
-              <span aria-hidden className="text-line-strong">
-                /
-              </span>
-              <span>{ROLE[1]}</span>
-              <span aria-hidden className="text-line-strong">
-                /
-              </span>
-              <span>{ROLE[2]}</span>
+              <span>{H1}</span>
             </motion.h1>
 
             <p className="mt-7 text-display font-medium">
@@ -125,6 +122,26 @@ export function Hero() {
                 </Button>
               ) : null}
             </motion.div>
+
+            {/* The keyword-rich internal link to the money page.
+                Anchor text is the target phrase rather than "learn more"
+                because the anchor is what tells a search engine what the
+                destination is about — and it is the only link on the homepage
+                whose text matches the query this site is chasing. */}
+            <motion.p
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.76, duration: 0.7, ease: 'easeOut' }}
+              className="mt-7 text-sm"
+            >
+              <Link
+                href="/services/ecommerce-growth"
+                className="inline-flex items-center gap-1.5 font-medium text-accent transition-colors hover:text-accent-strong"
+              >
+                Ecommerce growth specialist in Kathmandu
+                <span aria-hidden>→</span>
+              </Link>
+            </motion.p>
 
             {/* Flat single line rather than a location chip plus an availability
                 chip. Two labelled chips made the reader parse two widgets to
