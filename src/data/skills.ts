@@ -16,8 +16,14 @@ import type { PlatformTool, TechnologyCategory, ToolLogo } from '@/types';
  * rather than the rule.
  *
  * A name absent from this map is not an error — `ToolMark` falls back to a
- * lettered monogram. `Meta Pixel` relies on that today: Simple Icons has never
- * carried a mark for it.
+ * lettered monogram, so a tool added to a category list is never a broken
+ * image.
+ *
+ * `Meta Pixel` used to rely on that fallback, and it was the wrong call: the
+ * monogram tile draws the first letter beside the name, so the chip read
+ * "MMeta Pixel" — a glitch visible on the homepage and reported by an external
+ * audit. It now reuses Meta's own mark, which is the correct brand for the
+ * pixel and needed no new asset.
  */
 export const toolLogos: Record<string, ToolLogo> = {
   React: { slug: 'react', src: '/logos/react.svg' },
@@ -41,6 +47,10 @@ export const toolLogos: Record<string, ToolLogo> = {
 
   'Google Ads': { slug: 'googleads', src: '/logos/googleads.svg' },
   'Meta Ads': { slug: 'meta', src: '/logos/meta.svg' },
+  /* Same mark as Meta Ads, deliberately. The pixel is Meta's product, and
+     reusing the asset avoids a second near-identical file — see the note on
+     the monogram fallback above for why this entry has to exist at all. */
+  'Meta Pixel': { slug: 'meta', src: '/logos/meta.svg' },
   'Google Analytics': { slug: 'googleanalytics', src: '/logos/googleanalytics.svg' },
   'Google Tag Manager': { slug: 'googletagmanager', src: '/logos/googletagmanager.svg' },
   'Search Console': { slug: 'googlesearchconsole', src: '/logos/googlesearchconsole.svg' },
