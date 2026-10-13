@@ -15,13 +15,18 @@ import type { BlogPost, EntitySignals, FAQ, Project, Service } from '@/types';
  * ones.
  *
  * A note on what is deliberately absent:
- *  - No `FAQPage`. Google retired FAQ rich results for all sites in May 2026,
- *    so it would earn nothing and can be read as markup for a feature that no
- *    longer exists.
  *  - No `streetAddress`. There is no public business address to publish, and
  *    inventing one is both dishonest and a spam signal. `addressLocality` plus
  *    `areaServed` carries the geographic intent instead.
  *  - No `aggregateRating`. There are no collected reviews behind it.
+ *
+ * `FAQPage` used to be on that list, on the grounds that Google retired FAQ
+ * rich results for all sites in May 2026 and the markup would therefore earn
+ * nothing. It is emitted now — see `faqPageNode` — because the reasoning was
+ * only ever about the rich result. The node is still valid schema.org and still
+ * the clearest machine-readable statement of what a page answers, which is what
+ * answer engines read. The *content* was always the asset; the snippet was the
+ * bonus, and losing the bonus is not a reason to stop describing the content.
  */
 
 type Node = Record<string, unknown>;
