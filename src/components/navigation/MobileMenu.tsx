@@ -114,7 +114,7 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25, ease: 'easeOut' }}
-          className="fixed inset-0 z-menu bg-paper lg:hidden"
+          className="fixed inset-0 z-menu bg-paper xl:hidden"
           role="dialog"
           aria-modal="true"
           aria-label="Site menu"

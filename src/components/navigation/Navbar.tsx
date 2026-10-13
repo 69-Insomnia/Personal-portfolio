@@ -12,6 +12,7 @@ import { WhatsAppIcon } from '@/components/common/WhatsAppIcon';
 import { MobileMenu } from '@/components/navigation/MobileMenu';
 import { useScrolled } from '@/hooks/useScrolled';
 import { mainNavigation } from '@/data/navigation';
+import { identity } from '@/data/seo';
 import { profile } from '@/data/profile';
 import { cn } from '@/utils/cn';
 
@@ -62,20 +63,43 @@ export function Navbar() {
               <span className="text-[15px] font-semibold leading-tight tracking-tight text-ink transition-colors group-hover:text-accent">
                 {profile.name}
               </span>
+              {/*
+                `identity.role`, not `profile.title`.
+
+                The two are different lengths on purpose. `profile.title` is the
+                full positioning line the footer uses — "Ecommerce Growth
+                Specialist · SEO · Meta & Google Ads" — which is 54 characters of
+                10px uppercase at 0.14em tracking, roughly 430px wide. In the
+                navigation that ran straight into the first nav item and pushed
+                the row past the width it had.
+
+                This slot needs the short form of the same claim, and
+                `identity.role` is exactly that: it is already the phrase the
+                Person node publishes as `jobTitle`, so the navbar and the
+                structured data say the same words.
+              */}
               <span className="mt-0.5 hidden text-[10px] font-semibold uppercase tracking-[0.14em] text-muted sm:block">
-                {profile.title}
+                {identity.role}
               </span>
             </span>
           </Link>
 
-          <nav aria-label="Primary" className="hidden items-center gap-1 lg:flex">
+          {/*
+            Shown only from `xl`, not `lg`.
+
+            Seven nav items, a WhatsApp button and a CTA button need about
+            1130px. At the old `lg` breakpoint (1024px) they did not fit and the
+            row overflowed; at 1280px there is room. Below that the hamburger
+            takes over, which is what it is for.
+          */}
+          <nav aria-label="Primary" className="hidden items-center gap-1 xl:flex">
             {mainNavigation.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 aria-current={isActive(item.href) ? 'page' : undefined}
                 className={cn(
-                  'relative px-3.5 py-2 text-sm tracking-tight transition-colors duration-300',
+                  'relative px-3 py-2 text-sm tracking-tight transition-colors duration-300',
                   isActive(item.href) ? 'text-ink' : 'text-muted hover:text-ink',
                 )}
               >
@@ -83,7 +107,7 @@ export function Navbar() {
                 {isActive(item.href) ? (
                   <motion.span
                     layoutId="nav-active-link"
-                    className="absolute inset-x-3.5 -bottom-0.5 h-px bg-accent"
+                    className="absolute inset-x-3 -bottom-0.5 h-px bg-accent"
                     transition={{ type: 'spring', stiffness: 420, damping: 34 }}
                   />
                 ) : null}
@@ -98,7 +122,7 @@ export function Navbar() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Chat on WhatsApp at ${profile.whatsapp}`}
-                className="flex h-11 w-11 items-center justify-center rounded-full bg-whatsapp text-whatsapp-ink transition-colors hover:bg-whatsapp-hover lg:h-9 lg:w-9"
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-whatsapp text-whatsapp-ink transition-colors hover:bg-whatsapp-hover xl:h-9 xl:w-9"
               >
                 <WhatsAppIcon size={17} />
               </a>
@@ -116,7 +140,7 @@ export function Navbar() {
               onClick={() => setMenuOpen(true)}
               aria-label="Open menu"
               aria-expanded={menuOpen}
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-ink lg:hidden"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-ink xl:hidden"
             >
               <Menu size={16} aria-hidden />
             </button>
