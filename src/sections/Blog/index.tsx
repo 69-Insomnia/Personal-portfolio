@@ -18,11 +18,11 @@ export function Blog({ data }: { data?: BlogPost[] }) {
       <Container>
         <SectionHeading
           section="insights"
-          title="Things I'm Learning, Building & Sharing"
-          description="Notes on web development, search, advertising and ecommerce, written from real project work."
+          title="Notes from the work"
+          description="Web development, search, advertising and ecommerce — written from projects that actually ran, not from a list of best practices."
           action={
-            <Button href="/blog" variant="outline" showArrow className="self-start">
-              All Insights
+            <Button href="/blog" variant="ghost" showArrow className="self-start">
+              All articles
             </Button>
           }
         />

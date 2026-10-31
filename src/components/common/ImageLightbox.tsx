@@ -92,7 +92,7 @@ export function ImageLightbox({ src, alt, sizes }: ImageLightboxProps) {
           aria-label="Enlarge image"
           className="group absolute inset-0 h-full w-full cursor-zoom-in focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-focus"
         >
-          <span className="pointer-events-none absolute bottom-3 right-3 inline-flex items-center gap-1.5 border border-line bg-paper-blur px-2.5 py-1.5 text-micro font-semibold uppercase text-muted backdrop-blur-sm transition-colors duration-300 group-hover:text-accent">
+          <span className="pointer-events-none absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full border border-line bg-paper-blur px-2.5 py-1.5 text-micro font-medium text-muted backdrop-blur-sm transition-colors duration-200 group-hover:text-accent">
             <Maximize2 size={12} aria-hidden />
             Enlarge
           </span>

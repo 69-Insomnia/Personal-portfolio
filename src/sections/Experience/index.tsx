@@ -17,8 +17,8 @@ export function Experience({ data }: { data?: ExperienceItem[] }) {
       <Container>
         <SectionHeading
           section="experience"
-          title="Where I've Worked"
-          description="Roles and client projects so far, newest first. The longer version of each is on the work page."
+          title="Where I've worked"
+          description="Roles and client projects so far, newest first. The longer version of each is on the about page."
         />
 
         <Reveal delay={0.05}>

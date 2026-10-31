@@ -156,20 +156,20 @@ export default async function ProjectPage({ params }: PageProps) {
             this gap depend on which margin happened to be larger. */}
         <dl className="mt-10 grid gap-6 border-y border-line py-7 sm:grid-cols-2 md:mt-14 lg:grid-cols-4">
           <div>
-            <dt className="text-label font-medium uppercase text-muted">Year</dt>
+            <dt className="text-label font-medium text-muted">Year</dt>
             <dd className="mt-2 text-sm font-medium">{project.year ?? '—'}</dd>
           </div>
           <div>
-            <dt className="text-label font-medium uppercase text-muted">Category</dt>
+            <dt className="text-label font-medium text-muted">Category</dt>
             <dd className="mt-2 text-sm font-medium">{projectCategories(project).join(' · ')}</dd>
           </div>
           <div className="sm:col-span-2">
-            <dt className="text-label font-medium uppercase text-muted">Technology</dt>
+            <dt className="text-label font-medium text-muted">Technology</dt>
             <dd className="mt-2 flex flex-wrap gap-2">
               {project.technologies.map((technology) => (
                 <span
                   key={technology}
-                  className="border border-line px-2.5 py-1 text-label font-medium uppercase text-muted"
+                  className="border border-line px-2.5 py-1 text-label font-medium text-muted"
                 >
                   {technology}
                 </span>

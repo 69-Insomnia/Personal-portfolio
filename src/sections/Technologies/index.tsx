@@ -1,5 +1,3 @@
-'use client';
-
 import { ToolChip } from '@/components/cards/ToolChip';
 import { Icon } from '@/components/common/Icon';
 import { Container } from '@/components/ui/Container';
@@ -9,23 +7,28 @@ import { SectionHeading } from '@/components/ui/SectionHeading';
 import { technologyCategories, toPlatformTool } from '@/data/skills';
 
 /**
- * Six category cards, each a panel carrying a left-aligned tracked label over
- * a wrapping row of chip-and-mark pills.
+ * The stack, rendered exactly once.
  *
- * The grouping is the point — a flat wall of 26 logos says nothing about what
- * the tools are FOR — but it reads as one cloud rather than six lists, so the
- * categories stay scannable without turning the section into a table.
+ * ## Why this section lost its cards
  *
- * Two columns rather than three: a card has to be wide enough to hold its
- * chips in one or two rows before the panel starts looking like empty grey.
- * At three columns the seven-item Frontend card runs to four rows and the rest
- * sit half-empty beside it. Uneven rows are still possible (Frontend and
- * Marketing need two chip rows where their neighbours need one), so cards
- * stretch to the tallest in their row and keep their content at the top — the
- * slack falls below the chips as panel, which is invisible, rather than pushing
- * one card's label down out of line with the label beside it. Labels are
- * left-aligned so every card shares one vertical edge with the section
- * heading above it.
+ * It used to be six `card` panels, each holding a tracked label over a wrapping
+ * row of chips. Six bordered boxes to say "these are grouped" is an expensive
+ * way to draw a grouping — the boxes competed with the chips inside them for
+ * weight, and the whole band read as a wall of furniture for what is
+ * fundamentally a list of names.
+ *
+ * A rule and a label per group says the same thing with one line instead of
+ * four. The pairs are also now a real `<dl>`, so the relationship between a
+ * category and its tools is in the markup rather than implied by proximity.
+ *
+ * ## Why there is only one copy of this
+ *
+ * The hero used to carry its own strip of ten platform chips — "Platforms &
+ * Tools I Work With" — which is word-for-word the label the reference site puts
+ * above its own marquee of the same brands. Two logo strips on one page, one of
+ * them duplicating a competitor's section verbatim, is the clearest example of
+ * the drift this redesign exists to correct. The hero strip is gone; this is
+ * the only place tools appear.
  */
 export function Technologies() {
   return (
@@ -33,30 +36,37 @@ export function Technologies() {
       <Container>
         <SectionHeading
           section="technologies"
-          title="Tools I Work With"
-          description="The tools I actually reach for. The stack changes with the job; these are the ones I know well enough to choose between."
+          title="The stack behind the work"
+          description="What I actually reach for. The stack changes with the job — these are the ones I know well enough to choose between rather than just recognise."
         />
 
-        <div className="mt-12 grid gap-3 md:grid-cols-2 md:gap-4">
+        {/*
+          `Reveal` renders the `<div>` that HTML5 allows as a direct child of a
+          `<dl>`, and the `dt`/`dd` pair sits directly inside it. An extra
+          wrapper div here would have made the group `dl > div > div > dt`, which
+          is outside the content model — the rule is that a div *in* a dl holds
+          the term and its description, not another container.
+        */}
+        <dl className="mt-14 grid gap-x-12 gap-y-9 md:grid-cols-2 lg:gap-x-20">
           {technologyCategories.map((category, index) => (
-            <Reveal key={category.id} delay={index * 0.05}>
-              <div className="card flex h-full flex-col px-5 py-7 md:px-7">
-                <p className="flex items-center gap-2.5 text-label font-medium uppercase text-muted">
-                  <Icon name={category.icon} size={14} className="shrink-0 text-accent" />
-                  {category.name}
-                </p>
+            <Reveal
+              key={category.id}
+              delay={index * 0.04}
+              className="border-t border-line pt-5"
+            >
+              <dt className="flex items-center gap-2.5 text-sm font-medium text-ink">
+                <Icon name={category.icon} size={16} className="shrink-0 text-accent" />
+                {category.name}
+              </dt>
 
-                <ul className="mt-4 flex flex-wrap gap-2.5">
-                  {category.items.map((item) => (
-                    <li key={item} className="flex">
-                      <ToolChip tool={toPlatformTool(item)} />
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <dd className="mt-4 flex flex-wrap gap-2">
+                {category.items.map((item) => (
+                  <ToolChip key={item} tool={toPlatformTool(item)} />
+                ))}
+              </dd>
             </Reveal>
           ))}
-        </div>
+        </dl>
       </Container>
     </Section>
   );

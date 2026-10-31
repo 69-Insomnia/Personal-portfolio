@@ -90,11 +90,10 @@ export function StatBlock({ stats }: { stats?: SeoStat[] }) {
 /**
  * Page-level questions and answers, as content.
  *
- * Deliberately **not** wrapped in `FAQPage` schema — Google retired FAQ rich
- * results for all sites on 2026-05-07, and `src/lib/structured-data.ts` already
- * documents why that node is absent from the graph. What is left is the part
- * that works: a question-shaped heading with a self-contained answer under it
- * is the shape answer engines extract, whether or not a rich result is attached.
+ * This renderer does not create schema itself. The page passes the same FAQ
+ * array to `faqPageNode`, so visible answers and structured data stay aligned.
+ * Google retired FAQ rich results for all sites on 2026-05-07, but the content
+ * remains useful to readers and answer engines.
  *
  * `<h3>` inside `<summary>` rather than a bare `<summary>`, so the questions
  * join the page's heading outline and a retrieval system can chunk on them.

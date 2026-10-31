@@ -11,7 +11,7 @@ export function NotFoundView() {
   return (
     <section className="flex min-h-[70vh] items-center border-b border-line pt-32">
       <Container>
-        <p className="text-label font-semibold uppercase text-accent">Error 404</p>
+        <p className="text-label font-semibold text-accent">Error 404</p>
         <h1 className="mt-6 max-w-2xl text-display font-medium">
           This page doesn&apos;t exist.
         </h1>

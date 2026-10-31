@@ -23,18 +23,18 @@ export function Expertise({ showAllServices = true, data }: ExpertiseProps) {
       <Container>
         <SectionHeading
           label="Expertise"
-          title="What I Do"
-          description="Seven things I do, and they overlap more than a list suggests. Most projects use three or four of them."
+          title="What I do"
+          description="Seven things, and they overlap more than a list suggests. Most projects use three or four of them."
           action={
             showAllServices ? (
-              <Button href="/services" variant="outline" showArrow className="self-start">
-                All Services
+              <Button href="/services" variant="ghost" showArrow className="self-start">
+                All services
               </Button>
             ) : null
           }
         />
 
-        <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {items.map((service, index) => (
             <Reveal key={service.slug} delay={index * 0.06} className="h-full">
               <ServiceCard service={service} />

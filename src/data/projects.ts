@@ -1,5 +1,6 @@
 import type { Project, ProjectCategory, ProjectFilter } from '@/types';
 
+/** Filter chips on the work grid. Order is the order they render in. */
 export const projectFilters: ProjectFilter[] = [
   'All',
   'Web Development',
@@ -10,6 +11,24 @@ export const projectFilters: ProjectFilter[] = [
 /**
  * Real project case studies, newest first.
  * Do not publish results, metrics or client names that are not real.
+ *
+ * ## TODO(results): the result line on every work card is empty
+ *
+ * `ProjectCard` renders `results[0]` as a large figure above the description —
+ * "2.4s LCP", "Lighthouse 98", "3× repeat orders" — and the case-study page has
+ * rendered `results` under a "Results" heading since it was written.
+ *
+ * Not one of the four projects below defines it. That is why the card looks
+ * slightly short of a beat, and it is deliberate rather than an oversight: a
+ * performance number on a page selling measurement is the first thing a careful
+ * buyer checks, and the one thing here that cannot be sourced.
+ *
+ * To fill them in, add to any project:
+ *
+ *     results: [{ label: 'Largest Contentful Paint', value: '2.4s' }],
+ *
+ * Only the first entry shows on the card; all of them show on the case study.
+ * Use a figure you measured and can produce on request.
  */
 export const projects: Project[] = [
   {
@@ -31,7 +50,7 @@ export const projects: Project[] = [
       'Built as a Next.js application, with Organization, WebSite and FAQPage JSON-LD injected through the framework\u2019s script pipeline. Services, work items and testimonials render from shared content so the catalogue stays consistent across sections, and the layout adapts from phone to desktop on the dark theme throughout.',
     marketing:
       'SEO is wired into the page metadata: a title and meta description aimed at "web design Nepal", "website design Kathmandu" and "SEO agency Nepal" queries, a matching keywords meta, robots set to index, follow, a canonical URL on the www domain and an Open Graph title for shared links. Structured data covers the organisation, the website and the FAQ page, while the blog and testimonials give searchers indexable depth beyond the homepage.',
-    link: 'https://drillthru.tech/',
+    link: 'https://www.drillthru.tech/',
     isPlaceholder: false,
   },
   {

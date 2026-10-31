@@ -1,36 +1,67 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
-import { Space_Grotesk } from 'next/font/google';
+import { Fraunces, Plus_Jakarta_Sans } from 'next/font/google';
 import { MotionConfig } from 'framer-motion';
 import { ConditionalChrome } from '@/components/layout/ConditionalChrome';
 import { resolveAnalytics } from '@/data/analytics';
 import { DEFAULT_OG_IMAGE, defaultSEO, identity, site } from '@/data/seo';
 import { getSiteSettings } from '@/lib/content';
-import { searchConsoleVerification } from '@/utils/metadata';
+import {
+  clampDescription,
+  clampTitle,
+  normalizeMetadataImage,
+  searchConsoleVerification,
+} from '@/utils/metadata';
 import { profile } from '@/data/profile';
 import './globals.css';
 
 /**
- * The site's only typeface.
+ * The site's two typefaces, on a strict split.
  *
- * Space Grotesk is a grotesque derived from Space Mono, which is where it gets
- * the clipped `R`, the single-storey `g` and the wide geometric bowls that the
- * rest of the design leans on. That same geometry is why it takes MORE negative
- * tracking as the size climbs, not less — see `fontSize` in
- * tailwind.config.ts, where the display steps are tightened and the tracked
- * uppercase micro-type is opened up.
+ * ## Fraunces — headings
  *
- * It covers the whole scale now. It was previously paired with Inter on a
- * strict size split (grotesque at 30px and up, Inter below), because two
- * grotesques at the same size read as an accident rather than a choice. One
- * face removes that hazard entirely, along with the job of keeping two files'
- * worth of comments in step about which one owns which size.
+ * A variable serif with optical sizing, used at 600 only. It carries the
+ * "premium" half of the brief: the high-contrast stroke and the soft terminals
+ * are what stop the page reading as another geometric-sans portfolio.
  *
- * Weight range is 300–700, which comfortably covers every weight the components
- * use (400 / 500 / 600 / 700) with no synthetic bolding.
+ * It is deliberately loaded at ONE weight. Fraunces' 900 with `SOFT`/`WONK`
+ * axes is the loud version of this face and would fight the restrained palette;
+ * 600 is the weight at which it still looks like a text serif at 2.5rem.
+ *
+ * Optical sizing is why the display steps in `tailwind.config.ts` take far less
+ * negative tracking than the previous face did — Fraunces already tightens its
+ * own large sizes, and stacking a grotesque's -0.028em on top of that reads
+ * cramped. See the note there.
+ *
+ * ## Plus Jakarta Sans — everything else
+ *
+ * Body, UI, labels. A humanist geometric with a tall x-height, which is what
+ * keeps 17px comfortable at the 68ch measure the brief asks for.
+ *
+ * Three weights, and no more: 400 body, 500 emphasis and nav, 600 for the
+ * small supporting labels. Each extra weight is a separate font file on the
+ * critical path, and this design has no use for a 700.
+ *
+ * ## Why the split matters
+ *
+ * Two faces at the same size read as an accident; a serif heading over a sans
+ * body reads as a decision. `font-display` and `font-sans` in the Tailwind
+ * theme are the only two ways to ask for either, and the base layer in
+ * globals.css already points every h1–h4 at the display face.
+ *
+ * Both use `display: 'swap'`, so text is legible in the fallback immediately
+ * rather than invisible until the webfont lands.
  */
-const spaceGrotesk = Space_Grotesk({
+const fraunces = Fraunces({
   subsets: ['latin'],
+  weight: ['600'],
+  variable: '--font-display',
+  display: 'swap',
+});
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
   variable: '--font-sans',
   display: 'swap',
 });
@@ -52,9 +83,15 @@ const spaceGrotesk = Space_Grotesk({
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
 
-  const title = `${settings.defaultMetaTitle ?? defaultSEO.title}${settings.titleSuffix ?? ''}`;
-  const description = settings.defaultMetaDescription ?? defaultSEO.description;
-  const ogImage = settings.defaultOgImage ?? DEFAULT_OG_IMAGE;
+  const title = clampTitle(
+    `${settings.defaultMetaTitle ?? defaultSEO.title}${settings.titleSuffix ?? ''}`,
+  );
+  const description = clampDescription(
+    settings.defaultMetaDescription ?? defaultSEO.description,
+  );
+  const ogImage = normalizeMetadataImage(
+    settings.defaultOgImage ?? DEFAULT_OG_IMAGE,
+  );
 
   return {
     metadataBase: new URL(site.url),
@@ -124,9 +161,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export const viewport: Viewport = {
-  // Must be literal — this is read before any CSS exists. Mirrors
-  // --color-paper; the site is light-only (no theme toggle), so one entry.
-  themeColor: '#ffffff',
+  // Must be literal — this is read before any CSS exists. Mirrors --color-paper
+  // (#FAF7F2); the site is light-only (no theme toggle), so one entry.
+  themeColor: '#FAF7F2',
 };
 
 /**
@@ -193,7 +230,11 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
    * `prefers-reduced-motion`.
    */
   return (
-    <html lang="en" className={spaceGrotesk.variable} data-scroll-behavior="smooth">
+    <html
+      lang="en"
+      className={`${fraunces.variable} ${plusJakartaSans.variable}`}
+      data-scroll-behavior="smooth"
+    >
       <body>
         <MotionConfig reducedMotion="user">
           <ConditionalChrome

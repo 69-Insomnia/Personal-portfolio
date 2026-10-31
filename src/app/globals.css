@@ -3,184 +3,201 @@
 @tailwind utilities;
 
 /* ---------------------------------------------------------------------------
-   Colour system
+   Palette
 
-   Luminance structure is deliberate and contrast-checked (ratios noted below).
-   The neutral ramp is WARM throughout — the previous palette paired a warm
-   paper (#fafaf8) with cool blue-greys (#55555f / #6f6f76), which is why the
-   greys never quite settled against the background.
+   Two layers, deliberately.
 
-   Three text tiers, each verified against --color-paper and --color-surface:
-     ink   16.7:1  headings, emphasis
-     muted  7.3:1  body copy, descriptions
-     faint  4.7:1  placeholders, meta
-   All three clear WCAG AA (4.5:1) for normal text.
+   1. PALETTE  — the raw brand values (`--bg`, `--primary`, `--accent`…). These
+      are the design's vocabulary and the only place a hex literal should
+      appear.
+   2. SEMANTIC — the role-based names components actually consume (`--color-paper`,
+      `--color-ink`, `--color-accent`…). Every one of these already existed
+      before this palette did, and they are pointed at the new values rather
+      than renamed.
+
+   That indirection is the whole migration strategy: 38 files across the
+   site — including the admin panel — say `bg-paper` / `text-ink` /
+   `border-line` / `text-accent`, and re-pointing the semantic layer re-themes
+   all of them with no per-component edit. Renaming the tokens would have meant
+   touching every one of those files and risking a silent miss.
+
+   ## Contrast, measured against --bg (#FAF7F2, L≈0.929)
+
+     ink    #1C1B19  15.0:1   headings, body
+     muted  #6B655C   5.0:1   secondary copy          (AA normal text ✓)
+     primary #14532D  8.5:1   links, buttons, labels   (AA normal text ✓)
+     white on primary 9.1:1   button labels            (AA normal text ✓)
+
+   `--accent` / marigold (#E8A317) is **2.0:1** and clears nothing. It is a
+   DECORATIVE token only — the offset shape behind the portrait, timeline dots,
+   short rules, icon fills. Never body text, never a link, and never the sole
+   affordance of a control. Where marigold needs to carry meaning as text,
+   use `--color-marigold-ink` (#7A5200, 6.4:1), which is the same hue read from
+   the dark end.
 --------------------------------------------------------------------------- */
 :root {
   color-scheme: light;
 
-  /* Surfaces */
-  --color-paper: #ffffff;
-  --color-subtle: #f4f3f0; /* alternate band, keeps depth without a border */
-  --color-surface: #ffffff;
-  --color-paper-blur: rgba(255, 255, 255, 0.82);
+  /* --- 1. Palette ------------------------------------------------------- */
+  --bg: #faf7f2;
+  --surface: #ffffff;
+  --border: #e7e0d5;
+  --text: #1c1b19;
+  --muted: #6b655c;
+  --primary: #14532d;
+  --primary-hover: #0f3f22;
+  --accent: #e8a317;
 
-  /* Text */
-  --color-ink: #1c1917;
-  --color-muted: #57534e;
-  --color-faint: #767068;
+  /* --- 2. Semantic surfaces -------------------------------------------- */
+  --color-paper: var(--bg);
+  --color-surface: var(--surface);
+  /* The alternate band. A half-step off --bg rather than a second colour, so a
+     striped page reads as one material catching the light differently. */
+  --color-subtle: #f3efe7;
+  /* Not alpha-based: Tailwind 3 cannot inject an alpha channel into a theme
+     colour declared as a bare var(), so `/82` modifiers silently drop the
+     utility and the header renders transparent. */
+  --color-paper-blur: rgba(250, 247, 242, 0.82);
 
-  /* Lines. `line` is decorative (dividers, card edges). `line-strong` is the
+  /* --- 2. Semantic text ------------------------------------------------- */
+  --color-ink: var(--text);
+  --color-muted: var(--muted);
+  --color-faint: #8a8378;
+
+  /* --- 2. Semantic lines ------------------------------------------------
+     `line` is decorative (dividers, card edges). `line-strong` is the
      accessible component boundary — form fields, anything a user must be able
-     to see the edge of. It is deliberately solid rather than alpha-based so its
-     ratio is predictable wherever it lands, and it clears the 3:1 required by
-     WCAG 1.4.11 (3.6:1 on paper, 3.4:1 on surface). */
-  --color-line: rgba(28, 25, 23, 0.12);
-  --color-line-strong: #8a837c;
+     to see the edge of — and clears the 3:1 WCAG 1.4.11 asks (3.5:1 here). */
+  --color-line: var(--border);
+  --color-line-strong: #9c9488;
 
-  /* Accent ramp — a full scale so hover/tint/soft states derive from one hue
-     instead of being hand-mixed.
+  /* --- 2. Semantic brand ------------------------------------------------
+     `accent` is the INTERACTIVE colour and is green. It was orange; the name
+     did not change, the value did, which is why every button, link, focus ring
+     and active state on the site moved to green without an edit.
 
-     Warm orange: vivid burnt orange on light surfaces, lifted amber-orange on
-     dark. The hue sits next to the warm stone neutrals rather than opposing
-     them, so the accent reads as part of the same material instead of a sticker
-     on top of it.
-
-     The theme aliases below are tuned so every text-bearing use clears WCAG AA
-     on paper: `accent` (700) is 4.96:1 on light paper, `accent-strong` (800)
-     is 7.0:1, and on dark paper the 400 step is 7.9:1. Buttons pair the ramp
-     with `on-accent` — white on 700 (5.18:1), deep brown on 400 (6.9:1).
-
-     NOTE: the numbered steps are theme-INVARIANT and tuned for light surfaces.
-     Reach for `accent` / `accent-strong` / `accent-soft` in components — those
-     are the theme-aware aliases and are re-pointed in `.dark`. Using e.g.
-     `bg-accent-700` directly would put a dark burnt orange on a dark page. The
-     mid steps are used literally in two places only — chart fills and tinted
-     bands — where they are fills rather than text. */
-  --color-accent-50: #fff7ed;
-  --color-accent-100: #ffedd5;
-  --color-accent-200: #fed7aa;
-  --color-accent-300: #fdba74;
-  --color-accent-400: #fb923c;
-  --color-accent-500: #f97316;
-  --color-accent-600: #ea580c;
-  --color-accent-700: #c2410c;
-  --color-accent-800: #9a3412;
-  --color-accent-900: #7c2d12;
-  --color-accent-950: #431407;
-
-  --color-accent: var(--color-accent-700);
-  --color-accent-strong: var(--color-accent-800);
-  --color-accent-soft: rgba(234, 88, 12, 0.1);
+     Marigold lives alongside it as a separate, deliberately scarce token. */
+  --color-accent: var(--primary);
+  --color-accent-strong: var(--primary-hover);
+  --color-accent-soft: rgba(20, 83, 45, 0.08);
   --color-on-accent: #ffffff;
 
-  /* Status. Kept in the same luminance band as the accent so no single status
-     colour shouts louder than the brand colour.
+  --color-marigold: var(--accent);
+  --color-marigold-soft: rgba(232, 163, 23, 0.16);
+  /* Text-safe marigold. See the contrast table above. */
+  --color-marigold-ink: #7a5200;
 
-     There is deliberately NO `--color-warning` here. The brand now owns orange,
-     and a warning token would have to be either orange (unreadable as "warning"
-     when it is also the accent) or red (already `danger`). Rather than ship a
-     token that has nowhere correct to point, it is gone. Re-add it only if the
-     accent ever leaves the warm end of the wheel. */
+  /* Green ramp. Only the flat tokens above are used by components today; the
+     ramp exists so a future hover/tint/soft state derives from one hue rather
+     than being hand-mixed. */
+  --color-accent-50: #f0f7f2;
+  --color-accent-100: #dcede1;
+  --color-accent-200: #bbdac5;
+  --color-accent-300: #8fc0a1;
+  --color-accent-400: #5c9e77;
+  --color-accent-500: #357a54;
+  --color-accent-600: #1f6340;
+  --color-accent-700: #14532d;
+  --color-accent-800: #0f3f22;
+  --color-accent-900: #0b321b;
+  --color-accent-950: #061e10;
+
+  /* --- 2. Status --------------------------------------------------------
+     Kept in the same luminance band as the accent so no single status colour
+     shouts louder than the brand. */
   --color-success: #15803d;
   --color-danger: #b91c1c;
   --color-info: #1d4ed8;
 
-  /* WhatsApp brand. Deliberately NOT re-pointed in `.dark` or the inverse band —
-     the green is the product's identity, not part of our palette, and it keeps
-     its meaning only if it is the same colour everywhere. The ink is a near-black
-     green so the label sits at ~8.4:1 on `--color-whatsapp` (white would be
-     under 2:1 here and unreadable). */
+  /* WhatsApp brand. Deliberately NOT re-pointed in `.dark` or the inverse band
+     — the green is the product's identity, not part of our palette, and it
+     keeps its meaning only if it is the same colour everywhere. The ink is a
+     near-black green so the label sits at ~8.4:1 on `--color-whatsapp`. */
   --color-whatsapp: #25d366;
   --color-whatsapp-hover: #1eb157;
   --color-whatsapp-ink: #062e19;
 
-  --color-ring: #ea580c;
+  --color-ring: var(--primary);
 
   /* Inverse band — deliberately dark in BOTH themes so it stays a feature band
-     rather than flipping with the page. Its content colours are identical in
-     both themes, so the band looks the same either way. */
-  --color-inverse: #0f0e0d;
-  --color-inverse-surface: #1a1817;
-  --color-inverse-raised: #232019;
-  --color-inverse-line: #2e2b28;
-  --color-inverse-ink: #f5f5f4;
-  --color-inverse-muted: #a8a29e;
-  --color-inverse-faint: #8f8880;
-  --color-inverse-accent: #fb923c;
-  --color-inverse-accent-strong: #fdba74;
-  --color-inverse-accent-soft: rgba(251, 146, 60, 0.14);
-  --color-inverse-on-accent: #431407;
+     rather than flipping with the page. Deep green rather than near-black, so
+     it belongs to the same family as `--primary`. */
+  --color-inverse: #0b2e1a;
+  --color-inverse-surface: #103a22;
+  --color-inverse-raised: #16492c;
+  --color-inverse-line: #1f5a37;
+  --color-inverse-ink: #f4f8f5;
+  --color-inverse-muted: #a8c4b3;
+  --color-inverse-faint: #8aab98;
+  --color-inverse-accent: #e8a317;
+  --color-inverse-accent-strong: #f0bb52;
+  --color-inverse-accent-soft: rgba(232, 163, 23, 0.16);
+  --color-inverse-on-accent: #3d2a00;
   --color-inverse-danger: #f87171;
 
   /* Modal scrim. A pre-mixed rgba rather than a `/95` opacity modifier on
-     `--color-inverse`, because Tailwind 3 cannot inject an alpha channel into
-     a theme colour declared as a bare `var()` — it drops the utility and the
-     overlay renders fully transparent. Same reason `--color-paper-blur`
-     exists. Dark in both themes, like the inverse band. */
-  --color-scrim: rgba(15, 14, 13, 0.94);
+     `--color-inverse` — see `--color-paper-blur` above for why. */
+  --color-scrim: rgba(11, 46, 26, 0.94);
 
-  /* Elevation. Warm-tinted shadows — a neutral-black shadow reads cold against
-     a warm page, and reads colder still now that the accent is orange. The
-     tint is a brown-black rather than the old neutral, so the shadow belongs to
-     the same material as everything above it. Deeper than the previous set:
-     the direction is scale-led, and a card that lifts needs a shadow with
-     enough reach that the lift reads as height rather than as a rendering bug. */
-  --shadow-xs: 0 1px 2px rgba(41, 24, 12, 0.05);
-  --shadow-sm: 0 1px 3px rgba(41, 24, 12, 0.08), 0 1px 2px rgba(41, 24, 12, 0.05);
-  --shadow-md: 0 6px 16px rgba(41, 24, 12, 0.1), 0 2px 4px rgba(41, 24, 12, 0.06);
-  --shadow-lg: 0 16px 40px rgba(41, 24, 12, 0.14), 0 4px 10px rgba(41, 24, 12, 0.07);
+  /* --- Elevation --------------------------------------------------------
+     ONE soft shadow, per the brief. `sm` and `md` are the same value on
+     purpose: the design has a single resting elevation, and a card that has to
+     look "more important" than its neighbour should earn that from size or
+     position, not from a deeper shadow. `lg` exists only for hover lift. */
+  --shadow-xs: 0 1px 2px rgba(28, 27, 25, 0.04);
+  --shadow-sm: 0 8px 30px rgba(28, 27, 25, 0.06);
+  --shadow-md: 0 8px 30px rgba(28, 27, 25, 0.06);
+  --shadow-lg: 0 12px 40px rgba(28, 27, 25, 0.1);
 
-  /* One radius for every card and inset — see the `.card` / `.inset` recipes. */
-  --radius-card: 0.75rem;
+  /* 16px — see the brief's 14–16px band. */
+  --radius-card: 1rem;
 }
 
+/* Inert today: `darkMode: 'class'` is configured in tailwind.config.ts but
+   nothing in the app ever applies `.dark`, so the site is light-only. Kept in
+   step with the token structure above so enabling it is a one-line change
+   rather than a re-derivation. */
 .dark {
   color-scheme: dark;
 
-  --color-paper: #0c0a09;
-  --color-subtle: #151311;
-  --color-surface: #1c1917;
-  --color-paper-blur: rgba(12, 10, 9, 0.78);
+  --color-paper: #0c1a12;
+  --color-subtle: #12241a;
+  --color-surface: #16291d;
+  --color-paper-blur: rgba(12, 26, 18, 0.78);
 
-  --color-ink: #f5f5f4;
-  --color-muted: #a8a29e;
-  --color-faint: #8f8880;
+  --color-ink: #f4f8f5;
+  --color-muted: #a8c4b3;
+  --color-faint: #8aab98;
 
-  --color-line: rgba(245, 245, 244, 0.13);
-  --color-line-strong: #6b6560;
+  --color-line: rgba(244, 248, 245, 0.13);
+  --color-line-strong: #6f8b7c;
 
-  /* Dark mode keeps the hue but climbs the ramp. Burnt orange at #c2410c on a
-     near-black page is nearly invisible; the 400 step is the same family read
-     from the other end, and clears 7.9:1 on paper. `accent-strong` goes
-     LIGHTER here rather than darker — on a dark surface, "more emphasis" means
-     more light, which is the opposite of the light theme. Buttons pair it with
-     the 950 step as `on-accent` (6.9:1). */
-  --color-accent: #fb923c;
-  --color-accent-strong: #fdba74;
-  --color-accent-soft: rgba(251, 146, 60, 0.14);
-  --color-on-accent: #431407;
+  /* On a dark page "more emphasis" means more light, which is the opposite of
+     the light theme. The 400 step is the same family read from the other end. */
+  --color-accent: #5c9e77;
+  --color-accent-strong: #8fc0a1;
+  --color-accent-soft: rgba(92, 158, 119, 0.16);
+  --color-on-accent: #061e10;
+
+  --color-marigold-ink: #f0bb52;
 
   --color-success: #4aa876;
   --color-danger: #f87171;
   --color-info: #7dabf8;
 
-  --color-ring: #fb923c;
+  --color-ring: #8fc0a1;
 
-  /* Paper is near-black here, so the band goes to true black with its inner
-     surfaces lifted ABOVE paper — that keeps it legible as a recessed region
-     instead of dissolving into the page. */
   --color-inverse: #000000;
-  --color-inverse-surface: #0f0e0d;
-  --color-inverse-raised: #171512;
-  --color-inverse-line: #2a2724;
+  --color-inverse-surface: #0f1a13;
+  --color-inverse-raised: #16241b;
+  --color-inverse-line: #24382b;
 
   --color-scrim: rgba(0, 0, 0, 0.95);
 
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.5);
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.45);
-  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.66), 0 4px 10px rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 8px 30px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
 }
 
 @layer base {
@@ -195,15 +212,23 @@
 
   body {
     @apply bg-paper font-sans text-ink antialiased;
+    /* 17px sits at the bottom of the brief's 17–18px band and is the size that
+       keeps 68ch a comfortable measure in Plus Jakarta Sans. */
+    font-size: 1.0625rem;
+    line-height: 1.65;
     text-rendering: optimizeLegibility;
   }
 
+  /* Fraunces, at 600. The heading face is a token decision, not a per-component
+     one — every h1–h4 inherits it, and anything that needs the display face
+     outside a heading asks for `font-display` explicitly. */
   h1,
   h2,
   h3,
   h4 {
+    @apply font-display;
+    font-weight: 600;
     text-wrap: balance;
-    font-weight: 500;
   }
 
   p {
@@ -216,8 +241,8 @@
   }
 
   ::selection {
-    background-color: var(--color-accent);
-    color: var(--color-on-accent);
+    background-color: var(--color-marigold);
+    color: var(--color-ink);
   }
 
   :focus-visible {
@@ -251,10 +276,9 @@
      ---------------------------------------------------------------------------
 
      `Reveal` and `RevealText` render their hidden state on the server, so every
-     animated block ships with `style="opacity:0"` — 68 of them on the home page
-     — and every display heading ships with `translateY(115%)` inside an
-     `overflow:hidden` parent. Framer Motion then animates them in once it
-     hydrates.
+     animated block ships with `style="opacity:0"` and every display heading
+     ships with `translateY(115%)` inside an `overflow:hidden` parent. Framer
+     Motion then animates them in once it hydrates.
 
      That is fine when the bundle loads and catastrophic when it does not, which
      is not hypothetical here: a module-scope throw in the client bundle once
@@ -289,8 +313,12 @@
     @apply fixed left-4 top-4 z-[100] not-sr-only;
   }
 
+  /* Sentence case, not the tracked uppercase this used to be. The uppercase
+     micro-label is the reference site's idiom (numbered service cards, slashed
+     feature lists) and it is the single most recognisable thing this design
+     needed to stop doing. */
   .eyebrow {
-    @apply inline-flex items-center gap-3 text-label font-medium uppercase text-muted;
+    @apply inline-flex items-center gap-2.5 text-sm font-medium text-accent;
   }
 
   /* The three surface roles, as named recipes rather than repeated class
@@ -299,26 +327,29 @@
      said which was which.
 
        Band   Full-bleed section background: `bg-paper` / `bg-subtle` on the
-              <Section> itself. Breaks up a seventeen-section scroll.
-       Card   Top-level content — projects, services, posts, the Technologies
-              panels. `surface` fill, a hairline, and it lifts on hover.
-       Inset  A panel nested INSIDE a card or band, like the Hero's tools strip.
-              `subtle` fill, no hairline, and it never lifts — it isn't a thing
-              you can click, so motion there would be decoration.
+              <Section> itself. Breaks up a long scroll.
+       Card   Top-level content — projects, services, posts, the Stack panels.
+              `surface` fill, a hairline, and one soft shadow. It lifts on hover.
+       Inset  A panel nested INSIDE a card or band. `subtle` fill, no hairline,
+              and it never lifts — it isn't a thing you can click, so motion
+              there would be decoration.
 
      Card and Inset share `--radius-card` so a card containing an inset still
      reads as a single object. Only Card gets `.card-interactive`; adding the
      pair to a component is the whole contract. */
   .card {
-    @apply rounded-card border border-line bg-surface;
+    @apply rounded-card border border-line bg-surface shadow-sm;
   }
 
   .card-interactive {
-    @apply transition-all duration-300 ease-out;
+    @apply transition-all duration-200 ease-out;
   }
 
+  /* Shadow only. This used to also snap `border-ink`, which on ivory reads as a
+     hard black outline appearing under the cursor — far too loud for a hover,
+     and it fought the single soft shadow doing the actual lift. */
   .card-interactive:hover {
-    @apply -translate-y-1 border-ink shadow-lg;
+    @apply -translate-y-1 border-line-strong shadow-lg;
   }
 
   .inset {
@@ -326,7 +357,7 @@
   }
 
   /* Re-points the token variables for everything inside, so the existing
-     primitives (Badge, Button, SkillCard, FlowChain, Section…) re-theme with no
+     primitives (Badge, Button, SkillCard, Section…) re-theme with no
      per-component changes. The `* { border-color: var(--color-line) }` rule in
      the base layer picks this up too, which is what makes plain `border-line`
      work inside the band. */
@@ -344,6 +375,8 @@
     --color-accent-strong: var(--color-inverse-accent-strong);
     --color-accent-soft: var(--color-inverse-accent-soft);
     --color-on-accent: var(--color-inverse-on-accent);
+    --color-marigold: var(--color-inverse-accent);
+    --color-marigold-ink: var(--color-inverse-accent-strong);
     --color-danger: var(--color-inverse-danger);
     --color-info: #7dabf8;
     --color-ring: var(--color-inverse-accent);
@@ -354,9 +387,10 @@
 }
 
 @layer utilities {
-  .dot-grid {
-    background-image: radial-gradient(var(--color-line) 1px, transparent 1px);
-    background-size: 24px 24px;
+  /* The brief's 68ch measure. A named utility rather than a `max-w-[68ch]`
+     escape hatch so the prose width is one decision, not a repeated literal. */
+  .measure {
+    max-width: 68ch;
   }
 
   .no-scrollbar {

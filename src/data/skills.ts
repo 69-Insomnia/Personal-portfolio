@@ -82,26 +82,20 @@ export function toPlatformTool(name: string): PlatformTool {
   };
 }
 
-/**
- * The Hero dashboard's "platforms & tools" strip.
+/*
+ * `platformTools` used to live here: the flat, ten-item strip of storefront,
+ * code and measurement chips that sat inside the hero's dashboard panel.
  *
- * Ordered by how the Hero's owner thinks about them — storefront, then code,
- * then the measurement stack — rather than alphabetically, and the same ten
- * chips the Hero has always carried.
+ * It went when the hero was rebuilt as a split layout. The strip was the
+ * hero's second logo row and its label, "Platforms & Tools I Work With", was
+ * the reference site's section heading almost word for word — see the note in
+ * `src/sections/Technologies`.
+ *
+ * A flat list of ten also had no grouping in it, which is the one thing the
+ * Stack section is for: "Shopify" and "Search Console" are not the same kind of
+ * answer, and a single row of pills cannot say so. `technologyCategories` below
+ * is the grouped version and is the only tool list the site now renders.
  */
-export const platformTools: PlatformTool[] = [
-  'Shopify',
-  'WooCommerce',
-  'WordPress',
-  'Next.js',
-  'PHP',
-  'Google Ads',
-  'Meta Ads',
-  'Analytics',
-  'Tag Manager',
-  'Search Console',
-].map(toPlatformTool);
-
 export const technologyCategories: TechnologyCategory[] = [
   {
     id: 'frontend',
@@ -242,24 +236,16 @@ export const aiSearchCapabilities: string[] = [
   'AI Crawler Access',
 ];
 
-export const growthFlowSteps: string[] = [
-  'Website',
-  'SEO',
-  'Traffic',
-  'Conversion',
-  'Customer',
-  'Growth',
-];
-
-/**
- * The one flow the merged Services band shows. The old page ran three of these
- * (search, paid, ecommerce) in three separate sections, which said the same
- * thing three times — a customer walks one path, not three.
+/*
+ * `growthFlowSteps` and `serviceFlowSteps` used to live here — the six- and
+ * five-step chains that `FlowChain` rendered inside the Services and Approach
+ * bands. Both sections now draw their own process: Services sells three
+ * services as cards, and Approach is a three-step timeline with a connecting
+ * line.
+ *
+ * The component went with them. It rendered its arrow connectors as `<li>`
+ * elements inside the same `<ol>` as the steps, so a six-step chain announced
+ * to a screen reader as an eleven-item list. Nothing consumed the two arrays
+ * afterwards, and an unused export that *looks* like the process definition is
+ * a trap for whoever edits the process next.
  */
-export const serviceFlowSteps: string[] = [
-  'Website',
-  'Search',
-  'Ads',
-  'Conversion',
-  'Repeat Customer',
-];

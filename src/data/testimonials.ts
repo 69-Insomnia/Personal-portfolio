@@ -1,46 +1,92 @@
 import type { Testimonial } from '@/types';
 
-/**
- * Client project cards for the "What Clients Say" section.
- * Content is a short factual description of each delivered project — no
- * invented quotes, metrics or names. Replace content with real client
- * words whenever they are available.
- */
+/* ============================================================================
+ * NOTHING IN THIS FILE IS A QUOTE YET. ALL FOUR ARE WAITING ON YOU.
+ * ============================================================================
+ *
+ * These four entries used to hold a factual summary of what was delivered —
+ * "Agency website delivered on Next.js: services, work showcase…" — and the
+ * section rendered that inside a `<blockquote>` with a quotation mark above it.
+ * Nobody said those sentences. They described the work accurately, which is
+ * exactly what made them dangerous: they read as client testimony while being
+ * the author's own copy.
+ *
+ * ## What to fill in
+ *
+ * For each entry below, replace `quote: null` with the client's own sentence,
+ * verbatim. Do not tidy it up — a slightly rough sentence that someone actually
+ * wrote is worth more than a polished one that nobody did. Then fill `name`
+ * (the person) and `role` (their job title).
+ *
+ * The section renders an entry ONLY when it has both a `quote` and a `name`.
+ * Until then the card is invisible, and if none of the four are filled the
+ * whole Testimonials band hides itself rather than showing empty boxes.
+ *
+ * ## The project facts that used to live here are not lost
+ *
+ * All four clients are also the four case studies in `src/data/projects.ts`, in
+ * far more detail than the summaries that were here — overview, challenge,
+ * approach, development and marketing. Nothing was deleted that is not already
+ * written up properly on `/work/<slug>`.
+ *
+ * ## Where the quote comes from
+ *
+ * Ask. A two-line WhatsApp message — "what would you say this did for the
+ * store?" — gets a usable sentence more often than a feedback form does. If a
+ * client would rather not be named, drop the entry rather than anonymising it
+ * into "a client in Kathmandu", which reads as invented even when it is not.
+ * ========================================================================= */
+
 export const testimonials: Testimonial[] = [
   {
     id: 'drillthru',
-    name: 'DrillThru',
-    role: 'Web Design & SEO',
-    company: 'drillthru.tech',
-    content:
-      'Agency website delivered on Next.js: services, work showcase, testimonials, blog and FAQ, with organization, website and FAQ structured data wired in for search.',
+    quote: null, // TODO(quote): verbatim sentence from someone at DrillThru.
+    name: '', // TODO(name): the person who said it.
+    role: '', // TODO(role): their job title, e.g. "Founder".
+    company: 'DrillThru',
     avatar: '/images/clients/drillthru.png',
   },
   {
     id: 'trip-zone',
-    name: 'Trip Zone Travel & Tours',
-    role: 'Web Development',
-    company: 'trip-zone-travel-tours.vercel.app',
-    content:
-      'Travel site with a mega-dropdown tours catalogue, package cards carrying location, route and price detail, trust stats and a floating WhatsApp booking path on a green-and-navy identity.',
+    quote: null, // TODO(quote): verbatim sentence from Trip Zone.
+    name: '', // TODO(name): the person who said it.
+    role: '', // TODO(role): their job title.
+    company: 'Trip Zone Travel & Tours',
     avatar: '/images/clients/tripzone.png',
   },
   {
     id: 'starglobalvision',
-    name: 'Star Global Vision',
-    role: 'Web Development',
-    company: 'starglobalvision.com',
-    content:
-      'Consultancy website covering fourteen destinations, test-prep courses, success stories and a free-counselling booking flow, built in React with business structured data for search.',
+    quote: null, // TODO(quote): verbatim sentence from Star Global Vision.
+    name: '', // TODO(name): the person who said it.
+    role: '', // TODO(role): their job title.
+    company: 'Star Global Vision',
     avatar: '/images/clients/starglobalvision.png',
   },
   {
     id: 'poms-penthouse',
-    name: "POM's Penthouse",
-    role: 'Web Development',
-    company: 'pomspenthouse.com',
-    content:
-      'Mobile-first booking site for a Lakeside, Pokhara residence: apartment comparison with amenities and nightly rates, photo gallery and direct WhatsApp reservations.',
+    quote: null, // TODO(quote): verbatim sentence from POM's Penthouse.
+    name: '', // TODO(name): the person who said it.
+    role: '', // TODO(role): their job title.
+    company: "POM's Penthouse",
     avatar: '/images/clients/poms-penthouse.png',
   },
 ];
+
+/**
+ * The entries that are safe to publish: a real quote, attributed to a named
+ * person.
+ *
+ * Exported rather than inlined in the section so that any future consumer —
+ * a `/testimonials` page, a case-study sidebar — applies the same rule without
+ * having to remember it. The name check is what stops a half-finished entry
+ * (quote supplied, attribution forgotten) from going live as an anonymous
+ * blockquote, which reads worse than no quote at all.
+ */
+export function publishableTestimonials(items: Testimonial[] = testimonials): Testimonial[] {
+  return items.filter(
+    (item) =>
+      typeof item.quote === 'string' &&
+      item.quote.trim().length > 0 &&
+      item.name.trim().length > 0,
+  );
+}

@@ -51,7 +51,7 @@ export default function Error({
   return (
     <section className="flex min-h-[70vh] items-center border-b border-line pt-32">
       <Container>
-        <p className="text-label font-semibold uppercase text-accent">Something went wrong</p>
+        <p className="text-label font-semibold text-accent">Something went wrong</p>
         <h1 className="mt-6 max-w-2xl text-display font-medium">
           This page hit an error.
         </h1>

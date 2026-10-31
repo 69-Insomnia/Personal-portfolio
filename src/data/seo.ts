@@ -38,6 +38,7 @@ import { isoDate } from '@/utils/dates';
  * but a per-deploy origin in a sitemap is not something to opt into.
  */
 const VERCEL_ORIGIN_VARS = ['VERCEL_PROJECT_PRODUCTION_URL', 'VERCEL_URL'] as const;
+const PRODUCTION_ORIGIN = 'https://dipendraguragain.tech';
 
 function vercelOrigin(): string | undefined {
   for (const name of VERCEL_ORIGIN_VARS) {
@@ -118,8 +119,6 @@ function resolveSiteUrl(): string {
   const vercel = vercelOrigin();
   if (vercel) return vercel;
 
-  if (isBrowser) return window.location.origin;
-
   /**
    * The build-failure guard applies only to a hosted build.
    *
@@ -148,6 +147,13 @@ function resolveSiteUrl(): string {
         'from it. See .env.example.',
     );
   }
+
+  // A local production build has no Vercel host variables. Never let a
+  // developer's localhost `.env.local` become a canonical, sitemap or schema
+  // origin in that build; use this site's verified production domain instead.
+  if (isProduction) return PRODUCTION_ORIGIN;
+
+  if (isBrowser) return window.location.origin;
 
   return 'http://localhost:3000';
 }
@@ -240,12 +246,12 @@ export const defaultSEO: SEOData = {
 export const homeSEO: SEOData = {
   title: 'Ecommerce Growth Specialist in Kathmandu | Dipendra Guragain',
   description:
-    'Dipendra Guragain is an ecommerce growth specialist in Kathmandu. Ecommerce SEO, Meta & Google Ads, and Shopify/WooCommerce store builds that turn visitors into customers.',
+    'Ecommerce growth specialist in Kathmandu, Nepal. Dipendra Guragain helps stores grow with SEO, paid ads, and Shopify or WooCommerce builds focused on sales.',
   canonical: `${site.url}/`,
 };
 
 export const aboutSEO: SEOData = {
-  title: `About | Web Developer & SEO in Kathmandu, Nepal`,
+  title: 'About Dipendra Guragain | Ecommerce SEO in Kathmandu',
   description:
     'Kathmandu-based web developer working across React, Next.js, search and paid media. Where I have worked, what I studied, and how I approach a project.',
   keywords: ['web developer Kathmandu', 'React developer Nepal', 'SEO consultant Nepal'],
@@ -255,7 +261,7 @@ export const aboutSEO: SEOData = {
 export const workSEO: SEOData = {
   title: `Work | Web & Ecommerce Projects in Nepal | ${profile.name}`,
   description:
-    'Websites, booking systems and ecommerce builds for businesses in Nepal, including DrillThru, Trip Zone, Star Global Vision and POM\'s Penthouse.',
+    'Projects for Nepal businesses: web and ecommerce work for DrillThru, Trip Zone, Star Global Vision and POM\'s Penthouse. Explore the goals, build and SEO approach.',
   keywords: ['web design Nepal', 'ecommerce website Nepal', 'website portfolio Nepal'],
   canonical: `${site.url}/work`,
 };
@@ -306,17 +312,17 @@ export const pricingSEO: SEOData = {
 };
 
 export const blogSEO: SEOData = {
-  title: 'Insights | SEO, Ecommerce & Web Development | Dipendra Guragain',
+  title: 'SEO & Ecommerce Insights in Nepal | Dipendra Guragain',
   description:
-    'Writing on technical SEO, ecommerce, web development and paid campaigns, mostly worked up from problems that showed up in real projects.',
+    'Writing on technical SEO, ecommerce, web development and paid campaigns, mostly worked up from real project problems and decisions made on builds across Nepal.',
   keywords: ['SEO blog Nepal', 'ecommerce tips', 'technical SEO'],
   canonical: `${site.url}/blog`,
 };
 
 export const contactSEO: SEOData = {
-  title: `Contact | Web Developer & SEO in Nepal | ${profile.name}`,
+  title: 'Contact Dipendra | Ecommerce Growth in Kathmandu, Nepal',
   description:
-    'Have a project in mind? Send a short note about what you are trying to build or fix, and you will get a reply with the questions I still need answered.',
+    'Contact Dipendra Guragain in Kathmandu, Nepal about ecommerce growth, SEO, websites or paid campaigns. Share your project and get a practical next step.',
   keywords: ['hire web developer Nepal', 'contact SEO specialist Nepal'],
   canonical: `${site.url}/contact`,
 };
@@ -400,9 +406,14 @@ export function withSeoMeta(base: SEOData, meta: SeoMeta | undefined): SEOData {
  * result will display.
  */
 export function projectSEO(project: Project, meta?: SeoMeta): SEOData {
+  const title =
+    project.title.length < 12
+      ? `${project.title} Website Case Study | ${project.category} Nepal`
+      : `${project.title} Case Study | ${project.category} in Nepal`;
+
   return withSeoMeta(
     {
-      title: `${project.title} Case Study | ${project.category} in Nepal`,
+      title,
       description: project.description,
       keywords: [project.title, `${project.category} Nepal`, ...project.technologies],
       canonical: `${site.url}/work/${project.slug}`,
@@ -427,13 +438,26 @@ export function projectSEO(project: Project, meta?: SeoMeta): SEOData {
  */
 export function serviceSEO(service: Service, meta?: SeoMeta): SEOData {
   const base = service.title.replace(/\s+(Services|Specialist)$/i, '');
+  let description = service.description.replace(/\s+/g, ' ').trim();
+
+  // A few CMS descriptions are a little short for a complete search snippet.
+  // Extend them with the true service area, not generic promotional wording.
+  if (description.length < 140) {
+    if (/kathmandu/i.test(description) && !/nepal/i.test(description)) {
+      description = `${description.replace(/[.!?]+$/, '')}, serving Nepal.`;
+    } else if (/nepal/i.test(description) && !/kathmandu/i.test(description)) {
+      description = `${description} Based in Kathmandu.`;
+    } else {
+      description = `${description} Based in Kathmandu, Nepal.`;
+    }
+  }
 
   return withSeoMeta(
     {
       // `seoTitle` first: one service targets a city-level query that the
       // generic pattern cannot express. See the field's note in `types`.
-      title: service.seoTitle ?? `${service.title} in Nepal | ${profile.name}`,
-      description: service.shortDescription,
+      title: service.seoTitle ?? `${service.title} in Kathmandu, Nepal | ${profile.name}`,
+      description,
       keywords: [
         `${service.title} Nepal`,
         `${service.title} Kathmandu`,

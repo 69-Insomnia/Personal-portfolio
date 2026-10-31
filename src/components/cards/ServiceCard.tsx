@@ -2,54 +2,58 @@
 
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { Card } from '@/components/ui/Card';
 import { Icon } from '@/components/common/Icon';
 import type { Service } from '@/types';
 
 export function ServiceCard({ service }: { service: Service }) {
-  /* Four, not six. At six the line ran long enough to wrap twice, and the
-     overflow notice was appended to the end of it — so "+3 more" landed in the
-     same visual voice as the capabilities and as the title above them, and the
-     card lost its reading order. Four reads as a sample of the work; the count
-     of what is left is stated underneath instead of being tailed onto the
-     run-on. */
-  const visibleCapabilities = service.capabilities.slice(0, 4);
-  const hiddenCount = service.capabilities.length - visibleCapabilities.length;
+  /* Three, not four. At four the tags wrapped to a second row on the narrower
+     columns and the cards in a row stopped lining up; three fits one line at
+     every breakpoint the grid uses. The full capability list is on the service
+     page, which is where someone comparing offerings will go anyway. */
+  const visibleCapabilities = service.capabilities.slice(0, 3);
 
   return (
-    <Link
-      href={`/services/${service.slug}`}
-      className="card card-interactive group flex h-full flex-col p-6 md:p-8"
-    >
-      <div className="flex items-start justify-between">
-        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent-soft text-accent transition-all duration-500 ease-out group-hover:bg-accent group-hover:text-on-accent group-hover:scale-105">
-          <Icon name={service.icon} size={18} />
+    <Card as="article" interactive className="group h-full">
+      <Link
+        href={`/services/${service.slug}`}
+        className="flex h-full flex-col p-6 md:p-7"
+      >
+        {/*
+          The two-digit index that used to sit opposite this icon is gone — the
+          redesign drops numbered labels site-wide. See the note in
+          `src/components/ui/SectionLabel`.
+        */}
+        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent-soft text-accent transition-colors duration-200 group-hover:bg-accent group-hover:text-on-accent">
+          <Icon name={service.icon} size={20} />
         </span>
-        <span className="text-label font-semibold text-muted transition-colors duration-300 group-hover:text-accent">
-          {service.index}
+
+        <h3 className="mt-6 font-display text-h3">{service.title}</h3>
+
+        <p className="mt-3 flex-1 leading-relaxed text-muted">
+          {service.shortDescription}
+        </p>
+
+        <ul className="mt-6 flex flex-wrap gap-2">
+          {visibleCapabilities.map((capability) => (
+            <li
+              key={capability}
+              className="rounded-full border border-line px-3 py-1 text-label text-muted"
+            >
+              {capability}
+            </li>
+          ))}
+        </ul>
+
+        <span className="mt-6 inline-flex items-center gap-1.5 text-[15px] font-medium text-accent">
+          See what&apos;s included
+          <ArrowRight
+            size={15}
+            aria-hidden
+            className="transition-transform duration-200 ease-out group-hover:translate-x-1"
+          />
         </span>
-      </div>
-
-      <h3 className="mt-7 text-h3">{service.title}</h3>
-
-      <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">
-        {service.shortDescription}
-      </p>
-
-      <p className="mt-5 text-sm leading-relaxed text-muted">
-        {visibleCapabilities.join(' · ')}
-      </p>
-      {hiddenCount > 0 ? (
-        <p className="mt-1.5 text-xs text-faint">+{hiddenCount} more</p>
-      ) : null}
-
-      <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-ink transition-colors duration-300 group-hover:text-accent">
-        Explore service
-        <ArrowRight
-          size={15}
-          aria-hidden
-          className="transition-transform duration-300 ease-out group-hover:translate-x-1"
-        />
-      </span>
-    </Link>
+      </Link>
+    </Card>
   );
 }

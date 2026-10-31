@@ -41,14 +41,14 @@ export default function ContactPage() {
               wherever you are.
             </p>
             <p className="mt-4 flex items-center gap-2.5 text-sm text-muted">
-              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />
-              {profile.availabilityText}
+              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-marigold" />
+              {profile.location} · {profile.availabilityText}
             </p>
           </Reveal>
         </Container>
       </Section>
 
-      <Contact />
+      <Contact showHeading={false} />
       <FAQ />
     </>
   );

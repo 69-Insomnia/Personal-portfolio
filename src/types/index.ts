@@ -21,6 +21,13 @@ export interface Profile {
   /** Circular brand avatar shown next to the name (navbar, menu, footer). */
   avatar: string;
   profileImage: string;
+  /**
+   * Background-removed variant of `profileImage`, transparent PNG, used by the
+   * hero portrait so the figure can rest flush on the cream card. Optional: the
+   * hero falls back to `profileImage` when it is unset, so an install without
+   * the cut-out renders a framed photo rather than a broken image.
+   */
+  profileImageCutout?: string;
   resumeUrl?: string;
   email?: string;
   /** Display format, e.g. '+977-9840814142'. Digits are used for the wa.me link. */
@@ -399,12 +406,37 @@ export interface EducationItem {
   isPlaceholder?: boolean;
 }
 
+/**
+ * A client's own words, attributed.
+ *
+ * ## Why `quote` is nullable
+ *
+ * This started as a required `content: string` holding a factual description of
+ * the work delivered. That is not a testimonial — it is a project summary in
+ * the shape of one, and rendered inside a `<blockquote>` with a quotation mark
+ * above it, it read as though a client had said it. On a page whose entire
+ * pitch is measured honesty, a paraphrased client voice is the most expensive
+ * thing to get caught doing.
+ *
+ * `quote` is therefore null until someone supplies the verbatim sentence, and
+ * the section renders only entries that have one. With no quotes anywhere the
+ * block hides itself entirely rather than showing four cards of prose nobody
+ * said. See `src/data/testimonials.ts` for the standing TODOs.
+ *
+ * `name`, `role` and `company` are the attribution the brief asks for: a
+ * person, their job title, and where they work — in that order, because "Jane
+ * Smith, Head of Ecommerce · Acme" is how a reader weights the sentence above
+ * it.
+ */
 export interface Testimonial {
   id: string;
+  /** The client's words, verbatim. `null` until supplied — never paraphrased. */
+  quote: string | null;
+  /** The person who said it. */
   name: string;
+  /** Their job title. */
   role: string;
   company?: string;
-  content: string;
   avatar?: string;
 }
 
@@ -436,6 +468,8 @@ export interface BlogPost {
    * for a retrieval system to chunk on.
    */
   content?: string[];
+  /** Short editorial Q&A rendered on the article and included in its schema. */
+  faqs?: FAQ[];
   tags?: string[];
   isPlaceholder?: boolean;
   /** ISO-8601 last-edit timestamp from Supabase; absent on static fallback data. */

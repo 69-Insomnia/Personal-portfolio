@@ -32,7 +32,7 @@ export function Education() {
                       <p className="text-sm font-medium text-ink">{item.institution}</p>
                     </div>
                     <div className="md:col-span-3 md:justify-self-end">
-                      <span className="text-label font-semibold uppercase text-muted">
+                      <span className="text-label font-semibold text-muted">
                         {item.year}
                       </span>
                     </div>

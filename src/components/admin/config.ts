@@ -321,10 +321,21 @@ export const COLLECTIONS: Record<string, Collection> = {
     pk: 'id',
     fields: [
       { name: 'id', label: 'ID', type: 'text', pk: true, required: true, placeholder: 'drillthru' },
-      { name: 'name', label: 'Name', type: 'text', required: true },
-      { name: 'role', label: 'Role line', type: 'text', required: true, placeholder: 'Web Development · drillthru.tech' },
+      { name: 'name', label: 'Client name', type: 'text', required: true, placeholder: 'The person who said it — not the company' },
+      { name: 'role', label: 'Their role', type: 'text', required: true, placeholder: 'Head of Ecommerce' },
       { name: 'company', label: 'Company (optional)', type: 'text' },
-      { name: 'content', label: 'Content', type: 'textarea', required: true },
+      {
+        /* The stored column is still `content`; the label is what the section
+           actually treats it as. Leaving it required (and calling it "Content")
+           is how the four rows in this table came to hold project summaries
+           that rendered inside quotation marks. An empty cell now means "no
+           quote yet" and hides the card, which is the correct default. */
+        name: 'content',
+        label: 'Quote — the client’s own words, verbatim',
+        type: 'textarea',
+        required: false,
+        placeholder: 'Leave empty until you have a real quote. Do not paraphrase.',
+      },
       { name: 'avatar', label: 'Logo / avatar path or URL', type: 'text', placeholder: '/images/clients/x.png' },
       publishedField,
       sortField,

@@ -26,7 +26,7 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
     <>
       <JsonLd graph={[breadcrumbNode(items)]} />
       <nav aria-label="Breadcrumb" className={className}>
-        <ol className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-label font-medium uppercase text-muted">
+        <ol className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-label font-medium text-muted">
           {items.map((item, index) => {
             const isCurrent = index === items.length - 1;
 

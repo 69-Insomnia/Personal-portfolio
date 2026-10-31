@@ -9,6 +9,7 @@ import { X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { WhatsAppIcon } from '@/components/common/WhatsAppIcon';
 import { mainNavigation } from '@/data/navigation';
+import { identity } from '@/data/seo';
 import { profile } from '@/data/profile';
 
 interface MobileMenuProps {
@@ -133,8 +134,8 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                   <span className="text-[15px] font-semibold leading-tight tracking-tight">
                     {profile.name}
                   </span>
-                  <span className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">
-                    {profile.title}
+                  <span className="mt-0.5 text-xs font-medium text-muted">
+                    {identity.role}
                   </span>
                 </span>
               </span>
@@ -166,13 +167,14 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                     <Link
                       href={item.href}
                       onClick={onClose}
-                      className="group flex items-center justify-between py-5"
+                      className="group flex min-h-[44px] items-center py-5"
                     >
-                      <span className="text-2xl font-medium tracking-tight transition-colors group-hover:text-accent">
+                      {/* The two-digit ordinal that used to sit on the right of
+                          this row is gone. It numbered the menu against the
+                          reference site's numbered service cards, and it told a
+                          reader nothing the list order did not. */}
+                      <span className="font-display text-2xl font-semibold text-ink transition-colors group-hover:text-accent">
                         {item.label}
-                      </span>
-                      <span className="text-label font-semibold text-muted transition-colors group-hover:text-accent">
-                        {String(index + 1).padStart(2, '0')}
                       </span>
                     </Link>
                   </motion.li>
@@ -185,21 +187,21 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                 transition={{ delay: 0.4, duration: 0.45, ease: 'easeOut' }}
                 className="mt-8"
               >
-                <Button href="/contact" size="lg" showArrow className="w-full">
-                  Let&apos;s Work Together
-                </Button>
                 {profile.whatsapp ? (
                   <Button
                     href={`https://wa.me/${profile.whatsapp.replace(/\D/g, '')}`}
                     variant="whatsapp"
                     size="lg"
-                    className="mt-3 w-full"
-                    ariaLabel={`Chat on WhatsApp at ${profile.whatsapp}`}
+                    className="w-full"
+                    ariaLabel={`Message me on WhatsApp at ${profile.whatsapp}`}
                   >
-                    <WhatsAppIcon size={17} className="mr-2" />
-                    Chat on WhatsApp
+                    <WhatsAppIcon size={17} className="mr-2" aria-hidden />
+                    Message me on WhatsApp
                   </Button>
                 ) : null}
+                <Button href="/contact" size="lg" showArrow className="mt-3 w-full">
+                  Start a project
+                </Button>
                 <p className="mt-6 text-sm text-muted">{profile.availabilityText}</p>
               </motion.div>
             </nav>

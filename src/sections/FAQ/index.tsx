@@ -16,8 +16,8 @@ export function FAQ() {
       <Container>
         <SectionHeading
           section="faq"
-          title="Questions, Answered"
-          description="A quick overview of how I work, what I do and how a project usually starts."
+          title="Questions, answered"
+          description="The ones that actually arrive by email, in the order they tend to."
         />
 
         <Reveal delay={0.05}>

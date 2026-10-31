@@ -40,6 +40,7 @@ const [locality = profile.location, country = 'Nepal'] = profile.location
   .map((part) => part.trim());
 
 const COUNTRY_CODE = 'NP';
+const absoluteImageUrl = (value: string): string => new URL(value, `${site.url}/`).toString();
 
 /**
  * The skills this person is claiming, and each one is backed by something a
@@ -121,7 +122,7 @@ export function personNode(overrides: PersonOverrides = {}): Node {
     jobTitle: jobTitle || identity.role,
     description: profile.description,
     url: site.url,
-    image: `${site.url}${profile.profileImage}`,
+    image: absoluteImageUrl(profile.profileImage),
     email: `mailto:${profile.email}`,
     ...(identity.telephone ? { telephone: identity.telephone } : {}),
     address: {
@@ -201,7 +202,7 @@ export function professionalServiceNode(): Node {
     name: `${identity.name} – ${identity.role}`,
     description: profile.description,
     url: site.url,
-    image: `${site.url}${profile.profileImage}`,
+    image: absoluteImageUrl(profile.profileImage),
     founder: { '@id': personId },
     ...(identity.telephone ? { telephone: identity.telephone } : {}),
     ...(identity.email ? { email: `mailto:${identity.email}` } : {}),
@@ -251,7 +252,7 @@ export function articleNode(post: BlogPost): Node {
        purely to satisfy the shape of Google's Article example would describe a
        business that does not exist. `publisher` accepts either. */
     publisher: { '@id': personId },
-    image: `${site.url}${post.image}`,
+    image: absoluteImageUrl(post.image),
     articleSection: post.category,
     ...(post.tags && post.tags.length > 0 ? { keywords: post.tags.join(', ') } : {}),
     ...(published ? { datePublished: published } : {}),
@@ -433,7 +434,7 @@ export function projectNode(project: Project): Node {
     description: project.description,
     url,
     isPartOf: { '@id': websiteId },
-    image: `${site.url}${project.image}`,
+    image: absoluteImageUrl(project.image),
     creator: { '@id': personId },
     ...(project.year ? { dateCreated: project.year } : {}),
     ...(project.technologies.length > 0 ? { keywords: project.technologies.join(', ') } : {}),

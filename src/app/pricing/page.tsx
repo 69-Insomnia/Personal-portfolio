@@ -55,9 +55,9 @@ function TierCard({ tier }: { tier: PricingTier }) {
       <div className="mt-6 border-t border-line pt-5">
         {price ? (
           <p className="flex flex-wrap items-baseline gap-x-2">
-            <span className="text-label font-semibold uppercase text-muted">from</span>
+            <span className="text-label font-semibold text-muted">from</span>
             <span className="text-2xl font-semibold tracking-tight">{price}</span>
-            <span className="text-label uppercase text-muted">{tier.unit}</span>
+            <span className="text-label text-muted">{tier.unit}</span>
           </p>
         ) : (
           <p className="text-lead font-medium">Contact for a quote</p>

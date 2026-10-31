@@ -42,6 +42,35 @@ interface RedirectRow {
   created_at: string;
 }
 
+/** Reject a redirect that would add a chain or create a cycle. */
+function redirectProblem(
+  from: string,
+  to: string,
+  rows: Array<Pick<RedirectRow, 'from_path' | 'to_path'>>,
+): string | null {
+  if (from === to) return 'A path cannot redirect to itself.';
+
+  const targets = new Map(rows.map((row) => [row.from_path, row.to_path]));
+  const visited = new Set<string>([from]);
+  let destination = to;
+
+  while (targets.has(destination)) {
+    if (visited.has(destination)) return 'This redirect would create a loop.';
+    visited.add(destination);
+    destination = targets.get(destination)!;
+  }
+
+  if (destination !== to) {
+    return `Destination ${to} already redirects. Use its final destination, ${destination}, to avoid a chain.`;
+  }
+
+  if (rows.some((row) => row.to_path === from)) {
+    return `Existing redirects point to ${from}. Update those destinations before redirecting this path, to avoid a chain.`;
+  }
+
+  return null;
+}
+
 /**
  * Brings a hand-typed path into the shape the database will accept.
  *
@@ -125,15 +154,8 @@ export function RedirectsManager() {
     const fromProblem = pathProblem(normalizedFrom, { allowRoot: false });
     const toProblem = pathProblem(normalizedTo, { allowRoot: true });
 
-    /**
-     * A redirect from a path to itself is the one entry that is worse than
-     * useless — the browser is sent to the address it already asked for and
-     * reports `ERR_TOO_MANY_REDIRECTS`. Catching it here is cheaper than
-     * finding it in a browser.
-     */
-    const loop = normalizedFrom === normalizedTo ? 'A path cannot redirect to itself.' : null;
-
-    const problem = fromProblem ?? toProblem ?? loop;
+    const problem =
+      fromProblem ?? toProblem ?? redirectProblem(normalizedFrom, normalizedTo, rows ?? []);
     if (problem) {
       setFormError(problem);
       return;
@@ -254,7 +276,7 @@ export function RedirectsManager() {
           </div>
           <button
             type="button"
-            disabled={adding}
+            disabled={adding || rows === null}
             onClick={() => void add()}
             className="inline-flex items-center justify-center gap-2 rounded-full bg-accent px-5 text-sm font-medium text-on-accent transition-colors hover:bg-accent-strong disabled:opacity-60"
           >

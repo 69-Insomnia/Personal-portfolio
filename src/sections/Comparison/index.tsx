@@ -32,7 +32,7 @@ export function Comparison({ data }: { data: Service[] }) {
       <Container>
         <SectionHeading
           label="At a glance"
-          title="What Each Service Includes"
+          title="What each service includes"
           description="Scope, typical timeline, starting price and who each one is for, side by side. Most projects use three or four of these together rather than one."
         />
 

@@ -49,6 +49,7 @@ import { getSiteSettings } from '@/lib/content';
  * it belongs in the same category.
  */
 const NAMED_CRAWLERS = [
+  'Googlebot',
   'GPTBot',
   'OAI-SearchBot',
   'ChatGPT-User',

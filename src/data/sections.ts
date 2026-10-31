@@ -58,6 +58,11 @@ const sectionOrder = [
      buried under three explanatory sections — the thing a visitor most wants
      to see was a full scroll away. */
   { id: 'work', label: 'Selected Work', navLabel: 'Work', chapter: 'work', home: true },
+  /* The counts that back the work up. It reads immediately after the case
+     studies because a number is only credible once you have seen what it is
+     counting — the strip above the work would be a claim, below it is a
+     summary. */
+  { id: 'numbers', label: 'By the Numbers', navLabel: 'Numbers', chapter: 'work', home: true },
   { id: 'services', label: 'Services', navLabel: 'Services', chapter: 'capabilities', home: true },
   { id: 'approach', label: 'Approach', navLabel: 'Approach', chapter: 'capabilities', home: true },
   { id: 'technologies', label: 'Stack', navLabel: 'Stack', chapter: 'capabilities', home: true },

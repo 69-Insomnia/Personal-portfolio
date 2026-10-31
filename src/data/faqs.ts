@@ -18,10 +18,20 @@ import type { FAQ } from '@/types';
  * node — see `faqPageNode` in `src/lib/structured-data.ts`. One copy of the
  * text means the visible questions and the structured data cannot disagree.
  *
- * **[ADD DETAIL] markers are places a real figure belongs.** No price, timeline
- * or result is invented here. An unsourced claim on a page selling measurement
- * is the first thing a careful buyer checks, and it is the one thing the site's
- * own audit warns against.
+ * ## Prices
+ *
+ * Two answers used to end with "starts from NPR [ADD DETAIL: price]" — a bracket
+ * addressed to the site's author, shipped to the public. That is the worst of
+ * both worlds: it reads as a placeholder to a visitor AND it promises a price
+ * that was never filled in.
+ *
+ * They now describe how a price is arrived at rather than what it is. If you
+ * want to publish a starting figure, put it here — but a number a visitor can
+ * hold you to should be one you would honour, and "from NPR X" on a services
+ * page is a quote.
+ *
+ * TODO(price): store-build starting figure, and standalone-audit fee. Neither
+ * is invented here. See the handoff notes.
  */
 export const faqs: FAQ[] = [
   {
@@ -32,7 +42,7 @@ export const faqs: FAQ[] = [
   {
     question: 'Do you build custom websites, or work with WordPress and Shopify?',
     answer:
-      'Both, and the choice follows the job. Shopify or WooCommerce when someone other than me has to edit the store afterwards; React or Next.js when the project needs to be fast and bespoke. A store build starts from NPR [ADD DETAIL: price].',
+      'Both, and the choice follows the job. Shopify or WooCommerce when someone other than me has to edit the store afterwards; React or Next.js when the project needs to be fast and bespoke. Store builds are quoted per project — the figure follows the catalogue size and how much has to be migrated, not a rate card.',
   },
   {
     question: 'Do you work with ecommerce businesses?',
@@ -42,7 +52,7 @@ export const faqs: FAQ[] = [
   {
     question: 'Can you improve a website that already exists?',
     answer:
-      'Often that is the whole job. Performance, search visibility and the conversion path are reviewed first, then I tell you which changes are worth making and which would only feel productive. A standalone audit starts from NPR [ADD DETAIL: price].',
+      'Often that is the whole job. Performance, search visibility and the conversion path are reviewed first, then I tell you which changes are worth making and which would only feel productive. A standalone audit is scoped and quoted before it starts, so you know the number before you commit to anything.',
   },
   {
     question: 'Do you manage paid ads?',

@@ -20,7 +20,7 @@ export function Philosophy() {
               className="mt-8 text-display"
             />
 
-            <span aria-hidden className="mt-8 block h-1 w-16 bg-accent" />
+            <span aria-hidden className="mt-8 block h-1 w-16 bg-marigold" />
           </div>
 
           <Reveal delay={0.1}>

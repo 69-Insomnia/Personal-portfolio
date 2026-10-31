@@ -4,6 +4,7 @@ import { JsonLd } from '@/components/common/JsonLd';
 import { SectionNumberingProvider } from '@/components/ui/SectionNumbering';
 import { Introduction } from '@/sections/About';
 import { Projects } from '@/sections/Projects';
+import { Stats } from '@/sections/Stats';
 import { Services } from '@/sections/Services';
 import { Approach } from '@/sections/Approach';
 import { Technologies } from '@/sections/Technologies';
@@ -17,23 +18,26 @@ import { site } from '@/data/seo';
 import { faqPageNode } from '@/lib/structured-data';
 import { buildMetadata } from '@/utils/metadata';
 import { homeSEO, withSeoMeta } from '@/data/seo';
-import { getExperience, getPosts, getProjects, getSeo, getSiteSettings, getTestimonials } from '@/lib/content';
+import { getExperience, getPosts, getProjects, getSeo, getServices, getSiteSettings, getTestimonials } from '@/lib/content';
 
 /**
- * Ten numbered sections, down from fifteen. The page ran to roughly fifteen
- * screens, which buried the work and pushed the contact form past the point
- * anyone scrolls.
+ * Twelve sections, in the order a visitor actually asks the questions: who is
+ * this, what has he built, does the work back it up, what can I buy, how does it
+ * run, what does he use, where has he done it, what does he know, who vouches
+ * for him, what about my specific worry, and how do I start.
  *
- * Cut from the home page, not from the site: Philosophy and Education still
- * render on /about, and Work With Me still renders on /work. The three service
- * deep-dives were homepage-only, so they merged into `Services` instead.
+ * `Stats` is new and sits directly under the work — a count of case studies is
+ * a claim until you have scrolled past the case studies, and a summary once you
+ * have. Everything else keeps its position from the previous structure; see
+ * `src/data/sections.ts` for the registry that mirrors this order.
  */
 export default async function HomePage() {
-  const [projects, testimonials, posts, experience] = await Promise.all([
+  const [projects, testimonials, posts, experience, services] = await Promise.all([
     getProjects(),
     getTestimonials(),
     getPosts(),
     getExperience(),
+    getServices(),
   ]);
 
   /**
@@ -55,7 +59,8 @@ export default async function HomePage() {
       <Hero />
       <Introduction />
       <Projects data={projects} />
-      <Services />
+      <Stats />
+      <Services data={services} />
       <Approach />
       <Technologies />
       <Experience data={experience} />

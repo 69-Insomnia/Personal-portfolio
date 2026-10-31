@@ -27,29 +27,32 @@ export function BlogCard({ post }: { post: BlogPost }) {
           {post.isPlaceholder ? <PlaceholderBadge className="absolute left-3 top-3" /> : null}
         </div>
 
-        <div className="mt-5 flex items-center gap-3 text-label font-medium uppercase">
-          <span className="text-accent">{post.category}</span>
+        {/* Sentence case, no tracked uppercase — the category read as a system
+            tag rather than a section of a magazine. The rule between the two
+            fields stays; it is doing the separating that the casing used to. */}
+        <div className="mt-5 flex items-center gap-3 text-sm">
+          <span className="font-medium text-accent">{post.category}</span>
           <span aria-hidden className="h-px w-4 bg-line" />
           <span className="text-muted">{post.date}</span>
         </div>
 
-        <h3 className="mt-3 text-xl font-medium tracking-tight transition-colors duration-300 group-hover:text-accent">
+        <h3 className="mt-3 font-display text-h3 transition-colors duration-200 group-hover:text-accent">
           {post.title}
         </h3>
 
-        <p className="mt-2.5 flex-1 text-sm leading-relaxed text-muted">{post.excerpt}</p>
+        <p className="mt-3 flex-1 leading-relaxed text-muted">{post.excerpt}</p>
 
         <div className="mt-5 flex items-center justify-between gap-4">
-          <span className="inline-flex items-center gap-1.5 text-sm font-medium text-ink transition-colors duration-300 group-hover:text-accent">
-            Read Article
+          <span className="inline-flex items-center gap-1.5 text-[15px] font-medium text-accent">
+            Read the article
             <ArrowRight
               size={15}
               aria-hidden
-              className="transition-transform duration-300 ease-out group-hover:translate-x-1"
+              className="transition-transform duration-200 ease-out group-hover:translate-x-1"
             />
           </span>
-          <span className="inline-flex items-center gap-1.5 text-xs text-muted">
-            <Clock size={12} aria-hidden />
+          <span className="inline-flex items-center gap-1.5 text-sm text-muted">
+            <Clock size={13} aria-hidden />
             {post.readingTime}
           </span>
         </div>

@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Menu } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import { WhatsAppIcon } from '@/components/common/WhatsAppIcon';
 import { MobileMenu } from '@/components/navigation/MobileMenu';
@@ -35,19 +34,34 @@ export function Navbar() {
   const isActive = (href: string) =>
     href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(`${href}/`);
 
+  const whatsappHref = profile.whatsapp
+    ? `https://wa.me/${profile.whatsapp.replace(/\D/g, '')}`
+    : null;
+
   return (
     <>
+      {/*
+        Ivory and blurred at ALL times, not only once scrolled.
+
+        The old header was transparent at the top of the page and only picked up
+        its background after 24px of scroll. On a page that opens on a
+        full-height hero that reads as intentional, but this hero is a split
+        layout with content starting immediately below the header — so a
+        transparent bar put the portrait and the availability badge directly
+        behind the navigation on short viewports.
+
+        It stays `sticky` in effect (fixed + the page's own top padding) rather
+        than becoming `sticky`, because the mobile menu's focus trap relies on
+        the header being a direct child of <body>.
+      */}
       <header
         className={cn(
-          'fixed inset-x-0 top-0 z-nav transition-all duration-300 ease-out',
-          scrolled
-            ? 'border-b border-line bg-paper-blur backdrop-blur-md'
-            : 'border-b border-transparent bg-transparent',
+          'fixed inset-x-0 top-0 z-nav border-b border-line bg-paper-blur backdrop-blur-md transition-all duration-200 ease-out',
         )}
       >
         <Container
           className={cn(
-            'flex items-center justify-between transition-all duration-300 ease-out',
+            'flex items-center justify-between transition-all duration-200 ease-out',
             scrolled ? 'h-16' : 'h-20 md:h-24',
           )}
         >
@@ -60,25 +74,21 @@ export function Navbar() {
               className="h-10 w-10 shrink-0 rounded-full border border-line object-cover"
             />
             <span className="flex flex-col">
-              <span className="text-[15px] font-semibold leading-tight tracking-tight text-ink transition-colors group-hover:text-accent">
+              <span className="text-[15px] font-semibold leading-tight text-ink transition-colors group-hover:text-accent">
                 {profile.name}
               </span>
               {/*
                 `identity.role`, not `profile.title`.
 
                 The two are different lengths on purpose. `profile.title` is the
-                full positioning line the footer uses — "Ecommerce Growth
-                Specialist · SEO · Meta & Google Ads" — which is 54 characters of
-                10px uppercase at 0.14em tracking, roughly 430px wide. In the
-                navigation that ran straight into the first nav item and pushed
-                the row past the width it had.
-
+                full positioning line — "Ecommerce Growth Specialist · SEO ·
+                Meta & Google Ads" — which is far too long for the navigation.
                 This slot needs the short form of the same claim, and
                 `identity.role` is exactly that: it is already the phrase the
                 Person node publishes as `jobTitle`, so the navbar and the
                 structured data say the same words.
               */}
-              <span className="mt-0.5 hidden text-[10px] font-semibold uppercase tracking-[0.14em] text-muted sm:block">
+              <span className="mt-0.5 hidden text-xs font-medium text-muted sm:block">
                 {identity.role}
               </span>
             </span>
@@ -87,10 +97,11 @@ export function Navbar() {
           {/*
             Shown only from `xl`, not `lg`.
 
-            Seven nav items, a WhatsApp button and a CTA button need about
-            1130px. At the old `lg` breakpoint (1024px) they did not fit and the
-            row overflowed; at 1280px there is room. Below that the hamburger
-            takes over, which is what it is for.
+            Seven nav items plus the WhatsApp pill need about 1200px. At the old
+            `lg` breakpoint (1024px) they did not fit and the row overflowed; at
+            1280px there is room. Below that the hamburger takes over, which is
+            what it is for. The breakpoint and the reasoning are unchanged from
+            the fix that originally set it.
           */}
           <nav aria-label="Primary" className="hidden items-center gap-1 xl:flex">
             {mainNavigation.map((item) => (
@@ -99,7 +110,7 @@ export function Navbar() {
                 href={item.href}
                 aria-current={isActive(item.href) ? 'page' : undefined}
                 className={cn(
-                  'relative px-3 py-2 text-sm tracking-tight transition-colors duration-300',
+                  'relative px-3 py-2 text-sm transition-colors duration-200',
                   isActive(item.href) ? 'text-ink' : 'text-muted hover:text-ink',
                 )}
               >
@@ -116,33 +127,47 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center gap-2.5">
-            {profile.whatsapp ? (
-              <a
-                href={`https://wa.me/${profile.whatsapp.replace(/\D/g, '')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`Chat on WhatsApp at ${profile.whatsapp}`}
-                className="flex h-11 w-11 items-center justify-center rounded-full bg-whatsapp text-whatsapp-ink transition-colors hover:bg-whatsapp-hover xl:h-9 xl:w-9"
-              >
-                <WhatsAppIcon size={17} />
-              </a>
+            {/*
+              One action, not two.
+
+              The header used to carry both a WhatsApp icon circle and a "Let's
+              Work Together" button pointing at /contact. Two CTAs side by side
+              in a fixed bar split the intent rather than reinforcing it, and
+              with seven nav items the row had no room for a third element
+              anyway. The pill IS the header's call to action; /contact is one
+              tap away in the nav itself.
+            */}
+            {whatsappHref ? (
+              <>
+                <a
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Message me on WhatsApp at ${profile.whatsapp}`}
+                  className="hidden h-11 items-center gap-2 rounded-full bg-whatsapp pl-4 pr-5 text-[15px] font-medium text-whatsapp-ink transition-colors duration-200 hover:bg-whatsapp-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink lg:inline-flex"
+                >
+                  <WhatsAppIcon size={17} aria-hidden />
+                  Message me on WhatsApp
+                </a>
+                <a
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Message me on WhatsApp at ${profile.whatsapp}`}
+                  className="flex h-11 w-11 items-center justify-center rounded-full bg-whatsapp text-whatsapp-ink transition-colors duration-200 hover:bg-whatsapp-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink lg:hidden"
+                >
+                  <WhatsAppIcon size={17} aria-hidden />
+                </a>
+              </>
             ) : null}
-            <Button
-              href="/contact"
-              variant="inverse"
-              size="sm"
-              className="hidden sm:inline-flex"
-            >
-              Let&apos;s Work Together
-            </Button>
             <button
               type="button"
               onClick={() => setMenuOpen(true)}
               aria-label="Open menu"
               aria-expanded={menuOpen}
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-ink xl:hidden"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-line-strong text-ink transition-colors duration-200 hover:border-accent hover:text-accent xl:hidden"
             >
-              <Menu size={16} aria-hidden />
+              <Menu size={18} aria-hidden />
             </button>
           </div>
         </Container>

@@ -12,6 +12,58 @@ import { DEFAULT_OG_IMAGE, identity, site } from '@/data/seo';
  * reads as though it was cut off mid-thought.
  */
 const DESCRIPTION_LIMIT = 158;
+const TITLE_LIMIT = 60;
+
+/** Return a safe image reference for social metadata, falling back if invalid. */
+export function normalizeMetadataImage(value: string, fallback = DEFAULT_OG_IMAGE): string {
+  const raw = value.trim();
+  const normalized = raw.replace(/^https\/\//i, 'https://').replace(/^http\/\//i, 'http://');
+  if (normalized.startsWith('/') && !normalized.startsWith('//')) return normalized;
+  try {
+    const parsed = new URL(normalized);
+    return parsed.protocol === 'https:' && parsed.hostname ? normalized : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+/** Keep generated and admin-provided titles readable within typical SERP width. */
+export function clampTitle(text: string, limit = TITLE_LIMIT): string {
+  const clean = text.replace(/\s+/g, ' ').trim();
+  let title = clean
+    .replace(/[|,:—–-]+$/, '')
+    .replace(/\s+(?:a|an|and|for|in|of|or|the|to|with)$/i, '')
+    .trim();
+
+  if (title.length > limit) {
+    const cut = title.slice(0, limit + 1);
+    const lastSpace = cut.lastIndexOf(' ');
+    title = cut
+      .slice(0, lastSpace > 0 ? lastSpace : limit)
+      .replace(/[|,:—–-]+$/, '')
+      .replace(/\s+(?:a|an|and|for|in|of|or|the|to|with)$/i, '')
+      .trim();
+  }
+
+  // Admin overrides can be shorter than the repository templates. Where the
+  // existing wording makes it natural, complete the location or the personal
+  // name rather than padding titles with generic SEO text.
+  if (title.length < 50) {
+    const additions = [
+      /kathmandu/i.test(title) && !/nepal/i.test(title) ? `${title}, Nepal` : '',
+      /nepal/i.test(title) && !/kathmandu/i.test(title)
+        ? title.replace(/\bNepal\b/i, 'Kathmandu, Nepal')
+        : '',
+      /\|\s*Dipendra$/i.test(title) ? `${title} Guragain` : '',
+      !/kathmandu/i.test(title) ? `${title} in Kathmandu` : '',
+        !/nepal/i.test(title) ? `${title} in Nepal` : '',
+    ].filter((candidate) => candidate.length >= 50 && candidate.length <= limit);
+
+    if (additions.length > 0) title = additions[0];
+  }
+
+  return title;
+}
 
 /**
  * Trims to the limit on a word boundary and marks the cut.
@@ -22,7 +74,23 @@ const DESCRIPTION_LIMIT = 158;
  */
 export function clampDescription(text: string, limit = DESCRIPTION_LIMIT): string {
   const clean = text.replace(/\s+/g, ' ').trim();
-  if (clean.length <= limit) return clean;
+  if (clean.length <= limit && clean.length >= 140) return clean;
+
+  if (clean.length < 140) {
+    const suffix = /kathmandu/i.test(clean) && !/nepal/i.test(clean)
+      ? ', serving Nepal.'
+      : /nepal/i.test(clean) && !/kathmandu/i.test(clean)
+        ? ' Based in Kathmandu.'
+        : ' Based in Kathmandu, Nepal.';
+    const prefix = clean.replace(/[.!?]+$/, '');
+    const enriched = `${prefix}${suffix}`;
+    if (enriched.length <= limit) return enriched;
+
+    const maxPrefixLength = limit - suffix.length;
+    const cutPrefix = prefix.slice(0, maxPrefixLength);
+    const lastSpace = cutPrefix.lastIndexOf(' ');
+    return `${cutPrefix.slice(0, lastSpace > 0 ? lastSpace : cutPrefix.length).replace(/[,;:.—–-]+$/, '')}${suffix}`;
+  }
 
   const cut = clean.slice(0, limit - 1);
   const lastSpace = cut.lastIndexOf(' ');
@@ -73,9 +141,10 @@ export function buildMetadata(seo: SEOData, settings?: SiteSettings): Metadata {
    */
   const suffixed = settings?.titleSuffix ? `${title}${settings.titleSuffix}` : title;
 
-  const ogTitleValue = ogTitle ?? suffixed;
+  const titleValue = clampTitle(suffixed);
+  const ogTitleValue = clampTitle(ogTitle ?? titleValue);
   const ogDescriptionValue = clampDescription(ogDescription ?? description);
-  const twitterTitleValue = twitterTitle ?? ogTitleValue;
+  const twitterTitleValue = clampTitle(twitterTitle ?? ogTitleValue);
   const twitterDescriptionValue = clampDescription(
     twitterDescription ?? ogDescription ?? description,
   );
@@ -89,15 +158,17 @@ export function buildMetadata(seo: SEOData, settings?: SiteSettings): Metadata {
    * root layout's value, so a default configured in the admin would never
    * reach a project page.
    */
-  const ogImageValue = ogImage ?? settings?.defaultOgImage ?? DEFAULT_OG_IMAGE;
-  const twitterImageValue = twitterImage ?? ogImageValue;
+  const ogImageValue = normalizeMetadataImage(
+    ogImage ?? settings?.defaultOgImage ?? DEFAULT_OG_IMAGE,
+  );
+  const twitterImageValue = normalizeMetadataImage(twitterImage ?? ogImageValue);
 
   const summary = clampDescription(description);
   const isArticle = ogType === 'article';
   const byline = authors && authors.length > 0 ? authors : [identity.name];
 
   return {
-    title: suffixed,
+    title: titleValue,
     description: summary,
     /**
      * No `keywords`. Google has ignored the keywords meta tag for years, so it

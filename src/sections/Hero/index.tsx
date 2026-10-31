@@ -3,51 +3,34 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ToolChip } from '@/components/cards/ToolChip';
+import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
-import { WhatsAppIcon } from '@/components/common/WhatsAppIcon';
-import { platformTools } from '@/data/skills';
 import { profile } from '@/data/profile';
 
 /**
- * Three lines, split by hand rather than left to wrap.
+ * The page's one `<h1>`, and the reason the display line sits inside it.
  *
- * The breaks are a typographic decision, not a consequence of the measure —
- * "Then I Get Them" and "FOUND" are one clause, and letting the browser break
- * them wherever the column happens to end would read as an accident.
+ * Two sentences share one heading element here. The first is the exact target
+ * query — "Ecommerce growth specialist in Kathmandu" — because a heading that
+ * matches the query verbatim is the strongest thing this page can say about
+ * what it is for, and it names the role and the place that the Person entity at
+ * `#person` publishes.
  *
- * This is a *tagline*, and it is no longer the `<h1>`. See `ROLE` below.
+ * The second is the line a human actually reads. It used to live outside the
+ * heading as a `<p>`, which meant the largest, most opinionated sentence on the
+ * page was not the page's heading at all. Folding it in makes the `<h1>` both
+ * the ranking asset and the visual anchor, which is what an `<h1>` is for.
+ *
+ * The keyword phrase is deliberately NOT repeated as link text below. It used
+ * to be, on the internal link to `/services/ecommerce-growth`, and an anchor
+ * identical to the heading immediately above it reads as a copy-paste error.
+ * The link keeps a keyword-bearing anchor; it just no longer duplicates the H1.
  */
-const HEADLINE = ['I Build Websites.', 'Then I Get Them', 'FOUND'];
+const H1_KEYWORD = 'Ecommerce growth specialist in Kathmandu';
 
-/**
- * The page's one `<h1>`, and the reason the tagline above is not it.
- *
- * A heading is the strongest statement a page makes about what it is, and
- * "I Build Websites. Then I Get Them FOUND" — memorable as it is — names no
- * person, no role and no place. It told a search engine nothing it could match
- * against a query or resolve against the Person entity defined at `#person`, so
- * the site's own identity was absent from the one element that carries the most
- * weight.
- *
- * The text is now the exact target query, "Ecommerce Growth Specialist in
- * Kathmandu", because a heading that matches the query verbatim is the
- * strongest thing this page can say about what it is for. It replaced a
- * three-part label — "Web Developer / SEO Specialist / Kathmandu, Nepal" —
- * which named a different role and hedged the location with a slash instead of
- * saying "in".
- *
- * Note that the label and the heading are the same element in this design, so
- * merging them is not a loss: the visible label now reads the target phrase
- * rather than a role list, which is better for the keyword and no worse for a
- * reader. The location is still stated directly beneath, in the "Based in
- * Kathmandu, Nepal" line and again in the availability note.
- *
- * The tagline keeps its display type directly below, so nothing moves: this is
- * the same `<motion>` treatment, the same classes and the same vertical rhythm.
- */
-const H1 = 'Ecommerce Growth Specialist in Kathmandu';
+/** Split by hand — the breaks are a typographic decision, not the measure's. */
+const DISPLAY_LINES = ['Stores that load fast,', 'rank well, and close', 'the sale.'];
 
 export function Hero() {
   const whatsappHref = profile.whatsapp
@@ -55,115 +38,124 @@ export function Hero() {
     : null;
 
   return (
-    <section className="relative overflow-hidden pb-16 pt-28 md:pb-24 md:pt-36 lg:pt-40">
+    <section className="relative overflow-hidden pb-20 pt-32 md:pb-28 md:pt-40 lg:pt-44">
       <Container>
-        <div className="grid items-center gap-14 lg:grid-cols-12 lg:gap-10">
+        <div className="grid items-center gap-16 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-7">
-            {/* The h1. A single string rather than the three spans it used to
-                be split into: the separators only existed to render a role list
-                with slashes between the parts, and the text is now one phrase
-                that has to be published exactly as written. */}
-            <motion.h1
+            <h1 className="max-w-2xl">
+              <motion.span
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
+                className="eyebrow"
+              >
+                <span aria-hidden className="h-px w-7 bg-marigold" />
+                <span>{H1_KEYWORD}</span>
+              </motion.span>
+
+              {/* The display lines are NOT `aria-hidden`, and there is no
+                  visually-hidden duplicate of them either.
+
+                  Splitting a sentence across three `<span>`s for typographic
+                  control does not damage it — they are block-level, so a screen
+                  reader reads them as one continuous sentence. But shipping the
+                  same sentence twice (once visually, once in an `sr-only` span)
+                  would put it in the `<h1>`'s text content twice, and the
+                  `<h1>` is the one element on the page where duplicated text is
+                  worth avoiding. So it is published exactly once. */}
+              <span className="mt-6 block text-display text-ink">
+                {DISPLAY_LINES.map((line, index) => (
+                  <span key={line} className="-mb-[0.08em] block overflow-hidden pb-[0.08em]">
+                    <motion.span
+                      initial={{ y: '112%' }}
+                      animate={{ y: 0 }}
+                      transition={{
+                        delay: 0.12 + index * 0.09,
+                        duration: 0.8,
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
+                      className="block"
+                    >
+                      {line}
+                    </motion.span>
+                  </span>
+                ))}
+              </span>
+            </h1>
+
+            <motion.p
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: 'easeOut' }}
-              className="eyebrow flex-wrap"
+              transition={{ delay: 0.48, duration: 0.6, ease: 'easeOut' }}
+              className="measure mt-8 text-lead text-muted"
             >
-              <span aria-hidden className="h-px w-8 bg-accent" />
-              <span>{H1}</span>
-            </motion.h1>
-
-            <p className="mt-7 text-display font-medium">
-              {HEADLINE.map((line, index) => (
-                <span key={line} className="-mb-[0.06em] block overflow-hidden pb-[0.06em]">
-                  <motion.span
-                    initial={{ y: '112%' }}
-                    animate={{ y: 0 }}
-                    transition={{
-                      delay: 0.15 + index * 0.11,
-                      duration: 0.95,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                    className="block"
-                  >
-                    {line}
-                  </motion.span>
-                </span>
-              ))}
-            </p>
-
-            <motion.p
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.55, duration: 0.7, ease: 'easeOut' }}
-              className="mt-8 max-w-xl text-lead text-muted"
-            >
-              {profile.description}
+              I handle the storefront, the search visibility and the paid campaigns as one
+              job — because the drop-off is usually in the gap between them.
             </motion.p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.68, duration: 0.7, ease: 'easeOut' }}
-              className="mt-9 flex flex-wrap items-center gap-3"
-            >
-              <Button href="/work" variant="inverse" size="lg" showArrow>
-                See the Work
-              </Button>
-              {whatsappHref ? (
-                <Button
-                  href={whatsappHref}
-                  variant="whatsapp"
-                  size="lg"
-                  ariaLabel={`Chat on WhatsApp at ${profile.whatsapp}`}
-                >
-                  <WhatsAppIcon size={17} className="mr-2" />
-                  Chat on WhatsApp
-                </Button>
-              ) : null}
-            </motion.div>
+            {/*
+              One primary button and one text link, which is the whole action set.
 
-            {/* The keyword-rich internal link to the money page.
-                Anchor text is the target phrase rather than "learn more"
-                because the anchor is what tells a search engine what the
-                destination is about — and it is the only link on the homepage
-                whose text matches the query this site is chasing. */}
-            <motion.p
-              initial={{ opacity: 0, y: 18 }}
+              The old hero carried two full buttons (a site link and a WhatsApp
+              link) plus a third link below them. Three equally weighted exits
+              from one section is a menu, not a recommendation, and it pushed the
+              availability line below the fold on a laptop.
+            */}
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.76, duration: 0.7, ease: 'easeOut' }}
-              className="mt-7 text-sm"
+              transition={{ delay: 0.58, duration: 0.6, ease: 'easeOut' }}
+              className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4"
             >
+              <Button href="/work" size="lg" showArrow>
+                View selected work
+              </Button>
+
+              {/* The keyword-rich internal link to the money page. Anchor text
+                  still carries the phrase — it is the only link on the homepage
+                  whose text matches the query this site is chasing — but not the
+                  full heading, which sits directly above it. */}
               <Link
                 href="/services/ecommerce-growth"
-                className="inline-flex items-center gap-1.5 font-medium text-accent transition-colors hover:text-accent-strong"
+                className="group inline-flex min-h-[44px] items-center gap-1.5 text-[15px] font-medium text-ink transition-colors duration-200 hover:text-accent"
               >
-                Ecommerce growth specialist in Kathmandu
-                <span aria-hidden>→</span>
+                How I run ecommerce growth in Kathmandu
+                <ArrowRight
+                  size={16}
+                  aria-hidden
+                  className="transition-transform duration-200 ease-out group-hover:translate-x-1"
+                />
               </Link>
-            </motion.p>
+            </motion.div>
 
-            {/* Flat single line rather than a location chip plus an availability
-                chip. Two labelled chips made the reader parse two widgets to
-                learn one thing. */}
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.85, duration: 0.7, ease: 'easeOut' }}
-              className="mt-9 max-w-md text-sm leading-relaxed text-muted"
-            >
-              Based in {profile.location}.{' '}
-              <span className="text-ink">{profile.availabilityText}.</span>
-            </motion.p>
+            {whatsappHref ? (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.7, duration: 0.6, ease: 'easeOut' }}
+                className="mt-8 text-sm text-muted"
+              >
+                Prefer to talk it through?{' '}
+                <a
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-accent underline-offset-4 hover:underline"
+                >
+                  Message me on WhatsApp
+                </a>
+                .
+              </motion.p>
+            ) : null}
           </div>
 
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.9, ease: 'easeOut' }}
+            transition={{ delay: 0.3, duration: 0.8, ease: 'easeOut' }}
             className="lg:col-span-5"
           >
-            <DashboardPanel />
+            <Portrait />
           </motion.div>
         </div>
       </Container>
@@ -171,84 +163,73 @@ export function Hero() {
   );
 }
 
-function DashboardPanel() {
+/**
+ * The portrait, the marigold base bar, and the availability badge.
+ *
+ * ## Why the marigold sits as a base bar, not an offset sheet
+ *
+ * The card is a cream field with the cut-out portrait resting flush against its
+ * bottom edge, and the marigold closes that edge as a solid bar. It used to be
+ * a block pushed out behind the card (a second sheet of paper sliding out from
+ * under the first). The bar reads the same way — as the one place the design
+ * gets to be loud — but it anchors the figure instead of floating behind it, so
+ * the subject looks seated on the colour rather than pasted over it. Marigold is
+ * 2.0:1 on paper, so it can never carry text; as a flat shape it costs the
+ * layout nothing.
+ *
+ * ## Why the cut-out rather than a framed photo
+ *
+ * `profile.profileImage` ships with its own background (greenery and brick). A
+ * `bg-cutout` variant has that background removed to transparent, so the cream
+ * card shows around the head and shoulders. That is what lets the figure sit on
+ * the colour field cleanly; a photo boxed inside a white frame cannot. If the
+ * cut-out is missing the component falls back to the original file.
+ *
+ * ## On the image dimensions
+ *
+ * `width`/`height` are set to the 4:5 the frame actually renders at, and the
+ * frame carries the same ratio. The intrinsic file may be a different shape;
+ * `object-contain` anchored to the bottom handles that — the whole cut-out stays
+ * visible and sits on the base bar, with cream filling the headroom above. The
+ * box reserves its space from the ratio, so there is no layout shift whether or
+ * not the file has loaded. `priority` because this image is above the fold on
+ * every viewport and is the LCP candidate on desktop.
+ */
+function Portrait() {
   return (
-    <div className="relative">
-      <div className="card overflow-hidden">
-        <div className="flex items-center gap-2 border-b border-line px-4 py-3.5">
-          <span aria-hidden className="h-2 w-2 rounded-full bg-line" />
-          <span aria-hidden className="h-2 w-2 rounded-full bg-line" />
-          <span aria-hidden className="h-2 w-2 rounded-full bg-accent" />
-          <span className="ml-3 truncate text-label font-medium uppercase text-muted">
-            growth.system / overview
-          </span>
-        </div>
+    <div className="relative mx-auto w-full max-w-sm lg:max-w-none">
+      <div className="relative aspect-[4/5] overflow-hidden rounded-card border border-line bg-subtle shadow-sm">
+        {/* The cut-out portrait, flush to the bottom so the figure rests on the
+            marigold bar. Cream shows through wherever the PNG is transparent. */}
+        <Image
+          src={profile.profileImageCutout ?? profile.profileImage}
+          alt={`Portrait of ${profile.name}, ${profile.title}`}
+          width={800}
+          height={1000}
+          priority
+          sizes="(max-width: 1024px) 90vw, 460px"
+          className="absolute inset-x-0 bottom-0 h-full w-full object-contain object-bottom"
+        />
 
-        <div className="dot-grid p-4 md:p-5">
-          <div className="rounded-card flex items-center gap-4 border border-line bg-paper p-4">
-            <div className="relative h-14 w-14 shrink-0 overflow-hidden border border-line">
-              <Image
-                src={profile.profileImage}
-                alt={`Portrait of ${profile.name}`}
-                fill
-                sizes="56px"
-                className="object-cover"
-              />
-            </div>
-            <div className="min-w-0">
-              <p className="truncate text-sm font-semibold tracking-tight">{profile.name}</p>
-              <p className="mt-0.5 text-xs text-muted">{profile.title}</p>
-            </div>
-            <span className="ml-auto hidden shrink-0 items-center gap-2 border border-line px-2.5 py-1 text-micro font-semibold uppercase text-muted sm:flex">
-              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />
-              {profile.availability ? 'Available' : 'Offline'}
-            </span>
-          </div>
-
-          {/* Platforms & tools. A soft tinted panel carrying a centred tracked
-              label over a row of white pill chips.
-
-              The chips get a one-time staggered entrance rather than the old
-              perpetual float — nine continuously looping animations is motion
-              with nothing behind it, and the two floating chips outside the
-              panel already carry the "live dashboard" idea. */}
-          <div className="inset mt-3.5 px-4 py-5 md:px-5 md:py-6">
-            <p className="text-center text-label font-medium uppercase text-muted">
-              Platforms &amp; Tools I Work With
-            </p>
-
-            {/* Content-width chips in a centred wrapping row. The chip itself
-                is shared with the Technologies section — see `ToolChip`. */}
-            <ul className="mt-4 flex flex-wrap justify-center gap-2.5">
-              {platformTools.map((tool, index) => (
-                <motion.li
-                  key={tool.name}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.7 + index * 0.045, duration: 0.4, ease: 'easeOut' }}
-                >
-                  <ToolChip tool={tool} />
-                </motion.li>
-              ))}
-            </ul>
-          </div>
-        </div>
+        {/* The marigold base bar. `aria-hidden` and non-interactive: it is a
+            colour field, not a control, and it must never sit above the badge in
+            the stacking order. */}
+        <div aria-hidden className="absolute inset-x-0 bottom-0 h-3 bg-marigold" />
       </div>
 
-      <motion.div
-        animate={{ y: [0, -8, 0] }}
-        transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut' }}
-        className="absolute -left-3 -top-3 hidden border border-line bg-surface px-3.5 py-2 text-micro font-semibold uppercase text-muted shadow-sm xl:block"
+      {/* Straddling the bottom edge of the card, toward the right. The dot is
+          the same marigold as the bar it sits on; the label is ink, because
+          marigold text would be unreadable and `marigold-ink` is not this
+          design's voice. */}
+      <motion.p
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.75, duration: 0.5, ease: 'easeOut' }}
+        className="absolute -bottom-4 right-4 flex items-center gap-2 whitespace-nowrap rounded-full border border-line bg-surface px-4 py-2.5 text-sm font-medium text-ink shadow-sm"
       >
-        Core Web Vitals ↑
-      </motion.div>
-      <motion.div
-        animate={{ y: [0, 7, 0] }}
-        transition={{ repeat: Infinity, duration: 5.5, delay: 1, ease: 'easeInOut' }}
-        className="absolute -bottom-3 -right-3 hidden border border-line bg-surface px-3.5 py-2 text-micro font-semibold uppercase text-muted shadow-sm xl:block"
-      >
-        Store → Growth
-      </motion.div>
+        <span aria-hidden className="h-2 w-2 shrink-0 rounded-full bg-marigold" />
+        Available for projects
+      </motion.p>
     </div>
   );
 }

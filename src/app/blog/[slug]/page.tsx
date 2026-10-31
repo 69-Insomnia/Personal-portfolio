@@ -19,7 +19,7 @@ import { blogPosts, getPostBySlug } from '@/data/blog';
 import { getImageAlt, getPost, getPosts, getProjects, getRedirect, getSeo, getServices, getSiteSettings } from '@/lib/content';
 import { relatedToPost } from '@/lib/related';
 import { AnswerBlock, FaqBlock, StatBlock } from '@/components/common/GeoBlocks';
-import { articleNode, customJsonLdNodes, definedTermNodes, definedTermSetNode, webPageNode } from '@/lib/structured-data';
+import { articleNode, customJsonLdNodes, definedTermNodes, definedTermSetNode, faqPageNode, webPageNode } from '@/lib/structured-data';
 import { postSEO, site } from '@/data/seo';
 import { buildMetadata } from '@/utils/metadata';
 import { postImageAlt } from '@/utils/images';
@@ -108,6 +108,10 @@ export default async function BlogPostPage({ params }: PageProps) {
     signals: seoMeta?.entitySignals,
     aiAnswer: seoMeta?.aiAnswer,
   });
+  const articleFaqs = seoMeta?.faqs?.length
+    ? seoMeta.faqs
+    : post.faqs ?? [{ question: `What does “${post.title}” explain?`, answer: post.excerpt }];
+  const faqNode = faqPageNode(articleFaqs, `${site.url}/blog/${post.slug}`);
 
   return (
     <article>
@@ -120,6 +124,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           ...(pageNode ? [pageNode] : []),
           ...definedTermNodes(terms),
           ...(terms?.length ? [definedTermSetNode()] : []),
+          ...(faqNode ? [faqNode] : []),
           ...customJsonLdNodes(seoMeta?.customJsonLd),
         ]}
       />
@@ -185,7 +190,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                   {post.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="border border-line px-3 py-1 text-label font-medium uppercase text-muted"
+                      className="rounded-full border border-line px-3 py-1 text-label font-medium text-muted"
                     >
                       {tag}
                     </span>
@@ -194,11 +199,12 @@ export default async function BlogPostPage({ params }: PageProps) {
               </Reveal>
             ) : null}
 
-            {/* Page-level Q&A. Content only — no `FAQPage` schema, which Google
-                retired for all sites on 2026-05-07. */}
-            {seoMeta?.faqs?.length ? (
+            {/* Visible Q&A and its matching FAQPage node are built from the
+                same array; FAQ rich results are retired, but the content
+                remains useful to readers and answer engines. */}
+            {articleFaqs.length ? (
               <div className="mt-8">
-                <FaqBlock faqs={seoMeta.faqs} />
+                <FaqBlock faqs={articleFaqs} title="Questions about this article" />
               </div>
             ) : null}
           </div>

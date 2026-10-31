@@ -92,7 +92,7 @@ export function ServiceComparisonTable({
                 <th
                   key={column}
                   scope="col"
-                  className="text-label px-4 py-3.5 font-medium uppercase text-muted"
+                  className="text-label px-4 py-3.5 font-medium text-muted"
                 >
                   {column}
                 </th>
@@ -221,7 +221,7 @@ export function ServiceSpecTable({ service }: { service: Service }) {
             <tr key={row.label} className="border-b border-line align-top last:border-b-0">
               <th
                 scope="row"
-                className="w-1/3 px-4 py-4 text-label font-medium uppercase text-muted"
+                className="w-1/3 px-4 py-4 text-label font-medium text-muted"
               >
                 {row.label}
               </th>

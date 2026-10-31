@@ -32,10 +32,30 @@ export const profile: Profile = {
 
   availability: true,
 
-  availabilityText: 'Available for Freelance & Remote Projects',
+  /**
+   * The one-line status, used in the mobile menu, the contact page and the
+   * about page's sidebar.
+   *
+   * This used to read "Available for Freelance & Remote Projects", and it
+   * appeared after "Based in Kathmandu, Nepal." — which, strung together, was
+   * very close to the reference site's "Based in Kathmandu, Nepal. Taking on a
+   * small number of ecommerce engagements at a time."
+   *
+   * The location half is now carried by `location` itself (the footer, the
+   * contact card and the Google Maps link all state it) rather than being
+   * restated in front of every status line.
+   */
+  availabilityText: 'Taking on new projects',
 
   avatar: '/images/dipendra-avatar.jpg',
   profileImage: '/images/profile.png',
+  /**
+   * The hero portrait. Background-removed to transparent (rembg, see
+   * `scripts/cutout.py`) so the figure sits flush on the cream card and rests
+   * on the marigold base bar. Regenerate with that script if `profile.png`
+   * changes; the hero falls back to `profileImage` if this is ever unset.
+   */
+  profileImageCutout: '/images/profile-cutout.png',
 
   resumeUrl: '',
 

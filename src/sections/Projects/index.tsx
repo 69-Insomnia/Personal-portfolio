@@ -12,6 +12,18 @@ import { projectCategories, projectFilters, projects } from '@/data/projects';
 import type { Project, ProjectFilter } from '@/types';
 import { cn } from '@/utils/cn';
 
+/**
+ * Two columns, not three.
+ *
+ * The grid was three-up, which at this container width made every screenshot
+ * about 380px wide — small enough that the work was unreadable and the section
+ * read as a thumbnail wall. With four case studies a 2×2 grid gives each image
+ * roughly double the area, and the cards carry a description and a stack row
+ * without either being cut to a line.
+ *
+ * The `ScrollRow` wrapper is kept for its mobile behaviour: below `md` the cards
+ * stay side by side and swipe rather than stacking into a very tall page.
+ */
 export function Projects({
   showHeading = true,
   data,
@@ -33,11 +45,11 @@ export function Projects({
         {showHeading ? (
           <SectionHeading
             section="work"
-            title="Selected Projects"
-            description="A selection of websites, ecommerce experiences and digital projects I've worked on."
+            title="Selected work"
+            description="Four projects, written up properly — the brief, the decisions, and what was actually built."
             action={
-              <Button href="/work" variant="outline" showArrow className="self-start">
-                View All Work
+              <Button href="/work" variant="ghost" showArrow className="self-start">
+                All case studies
               </Button>
             }
           />
@@ -46,7 +58,7 @@ export function Projects({
         )}
 
         <div
-          className={cn('flex flex-wrap gap-2', showHeading ? 'mt-10' : 'mt-0')}
+          className={cn('flex flex-wrap gap-2.5', showHeading ? 'mt-10' : 'mt-0')}
           role="group"
           aria-label="Filter projects"
         >
@@ -57,10 +69,10 @@ export function Projects({
               onClick={() => setActiveFilter(filter)}
               aria-pressed={activeFilter === filter}
               className={cn(
-                'rounded-full border px-4 py-2 text-sm font-medium tracking-tight transition-all duration-300 ease-out',
+                'min-h-[44px] rounded-full border px-5 text-sm font-medium transition-colors duration-200 ease-out',
                 activeFilter === filter
                   ? 'border-accent bg-accent text-on-accent'
-                  : 'border-line text-muted hover:border-ink hover:text-ink',
+                  : 'border-line-strong text-muted hover:border-accent hover:text-accent',
               )}
             >
               {filter}
@@ -68,16 +80,16 @@ export function Projects({
           ))}
         </div>
 
-        <motion.ul layout className={scrollRow(3, 'mt-8')}>
+        <motion.ul layout className={scrollRow(2, 'mt-10 md:gap-6')}>
           <AnimatePresence mode="popLayout">
             {filtered.map((project) => (
               <motion.li
                 key={project.slug}
                 layout
-                initial={{ opacity: 0, scale: 0.97 }}
+                initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.97 }}
-                transition={{ duration: 0.3, ease: 'easeOut' }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
                 className={cn('h-full', scrollRowItemClassName)}
               >
                 <ProjectCard project={project} />

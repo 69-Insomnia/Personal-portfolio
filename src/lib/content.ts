@@ -132,6 +132,30 @@ const str = (v: unknown, d = ''): string => (typeof v === 'string' ? v : d);
 const strOr = (v: unknown): string | undefined => (typeof v === 'string' && v ? v : undefined);
 const strList = (v: unknown): string[] => (Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : []);
 
+/** Accept only usable local or HTTPS image URLs from CMS fields. */
+function imageUrl(value: unknown): string | undefined {
+  if (typeof value !== 'string') return undefined;
+  const raw = value.trim();
+  if (!raw) return undefined;
+  const normalized = raw.replace(/^https\/\//i, 'https://').replace(/^http\/\//i, 'http://');
+
+  if (normalized.startsWith('/') && !normalized.startsWith('//')) return normalized;
+  try {
+    const parsed = new URL(normalized);
+    return parsed.protocol === 'https:' && parsed.hostname ? normalized : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function projectFallbackImage(slug: string): string | undefined {
+  return staticProjects.find((project) => project.slug === slug)?.image;
+}
+
+function postFallbackImage(slug: string): string | undefined {
+  return staticPosts.find((post) => post.slug === slug)?.image;
+}
+
 // ---------------------------------------------------------------- projects --
 
 interface ProjectRow {
@@ -156,14 +180,19 @@ interface ProjectRow {
 }
 
 function mapProject(row: ProjectRow): Project {
+  const gallery = strList(row.images).flatMap((entry) => {
+    const valid = imageUrl(entry);
+    return valid ? [valid] : [];
+  });
+
   return {
     slug: row.slug,
     title: row.title,
     category: row.category as Project['category'],
     secondaryCategories: strList(row.secondary_categories) as Project['secondaryCategories'],
     description: row.description,
-    image: row.image,
-    images: strList(row.images),
+    image: imageUrl(row.image) ?? projectFallbackImage(row.slug) ?? '',
+    images: gallery,
     technologies: strList(row.technologies),
     year: strOr(row.year),
     overview: strOr(row.overview),
@@ -196,10 +225,14 @@ export async function getProject(slug: string): Promise<Project | undefined> {
 function mapTestimonial(row: Record<string, unknown>): Testimonial {
   return {
     id: str(row.id),
+    // The `testimonials.content` column holds the client's words, so it maps
+    // straight onto `quote`. A row with an empty cell resolves to `null`, which
+    // is what the section reads to decide whether the card is publishable —
+    // see the note on `Testimonial`.
+    quote: strOr(row.content) ?? null,
     name: str(row.name),
     role: str(row.role),
     company: strOr(row.company),
-    content: str(row.content),
     avatar: strOr(row.avatar),
   };
 }
@@ -225,6 +258,8 @@ interface PostRow {
 }
 
 function mapPost(row: PostRow): BlogPost {
+  const image = imageUrl(row.image) ?? postFallbackImage(row.slug) ?? '';
+
   return {
     slug: row.slug,
     title: row.title,
@@ -232,7 +267,7 @@ function mapPost(row: PostRow): BlogPost {
     category: row.category as BlogPost['category'],
     date: row.date,
     readingTime: row.reading_time,
-    image: row.image,
+    image,
     content: strList(row.content),
     tags: strList(row.tags),
     isPlaceholder: row.is_placeholder === true,

@@ -114,6 +114,25 @@ export default async function ServicePage({ params }: PageProps) {
     signals: seoMeta?.entitySignals,
     aiAnswer: seoMeta?.aiAnswer,
   });
+  const serviceFaqs = seoMeta?.faqs?.length
+    ? seoMeta.faqs
+    : [
+        {
+          question: `What does ${service.title.toLowerCase()} include?`,
+          answer: service.shortDescription,
+        },
+        {
+          question: `Who is ${service.title.toLowerCase()} for?`,
+          answer:
+            service.bestFor ??
+            `Businesses in Nepal that need ${service.shortDescription.replace(/[.!?]+$/, '')}`,
+        },
+        {
+          question: `How do I get started with ${service.title.toLowerCase()}?`,
+          answer:
+            'Send a short project brief through the contact page. I will review the scope and reply with a practical next step.',
+        },
+      ];
 
   /**
    * The page's Q&A as structured data, from the same array `FaqBlock` renders
@@ -121,7 +140,7 @@ export default async function ServicePage({ params }: PageProps) {
    * node on a page with no visible FAQ would be a claim the page does not
    * support, which is why this is conditional rather than always emitted.
    */
-  const faqNode = faqPageNode(seoMeta?.faqs ?? [], `${site.url}/services/${service.slug}`);
+  const faqNode = faqPageNode(serviceFaqs, `${site.url}/services/${service.slug}`);
 
   return (
     <article>
@@ -275,15 +294,14 @@ export default async function ServicePage({ params }: PageProps) {
             </div>
           ) : null}
 
-          {/* Page-level Q&A. Content only — deliberately no `FAQPage` schema,
-              which Google retired for all sites on 2026-05-07. See `FaqBlock`. */}
-          {seoMeta?.faqs?.length ? (
+            {/* Visible Q&A and its schema are generated from the same array. */}
+            {serviceFaqs.length ? (
             <div className="mt-14 grid gap-10 border-t border-line pt-14 lg:grid-cols-12">
               <div className="lg:col-span-3">
                 <SectionLabel label="Questions" />
               </div>
               <div className="lg:col-span-8 lg:col-start-5">
-                <FaqBlock faqs={seoMeta.faqs} />
+                <FaqBlock faqs={serviceFaqs} title="Questions about this service" />
               </div>
             </div>
           ) : null}

@@ -17,32 +17,32 @@ export function WorkWithMe() {
       <Container>
         <SectionHeading
           section="work-with-me"
-          title="Looking for Someone Who Can Build and Grow Your Digital Presence?"
+          title="Looking for someone who can build and grow the whole thing?"
           description="Pick the starting point that fits. We can always expand the scope once the first goal is clear."
         />
 
         <Reveal delay={0.05}>
           <ul className="mt-12 border-t border-line">
-            {engagementOptions.map((option, index) => (
+            {engagementOptions.map((option) => (
               <li key={option.title} className="border-b border-line">
                 <Link
                   href={option.href}
                   className="group grid items-baseline gap-2 py-6 md:grid-cols-12 md:gap-6 md:py-7"
                 >
-                  <span className="text-label font-semibold text-accent md:col-span-1">
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                  <span className="text-2xl font-medium tracking-tight transition-colors duration-300 group-hover:text-accent md:col-span-5 md:text-3xl">
+                  {/* The "01/02/03" ordinal that used to open this row is gone
+                      — see `src/components/ui/SectionLabel` for why the design
+                      dropped numbered labels. The list order carries it. */}
+                  <span className="font-display text-2xl font-semibold transition-colors duration-200 group-hover:text-accent md:col-span-6 md:text-3xl">
                     {option.title}
                   </span>
-                  <span className="text-sm leading-relaxed text-muted md:col-span-4">
+                  <span className="leading-relaxed text-muted md:col-span-4">
                     {option.summary}
                   </span>
                   <span className="md:col-span-2 md:justify-self-end">
                     <ArrowUpRight
                       size={20}
                       aria-hidden
-                      className="text-muted transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
+                      className="text-muted transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
                     />
                   </span>
                 </Link>
@@ -54,17 +54,17 @@ export function WorkWithMe() {
         <Reveal delay={0.1}>
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <Button href="/contact" size="lg" showArrow>
-              Start a Conversation
+              Start a project
             </Button>
             {profile.whatsapp ? (
               <Button
                 href={`https://wa.me/${profile.whatsapp.replace(/\D/g, '')}`}
                 variant="whatsapp"
                 size="lg"
-                ariaLabel={`Chat on WhatsApp at ${profile.whatsapp}`}
+                ariaLabel={`Message me on WhatsApp at ${profile.whatsapp}`}
               >
-                <WhatsAppIcon size={17} className="mr-2" />
-                Chat on WhatsApp
+                <WhatsAppIcon size={17} className="mr-2" aria-hidden />
+                Message me on WhatsApp
               </Button>
             ) : null}
           </div>

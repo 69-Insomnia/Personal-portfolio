@@ -124,7 +124,7 @@ export function ProfileIntro() {
                   </div>
                   <div className="mt-4">
                     <p className="text-lg font-semibold tracking-tight">{profile.name}</p>
-                    <p className="mt-1 text-label font-medium uppercase text-muted">
+                    <p className="mt-1 text-label font-medium text-muted">
                       {profile.title} · {profile.location}
                     </p>
                   </div>
@@ -133,7 +133,7 @@ export function ProfileIntro() {
 
               <Reveal delay={0.08}>
                 <div className="card p-5">
-                  <p className="flex items-start gap-2.5 text-label font-semibold uppercase text-ink">
+                  <p className="flex items-start gap-2.5 text-label font-semibold text-ink">
                     <span
                       aria-hidden
                       className="mt-[0.35em] h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
@@ -144,7 +144,7 @@ export function ProfileIntro() {
                   <dl className="mt-5 flex flex-col gap-4 border-t border-line pt-5">
                     {FACTS.map((fact) => (
                       <div key={fact.term}>
-                        <dt className="text-label font-semibold uppercase text-muted">
+                        <dt className="text-label font-semibold text-muted">
                           {fact.term}
                         </dt>
                         <dd className="mt-1.5 text-sm leading-relaxed text-ink">{fact.detail}</dd>
@@ -169,10 +169,10 @@ export function ProfileIntro() {
                         href={whatsappHref}
                         variant="whatsapp"
                         className="w-full justify-center"
-                        ariaLabel={`Chat on WhatsApp at ${profile.whatsapp}`}
+                        ariaLabel={`Message me on WhatsApp at ${profile.whatsapp}`}
                       >
-                        <WhatsAppIcon size={16} className="mr-2" />
-                        Chat on WhatsApp
+                        <WhatsAppIcon size={16} className="mr-2" aria-hidden />
+                        Message me on WhatsApp
                       </Button>
                     ) : null}
                     <Button
@@ -181,7 +181,7 @@ export function ProfileIntro() {
                       className="w-full justify-center"
                       showArrow
                     >
-                      Start a Project
+                      Start a project
                     </Button>
                   </div>
                 </div>

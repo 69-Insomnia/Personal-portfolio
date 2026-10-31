@@ -1,11 +1,13 @@
 'use client';
 
 import { useState, type ChangeEvent, type FormEvent } from 'react';
-import { ChevronDown, CircleAlert, CircleCheck, LoaderCircle, MapPin, Phone } from 'lucide-react';
+import { ChevronDown, CircleAlert, CircleCheck, LoaderCircle, MapPin, Mail, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { Container } from '@/components/ui/Container';
 import { Reveal } from '@/components/ui/Reveal';
 import { Section } from '@/components/ui/Section';
+import { SectionHeading } from '@/components/ui/SectionHeading';
 import { SocialLinks } from '@/components/common/SocialLinks';
 import { WhatsAppIcon } from '@/components/common/WhatsAppIcon';
 import { contactProcess } from '@/data/contact';
@@ -74,20 +76,26 @@ function validate(values: FormValues): FormErrors {
   return errors;
 }
 
-export function Contact() {
+/**
+ * `showHeading` is false on `/contact`, which already opens with an `<h1>`
+ * carrying this exact sentence. Rendering the section heading there too would
+ * put the same line on the page twice, once as an `<h1>` and once as an `<h2>`
+ * immediately below it — a duplicate heading is the one thing a search engine
+ * reads as boilerplate. Same pattern as `Projects`' `showHeading`.
+ */
+export function Contact({ showHeading = true }: { showHeading?: boolean }) {
   const [values, setValues] = useState<FormValues>(initialValues);
   const [errors, setErrors] = useState<FormErrors>({});
   const [status, setStatus] = useState<Status>('idle');
 
-  // Fields sit raised ON the tinted form panel rather than sharing its fill.
-  // Previously the only thing marking an input was a 12%-alpha border over a
-  // background the same colour as the panel behind it, which composites to
-  // well under the 3:1 that WCAG 1.4.11 asks of a component boundary.
-  // `outline-none` is also gone — for a text field the outline is the focus
-  // indicator, and the border colour change alone is too thin to rely on.
+  // Fields sit raised ON the form panel rather than sharing its fill: a border
+  // at 12% alpha over a background the same colour as the panel behind it
+  // composites to well under the 3:1 that WCAG 1.4.11 asks of a component
+  // boundary. `outline-none` is also gone — for a text field the outline is the
+  // focus indicator, and a border colour change alone is too thin to rely on.
   const fieldClass = (field: keyof FormValues) =>
     cn(
-      'w-full border bg-surface px-4 py-3 text-base transition-colors duration-300 placeholder:text-faint focus:border-accent focus:ring-4 focus:ring-accent-soft',
+      'w-full rounded-[10px] border bg-surface px-4 py-3 text-base transition-colors duration-200 placeholder:text-faint focus:border-accent focus:ring-4 focus:ring-accent-soft',
       errors[field] ? 'border-danger' : 'border-line-strong',
     );
 
@@ -145,22 +153,33 @@ export function Contact() {
   );
 
   return (
-    <Section id="contact" className="bg-surface">
+    <Section id="contact" className="border-t border-line bg-surface">
       <Container>
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-14">
+        {showHeading ? (
+          <SectionHeading
+            section="contact"
+            title="Tell me what you're trying to build"
+            description="A store, better search visibility, paid campaigns, or a site that finally converts. Start wherever you are."
+          />
+        ) : null}
+
+        <div className={cn('grid gap-6 lg:grid-cols-12 lg:gap-8', showHeading && 'mt-14')}>
+          {/* Form — the wide column. */}
           <div className="lg:col-span-7">
             <Reveal delay={0.05}>
-              <div className="rounded-card border border-line bg-paper p-6 md:p-8">
+              <Card className="p-6 md:p-8">
                 {status === 'success' ? (
-                  <div role="status" className="flex min-h-[24rem] flex-col items-start justify-center">
+                  <div
+                    role="status"
+                    className="flex min-h-[24rem] flex-col items-start justify-center"
+                  >
                     <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent-soft text-accent">
                       <CircleCheck size={22} aria-hidden />
                     </span>
-                    <h3 className="mt-5 text-xl font-medium tracking-tight">
-                      Message sent.
-                    </h3>
-                    <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted">
-                      Thanks for reaching out. I&apos;ll get back to you as soon as I can.
+                    <h3 className="mt-5 font-display text-h3">Message sent.</h3>
+                    <p className="mt-2 max-w-sm leading-relaxed text-muted">
+                      Thanks for reaching out. I read every message myself and usually reply
+                      within a day.
                     </p>
                     <div className="mt-6">
                       <Button variant="outline" onClick={() => setStatus('idle')}>
@@ -190,7 +209,7 @@ export function Contact() {
                           className={cn('mt-2', fieldClass('name'))}
                         />
                         {errors.name ? (
-                          <p id="contact-name-error" className="mt-1.5 text-xs text-danger">
+                          <p id="contact-name-error" className="mt-1.5 text-sm text-danger">
                             {errors.name}
                           </p>
                         ) : null}
@@ -215,7 +234,7 @@ export function Contact() {
                           className={cn('mt-2', fieldClass('email'))}
                         />
                         {errors.email ? (
-                          <p id="contact-email-error" className="mt-1.5 text-xs text-danger">
+                          <p id="contact-email-error" className="mt-1.5 text-sm text-danger">
                             {errors.email}
                           </p>
                         ) : null}
@@ -223,7 +242,7 @@ export function Contact() {
 
                       <div>
                         <label htmlFor="contact-company" className="text-sm font-medium">
-                          Company <span className="text-xs font-normal text-muted">(optional)</span>
+                          Company <span className="font-normal text-muted">(optional)</span>
                         </label>
                         <input
                           id="contact-company"
@@ -309,7 +328,7 @@ export function Contact() {
                           className={cn('mt-2 resize-y', fieldClass('message'))}
                         />
                         {errors.message ? (
-                          <p id="contact-message-error" className="mt-1.5 text-xs text-danger">
+                          <p id="contact-message-error" className="mt-1.5 text-sm text-danger">
                             {errors.message}
                           </p>
                         ) : null}
@@ -319,14 +338,14 @@ export function Contact() {
                     {status === 'error' ? (
                       <p
                         role="alert"
-                        className="mt-5 flex items-center gap-2 border border-danger px-4 py-3 text-sm text-danger"
+                        className="mt-5 flex items-center gap-2 rounded-[10px] border border-danger px-4 py-3 text-sm text-danger"
                       >
                         <CircleAlert size={15} aria-hidden />
                         Something went wrong. Please try again.
                       </p>
                     ) : null}
 
-                    <div className="mt-6 flex flex-wrap items-center gap-4">
+                    <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
                       <Button
                         type="submit"
                         size="lg"
@@ -339,93 +358,105 @@ export function Contact() {
                             Sending...
                           </>
                         ) : (
-                          'Send Message'
+                          'Send enquiry'
                         )}
                       </Button>
-                      <p className="text-xs text-muted">
-                        I usually reply within 24 hours.
-                      </p>
+                      <p className="text-sm text-muted">I usually reply within 24 hours.</p>
                     </div>
-                   </form>
+                  </form>
                 )}
-              </div>
+              </Card>
             </Reveal>
           </div>
 
-          <div className="flex flex-col gap-4 lg:col-span-5">
-            {profile.email || profile.location ? (
-              <Reveal delay={0.08}>
-                <div className="rounded-card border border-line bg-subtle p-6">
-                  <p className="text-label text-muted">Direct</p>
+          {/*
+            The right column was four separate panels — Direct, Fastest,
+            Elsewhere, What happens next — each with its own border, its own
+            label and its own top margin. Four boxes to convey one thing ("here
+            is how to reach me, and here is what happens if you do") reads as a
+            dashboard.
+
+            It is now one card with three sections divided by rules, which is
+            the same information at a third of the visual weight.
+          */}
+          <div className="lg:col-span-5">
+            <Reveal delay={0.1}>
+              <Card className="p-6 md:p-7">
+                <p className="text-sm font-medium text-ink">Reach me directly</p>
+
+                <div className="mt-4 flex flex-col gap-2.5">
                   {profile.email ? (
-                    profile.email.includes('@') ? (
-                      <a
-                        href={`mailto:${profile.email}`}
-                        className="mt-3 block break-all py-1 text-base text-ink transition-colors duration-300 hover:text-accent"
-                      >
-                        {profile.email}
-                      </a>
-                    ) : (
-                      <p className="mt-3 break-all text-base text-ink">{profile.email}</p>
-                    )
+                    <a
+                      href={`mailto:${profile.email}`}
+                      className="flex min-h-[44px] items-center gap-2.5 text-[15px] break-all text-muted transition-colors duration-200 hover:text-accent"
+                    >
+                      <Mail size={16} aria-hidden className="shrink-0 text-accent" />
+                      {profile.email}
+                    </a>
                   ) : null}
+
+                  {whatsappDigits ? (
+                    <a
+                      href={`tel:+${whatsappDigits}`}
+                      className="flex min-h-[44px] items-center gap-2.5 text-[15px] text-muted transition-colors duration-200 hover:text-accent"
+                      aria-label={`Call ${profile.whatsapp}`}
+                    >
+                      <Phone size={16} aria-hidden className="shrink-0 text-accent" />
+                      {profile.whatsapp}
+                    </a>
+                  ) : null}
+
                   {profile.location ? (
-                    <p className="mt-2 flex items-center gap-2 text-sm text-muted">
-                      <MapPin size={14} aria-hidden className="text-accent" />
+                    <a
+                      href="https://www.google.com/maps/search/?api=1&query=Kathmandu%2C%20Nepal"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex min-h-[44px] items-center gap-2.5 text-[15px] text-muted transition-colors duration-200 hover:text-accent"
+                      aria-label={`View ${profile.location} service area on Google Maps`}
+                    >
+                      <MapPin size={16} aria-hidden className="shrink-0 text-accent" />
                       {profile.location}
-                    </p>
+                    </a>
                   ) : null}
                 </div>
-              </Reveal>
-            ) : null}
 
-            {whatsappDigits ? (
-              <Reveal delay={0.12}>
-                <div className="rounded-card border border-line bg-subtle p-6">
-                  <p className="text-label text-muted">Fastest</p>
+                {whatsappDigits ? (
                   <Button
                     href={`https://wa.me/${whatsappDigits}`}
                     variant="whatsapp"
-                    className="mt-4 w-full"
-                    ariaLabel={`Chat on WhatsApp at ${profile.whatsapp}`}
+                    size="lg"
+                    className="mt-5 w-full"
+                    ariaLabel={`Message me on WhatsApp at ${profile.whatsapp}`}
                   >
-                    <WhatsAppIcon size={17} className="mr-2" />
-                    Chat on WhatsApp
+                    <WhatsAppIcon size={17} className="mr-2" aria-hidden />
+                    Message me on WhatsApp
                   </Button>
-                  <Button
-                    href={`tel:+${whatsappDigits}`}
-                    variant="outline"
-                    className="mt-3 w-full"
-                    ariaLabel={`Call ${profile.whatsapp}`}
-                  >
-                    <Phone size={15} aria-hidden className="mr-2" />
-                    {profile.whatsapp}
-                  </Button>
-                </div>
-              </Reveal>
-            ) : null}
+                ) : null}
 
-            {hasSocials ? (
-              <Reveal delay={0.16}>
-                <div className="rounded-card border border-line bg-subtle p-6">
-                  <p className="text-label text-muted">Elsewhere</p>
-                  <SocialLinks links={profile.socialLinks} className="mt-4" />
+                <div className="mt-7 border-t border-line pt-6">
+                  <p className="text-sm font-medium text-ink">What happens next</p>
+                  <ol className="mt-4 space-y-3">
+                    {contactProcess.map((item) => (
+                      <li key={item.text} className="flex gap-3">
+                        <span
+                          aria-hidden
+                          className="mt-[0.55em] h-1.5 w-1.5 shrink-0 rounded-full bg-marigold"
+                        />
+                        <span className="text-[15px] leading-relaxed text-muted">
+                          {item.text}
+                        </span>
+                      </li>
+                    ))}
+                  </ol>
                 </div>
-              </Reveal>
-            ) : null}
 
-            <Reveal delay={0.2}>
-              <div className="rounded-card border border-line bg-subtle p-6">
-                <p className="text-label text-muted">What happens next</p>
-                <ol className="mt-4 space-y-3">
-                  {contactProcess.map((item) => (
-                    <li key={item.step} className="flex gap-3 text-sm leading-relaxed">
-                      <span className="text-label font-semibold text-accent">{item.step}</span>
-                      <span className="text-muted">{item.text}</span>
-                    </li>
-                  ))}
-                </ol>
-              </div>
+                {hasSocials ? (
+                  <div className="mt-7 border-t border-line pt-6">
+                    <p className="text-sm font-medium text-ink">Elsewhere</p>
+                    <SocialLinks links={profile.socialLinks} className="mt-4" />
+                  </div>
+                ) : null}
+              </Card>
             </Reveal>
           </div>
         </div>
