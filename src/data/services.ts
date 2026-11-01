@@ -96,7 +96,7 @@ const serviceOrder: UnnumberedService[] = [
     icon: 'code',
   },
   {
-    slug: 'seo',
+    slug: 'seo-services',
     title: 'SEO Services',
     shortDescription: 'Technical SEO, keyword research and content work for businesses in Nepal.',
     description:

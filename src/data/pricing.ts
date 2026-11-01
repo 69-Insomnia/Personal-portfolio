@@ -103,7 +103,7 @@ export const oneOffTiers: PricingTier[] = [
   {
     id: 'seo-audit',
     name: 'SEO audit',
-    serviceSlug: 'seo',
+    serviceSlug: 'seo-services',
     fromNpr: null,
     unit: 'one-off',
     summary:
@@ -123,7 +123,7 @@ export const monthlyTiers: PricingTier[] = [
   {
     id: 'seo',
     name: 'SEO retainer',
-    serviceSlug: 'seo',
+    serviceSlug: 'seo-services',
     fromNpr: null,
     unit: 'per month',
     summary:

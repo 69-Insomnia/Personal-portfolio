@@ -45,7 +45,7 @@ const SERVICE_RELATIONS: Record<string, Relations> = {
     projects: ['drillthru', 'trip-zone', 'starglobalvision', 'poms-penthouse'],
     posts: ['whatsapp-booking-site'],
   },
-  seo: {
+  'seo-services': {
     ...EMPTY,
     projects: ['drillthru', 'trip-zone'],
     posts: ['technical-seo-foundations'],
@@ -86,12 +86,12 @@ const SERVICE_RELATIONS: Record<string, Relations> = {
 const PROJECT_RELATIONS: Record<string, Relations> = {
   drillthru: {
     ...EMPTY,
-    services: ['web-development', 'seo', 'digital-marketing', 'google-ads'],
+    services: ['web-development', 'seo-services', 'digital-marketing', 'google-ads'],
     posts: ['technical-seo-foundations'],
   },
   'trip-zone': {
     ...EMPTY,
-    services: ['web-development', 'seo'],
+    services: ['web-development', 'seo-services'],
     posts: ['technical-seo-foundations'],
   },
   starglobalvision: {
@@ -116,7 +116,7 @@ const PROJECT_RELATIONS: Record<string, Relations> = {
 const POST_RELATIONS: Record<string, Relations> = {
   'technical-seo-foundations': {
     ...EMPTY,
-    services: ['seo', 'ai-search'],
+    services: ['seo-services', 'ai-search'],
     projects: ['drillthru'],
   },
   'whatsapp-booking-site': {

@@ -25,7 +25,7 @@ import type { Service } from '@/types';
  * records, so every card resolves to a live page and the copy is the copy the
  * `/services` grid shows.
  */
-const HOMEPAGE_SLUGS = ['web-development', 'seo', 'ecommerce-growth'];
+const HOMEPAGE_SLUGS = ['web-development', 'seo-services', 'ecommerce-growth'];
 
 function pickHomepageServices(all: Service[]): Service[] {
   const chosen = HOMEPAGE_SLUGS.map((slug) => all.find((service) => service.slug === slug)).filter(
