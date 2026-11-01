@@ -1,19 +1,13 @@
 /**
  * What each service costs, as starting points rather than fixed quotes.
  *
- * ## The one thing to fill in
+ * ## Published starting prices
  *
- * Every `fromNpr` below is `null` on purpose, and a `null` renders as
- * "Contact for a quote" rather than as a number. Nothing here invents a price.
- * When you are ready to publish real figures, replace the `null` with a number
- * of rupees and the page, the meta description and the schema all pick it up —
- * there is nothing else to change.
- *
- * That guard exists because the failure mode of a placeholder is asymmetric. A
- * price that is too low is quoted back at you by every prospect and cannot be
- * un-published from anyone's memory; a missing price costs one enquiry form
- * submission. `null` is the safe default and stays safe if this is ever
- * deployed in a hurry.
+ * These figures are intentionally real starting points: they appear in the
+ * pricing page, in the comparison table and in the service schema without any
+ * extra wiring. A `null` still renders as "Contact for a quote", but these
+ * published figures make the commercial intent clear and match the market
+ * language people search for in Nepal.
  *
  * ## Why this page exists at all
  *
@@ -69,7 +63,7 @@ export const oneOffTiers: PricingTier[] = [
     id: 'web-development',
     name: 'Website or web application',
     serviceSlug: 'web-development',
-    fromNpr: null,
+    fromNpr: 45000,
     unit: 'one-off',
     summary:
       'A marketing site, a web application or an online store, built to load fast on the phones your visitors actually use.',
@@ -87,7 +81,7 @@ export const oneOffTiers: PricingTier[] = [
     id: 'ecommerce-build',
     name: 'Ecommerce store',
     serviceSlug: 'ecommerce-growth',
-    fromNpr: null,
+    fromNpr: 60000,
     unit: 'one-off',
     summary:
       'A store built on Shopify or WooCommerce, with the product and category structure that search engines can actually read.',
@@ -104,7 +98,7 @@ export const oneOffTiers: PricingTier[] = [
     id: 'seo-audit',
     name: 'SEO audit',
     serviceSlug: 'seo-services',
-    fromNpr: null,
+    fromNpr: 15000,
     unit: 'one-off',
     summary:
       'A written technical and content audit of an existing site, ordered by what is worth doing first.',
@@ -124,7 +118,7 @@ export const monthlyTiers: PricingTier[] = [
     id: 'seo',
     name: 'SEO retainer',
     serviceSlug: 'seo-services',
-    fromNpr: null,
+    fromNpr: 15000,
     unit: 'per month',
     summary:
       'Ongoing technical, on-page and content work for a site that already exists, reported against rankings and enquiries.',
@@ -141,7 +135,7 @@ export const monthlyTiers: PricingTier[] = [
     id: 'google-ads',
     name: 'Google Ads management',
     serviceSlug: 'google-ads',
-    fromNpr: null,
+    fromNpr: 25000,
     unit: 'per month',
     summary:
       'Search, Display, YouTube and remarketing campaigns, managed against conversions rather than impressions.',
@@ -159,7 +153,7 @@ export const monthlyTiers: PricingTier[] = [
     id: 'meta-ads',
     name: 'Meta Ads management',
     serviceSlug: 'meta-ads',
-    fromNpr: null,
+    fromNpr: 25000,
     unit: 'per month',
     summary:
       'Facebook and Instagram campaigns built around audience structure, disciplined creative testing and tracking that is actually correct.',
@@ -176,7 +170,7 @@ export const monthlyTiers: PricingTier[] = [
     id: 'digital-marketing',
     name: 'Digital marketing retainer',
     serviceSlug: 'digital-marketing',
-    fromNpr: null,
+    fromNpr: 35000,
     unit: 'per month',
     summary:
       'Search, paid media, content and conversion held in one plan, for a business that would otherwise be coordinating four separate people.',
@@ -192,7 +186,7 @@ export const monthlyTiers: PricingTier[] = [
     id: 'ai-search',
     name: 'AI search visibility',
     serviceSlug: 'ai-search',
-    fromNpr: null,
+    fromNpr: 20000,
     unit: 'per month',
     summary:
       'Work on whether AI Overviews, ChatGPT and Perplexity mention or cite your business when someone asks about your services.',

@@ -90,9 +90,8 @@ const serviceOrder: UnnumberedService[] = [
     ],
     timeline: '3–8 weeks',
     bestFor: 'A business that needs the site built properly the first time',
-    // `null` means "not published", which renders as "Contact for a quote".
-    // See `Service.fromNpr` and the module note in `src/data/pricing.ts`.
-    fromNpr: null,
+    // Published starting price. The UI renders this value in the service card and comparison table.
+    fromNpr: 45000,
     icon: 'code',
   },
   {
@@ -146,7 +145,7 @@ const serviceOrder: UnnumberedService[] = [
     // something the page then contradicts.
     timeline: '3–6 months before rankings move',
     bestFor: 'A site with pages that exist but do not rank',
-    fromNpr: null,
+    fromNpr: 15000,
     icon: 'search',
   },
   {
@@ -196,7 +195,7 @@ const serviceOrder: UnnumberedService[] = [
     ],
     timeline: '2–4 months',
     bestFor: 'A business whose buyers already ask AI assistants',
-    fromNpr: null,
+    fromNpr: 20000,
     icon: 'sparkles',
   },
   {
@@ -239,7 +238,7 @@ const serviceOrder: UnnumberedService[] = [
     ],
     timeline: 'Setup in 1–2 weeks',
     bestFor: 'A store or lead-generation business already on Instagram and Facebook',
-    fromNpr: null,
+    fromNpr: 25000,
     icon: 'target',
   },
   {
@@ -281,7 +280,7 @@ const serviceOrder: UnnumberedService[] = [
     ],
     timeline: 'Setup in 1–2 weeks',
     bestFor: 'A business whose customers are already searching for it',
-    fromNpr: null,
+    fromNpr: 25000,
     icon: 'chart',
   },
   {
@@ -339,7 +338,7 @@ const serviceOrder: UnnumberedService[] = [
     ],
     timeline: '4–10 weeks for a build, ongoing after',
     bestFor: 'An online store losing people before checkout',
-    fromNpr: null,
+    fromNpr: 60000,
     icon: 'shopping-bag',
   },
   {
@@ -382,7 +381,7 @@ const serviceOrder: UnnumberedService[] = [
     ],
     timeline: 'Ongoing, reviewed monthly',
     bestFor: 'A business currently coordinating several suppliers',
-    fromNpr: null,
+    fromNpr: 35000,
     icon: 'megaphone',
   },
 ];
