@@ -12,7 +12,7 @@ import { profile } from '@/data/profile';
  * The page's one `<h1>`, and the reason the display line sits inside it.
  *
  * Two sentences share one heading element here. The first is the exact target
- * query — "Ecommerce growth specialist in Kathmandu" — because a heading that
+ * query — "Ecommerce SEO specialist in Kathmandu" — because a heading that
  * matches the query verbatim is the strongest thing this page can say about
  * what it is for, and it names the role and the place that the Person entity at
  * `#person` publishes.
@@ -27,7 +27,7 @@ import { profile } from '@/data/profile';
  * identical to the heading immediately above it reads as a copy-paste error.
  * The link keeps a keyword-bearing anchor; it just no longer duplicates the H1.
  */
-const H1_KEYWORD = 'Ecommerce growth specialist in Kathmandu';
+const H1_KEYWORD = 'Ecommerce SEO specialist in Kathmandu';
 
 /** Split by hand — the breaks are a typographic decision, not the measure's. */
 const DISPLAY_LINES = ['Stores that load fast,', 'rank well, and close', 'the sale.'];

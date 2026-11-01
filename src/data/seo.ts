@@ -177,18 +177,16 @@ export const identity = {
   /**
    * The entity's positioning line, and the reason it changed.
    *
-   * This read "Web Developer & SEO Specialist". The site was telling search
-   * engines two different things: the homepage title and meta description
-   * already said "Ecommerce Growth Specialist", while `jobTitle` on the Person
-   * node — the strongest machine-readable statement of what this entity is —
-   * said web developer. Google and AI assistants rank and cite an entity for
-   * what it consistently proves, so the two had to agree.
+    * The site had described ecommerce SEO work in its profile and page copy,
+    * while `jobTitle` on the Person node described only web development. The
+    * structured title now matches the site's demonstrated SEO specialization,
+    * giving search engines and answer engines a more consistent entity signal.
    *
    * It is deliberately different from `profile.title` (the navbar's tracked
    * micro-type, which has to stay short enough to sit under a name). This is
    * the version that goes into a heading, a `jobTitle` and a meta description.
    */
-  role: 'Ecommerce Growth Specialist',
+  role: 'Ecommerce SEO Specialist',
   location: profile.location,
   email: profile.email,
   telephone: profile.whatsapp,
@@ -216,9 +214,9 @@ export const DEFAULT_OG_IMAGE = '/og-image.png';
 
 /**
  * Titles lead with the query, not the name. A portfolio for someone who is not
- * yet a known entity gains nothing from brand-first titles, and everything the
- * site is trying to rank for is a generic-plus-place query: ecommerce growth
- * specialist Kathmandu, ecommerce SEO Nepal, Meta ads Kathmandu.
+ * yet a known entity gains nothing from brand-first titles, and the site's
+ * focus is on generic-plus-place queries such as ecommerce SEO specialist
+ * Kathmandu, Shopify SEO Nepal and Meta Ads Kathmandu.
  *
  * The `keywords` array that used to live on these objects is gone. Google has
  * ignored the keywords meta tag for years, so it was never a ranking lever —
@@ -229,7 +227,7 @@ export const DEFAULT_OG_IMAGE = '/og-image.png';
 export const defaultSEO: SEOData = {
   title: 'Ecommerce SEO Specialist in Kathmandu | Dipendra Guragain',
   description:
-    'Dipendra Guragain helps Nepal businesses grow with ecommerce SEO, technical SEO, Shopify and WooCommerce websites, and Google & Meta Ads campaigns that convert.',
+    'Dipendra Guragain helps Nepal businesses grow with ecommerce SEO, Shopify and WooCommerce store improvements, and Google & Meta Ads.',
   canonical: site.url,
 };
 
@@ -244,16 +242,16 @@ export const defaultSEO: SEOData = {
  * homepage, and the reverse.
  */
 export const homeSEO: SEOData = {
-  title: 'Ecommerce SEO Specialist in Kathmandu, Nepal | Dipendra Guragain',
+  title: 'Ecommerce SEO Specialist in Kathmandu | Dipendra Guragain',
   description:
-    'Dipendra Guragain is an ecommerce SEO specialist in Kathmandu helping Nepal businesses grow with SEO, Shopify & WooCommerce builds, and Google & Meta Ads strategies that drive sales.',
+    'Dipendra Guragain helps Nepal businesses grow with ecommerce SEO, Shopify and WooCommerce store improvements, and Google & Meta Ads.',
   canonical: `${site.url}/`,
 };
 
 export const aboutSEO: SEOData = {
   title: 'About Dipendra Guragain | Ecommerce SEO in Kathmandu',
   description:
-    'Kathmandu-based web developer working across React, Next.js, search and paid media. Where I have worked, what I studied, and how I approach a project.',
+    'Meet Dipendra Guragain, an ecommerce SEO specialist in Kathmandu, Nepal. Learn about his approach to technical SEO, ecommerce websites and paid advertising.',
   keywords: ['web developer Kathmandu', 'React developer Nepal', 'SEO consultant Nepal'],
   canonical: `${site.url}/about`,
 };
@@ -261,7 +259,7 @@ export const aboutSEO: SEOData = {
 export const workSEO: SEOData = {
   title: `Work | Web & Ecommerce Projects in Nepal | ${profile.name}`,
   description:
-    'Projects for Nepal businesses: web and ecommerce work for DrillThru, Trip Zone, Star Global Vision and POM\'s Penthouse. Explore the goals, build and SEO approach.',
+    'Selected web development and ecommerce projects for businesses in Nepal, with project scope, SEO work, technologies and live site links.',
   keywords: ['web design Nepal', 'ecommerce website Nepal', 'website portfolio Nepal'],
   canonical: `${site.url}/work`,
 };
@@ -289,15 +287,13 @@ export const servicesSEO: SEOData = {
  * for the query, and this is one of the few places where the two are not
  * interchangeable.
  *
- * The description names the concrete services and a price-adjacent promise
- * ("starting points") rather than saying "competitive pricing" — a phrase that
- * appears in so many results it has stopped carrying information, and which
- * gives a search engine nothing to distinguish this page with.
+ * The page explains what each service includes and what affects a quote without
+ * inventing prices where no verified public rate has been supplied.
  */
 export const pricingSEO: SEOData = {
-  title: 'SEO, Web Development & Ads Cost in Nepal | Starting Prices',
+  title: 'SEO, Web Development & Ads Pricing in Nepal | Dipendra Guragain',
   description:
-    'What SEO, website builds, ecommerce stores and Google or Meta Ads management cost in Nepal, what changes the price, and what each service actually includes.',
+    'SEO, website and ecommerce costs in Nepal depend on project scope. See service inclusions, typical timelines and how to request a tailored quote.',
   keywords: [
     'SEO cost Nepal',
     'SEO price Nepal',
@@ -320,9 +316,9 @@ export const blogSEO: SEOData = {
 };
 
 export const contactSEO: SEOData = {
-  title: 'Contact Dipendra | Ecommerce Growth in Kathmandu, Nepal',
+  title: 'Contact Dipendra | Ecommerce SEO in Kathmandu, Nepal',
   description:
-    'Contact Dipendra Guragain in Kathmandu, Nepal about ecommerce growth, SEO, websites or paid campaigns. Share your project and get a practical next step.',
+    'Contact Dipendra Guragain in Kathmandu about ecommerce SEO, website development or paid ads. Share your project goals and get a practical next step.',
   keywords: ['hire web developer Nepal', 'contact SEO specialist Nepal'],
   canonical: `${site.url}/contact`,
 };
