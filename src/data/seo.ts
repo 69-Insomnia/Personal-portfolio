@@ -259,7 +259,7 @@ export const aboutSEO: SEOData = {
 export const workSEO: SEOData = {
   title: `Work | Web & Ecommerce Projects in Nepal | ${profile.name}`,
   description:
-    'Selected web development and ecommerce projects for businesses in Nepal, with project scope, SEO work, technologies and live site links.',
+    'Selected web and ecommerce client projects for Nepal businesses, with project scope, build approach, SEO work, technologies and live site links.',
   keywords: ['web design Nepal', 'ecommerce website Nepal', 'website portfolio Nepal'],
   canonical: `${site.url}/work`,
 };
