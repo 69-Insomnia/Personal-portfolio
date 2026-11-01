@@ -49,6 +49,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ServicePage({ params }: PageProps) {
   const { slug } = await params;
+
+  // The SEO service was renamed in the CMS from `seo` to `seo-services`, but
+  // the static fallback still contains the legacy slug. Redirect that legacy
+  // route explicitly so it cannot keep serving a second, self-canonical copy
+  // of the service page outside the sitemap.
+  if (slug === 'seo') permanentRedirect('/services/seo-services');
+
   const live = await getService(slug);
   const service = live ?? getServiceBySlug(slug);
 
