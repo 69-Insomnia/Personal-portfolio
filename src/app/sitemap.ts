@@ -78,12 +78,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
    * same fallback covers a backend outage: the sitemap degrades to listing
    * everything published, which is exactly the previous behaviour.
    */
+  const normaliseCanonical = (value: string): string => {
+    try {
+      const url = new URL(value);
+      const path = url.pathname.replace(/\/+$/, '') || '/';
+      return `${url.origin.toLowerCase()}${path}${url.search}${url.hash}`;
+    } catch {
+      return value.trim().replace(/\/+$/, '');
+    }
+  };
+
   const excluded = (
     type: 'project' | 'post' | 'service' | 'page',
     slug: string,
+    expectedUrl: string,
   ): boolean => {
     const meta = seo.get(seoKey(type, slug));
-    return Boolean(meta?.noindex || meta?.canonicalOverride);
+    const canonicalOverride = meta?.canonicalOverride;
+    const canonicalPointsElsewhere =
+      canonicalOverride !== undefined &&
+      normaliseCanonical(canonicalOverride) !== normaliseCanonical(expectedUrl);
+    return Boolean(meta?.noindex || canonicalPointsElsewhere);
   };
 
   /**
@@ -95,7 +110,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified ? { lastModified } : {};
 
   const staticRoutes = staticPages.filter(
-    ({ slug }) => !excluded('page', slug),
+    ({ path, slug }) => !excluded('page', slug, `${site.url}${path}`),
   ).map(({ path, priority }) => ({
     url: `${site.url}${path}`,
     // No date: these are code-managed, so the honest answer is that the data
@@ -105,7 +120,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const projectRoutes = projects
-    .filter((project) => !excluded('project', project.slug))
+    .filter(
+      (project) =>
+        !excluded('project', project.slug, `${site.url}/work/${project.slug}`),
+    )
     .map((project) => ({
       url: `${site.url}/work/${project.slug}`,
       ...stamped(isoDate(project.updatedAt)),
@@ -114,7 +132,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }));
 
   const serviceRoutes = services
-    .filter((service) => !excluded('service', service.slug))
+    .filter(
+      (service) =>
+        !excluded('service', service.slug, `${site.url}/services/${service.slug}`),
+    )
     .map((service) => ({
       url: `${site.url}/services/${service.slug}`,
       ...stamped(isoDate(service.updatedAt)),
@@ -123,7 +144,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }));
 
   const postRoutes = posts
-    .filter((post) => !excluded('post', post.slug))
+    .filter((post) => !excluded('post', post.slug, `${site.url}/blog/${post.slug}`))
     .map((post) => ({
       url: `${site.url}/blog/${post.slug}`,
       // An edited post dates from its edit; an untouched one from publication.
