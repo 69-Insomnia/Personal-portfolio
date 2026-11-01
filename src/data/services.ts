@@ -414,7 +414,7 @@ export const engagementOptions: EngagementOption[] = [
   {
     title: 'SEO',
     summary: 'Technical fixes and content that earn the right search traffic.',
-    href: '/services/seo',
+    href: '/services/seo-services',
   },
   {
     title: 'AI Search',
