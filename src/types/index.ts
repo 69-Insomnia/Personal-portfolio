@@ -21,12 +21,7 @@ export interface Profile {
   /** Circular brand avatar shown next to the name (navbar, menu, footer). */
   avatar: string;
   profileImage: string;
-  /**
-   * Background-removed variant of `profileImage`, transparent PNG, used by the
-   * hero portrait so the figure can rest flush on the cream card. Optional: the
-   * hero falls back to `profileImage` when it is unset, so an install without
-   * the cut-out renders a framed photo rather than a broken image.
-   */
+  /** Transparent cutout used by the hero when present. */
   profileImageCutout?: string;
   resumeUrl?: string;
   email?: string;

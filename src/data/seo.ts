@@ -227,9 +227,9 @@ export const DEFAULT_OG_IMAGE = '/og-image.png';
  * these arrays had no reader left.
  */
 export const defaultSEO: SEOData = {
-  title: 'Ecommerce Growth Specialist in Kathmandu | Dipendra Guragain',
+  title: 'Ecommerce SEO Specialist in Kathmandu | Dipendra Guragain',
   description:
-    'Dipendra Guragain is an ecommerce growth specialist in Kathmandu. Ecommerce SEO, Meta & Google Ads, and Shopify/WooCommerce store builds that turn visitors into customers.',
+    'Dipendra Guragain helps Nepal businesses grow with ecommerce SEO, technical SEO, Shopify and WooCommerce websites, and Google & Meta Ads campaigns that convert.',
   canonical: site.url,
 };
 
@@ -244,9 +244,9 @@ export const defaultSEO: SEOData = {
  * homepage, and the reverse.
  */
 export const homeSEO: SEOData = {
-  title: 'Ecommerce Growth Specialist in Kathmandu | Dipendra Guragain',
+  title: 'Ecommerce SEO Specialist in Kathmandu, Nepal | Dipendra Guragain',
   description:
-    'Ecommerce growth specialist in Kathmandu, Nepal. Dipendra Guragain helps stores grow with SEO, paid ads, and Shopify or WooCommerce builds focused on sales.',
+    'Dipendra Guragain is an ecommerce SEO specialist in Kathmandu helping Nepal businesses grow with SEO, Shopify & WooCommerce builds, and Google & Meta Ads strategies that drive sales.',
   canonical: `${site.url}/`,
 };
 

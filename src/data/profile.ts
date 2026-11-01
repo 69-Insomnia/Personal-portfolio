@@ -8,9 +8,9 @@ export const profile: Profile = {
    * which is why it is not the full positioning line — `identity.role` in
    * `src/data/seo.ts` carries that.
    */
-  title: 'Ecommerce Growth Specialist · SEO · Meta & Google Ads',
+  title: 'Ecommerce SEO Specialist · Web Developer · Google & Meta Ads',
 
-  headline: 'I Build Websites. Then I Get Them Found.',
+  headline: 'I build ecommerce websites that rank, convert, and grow.',
 
   /**
    * The one sentence that describes what this is, reused rather than rewritten
@@ -26,7 +26,7 @@ export const profile: Profile = {
    * page — it is the most quotable sentence on the site.
    */
   description:
-    "I'm Dipendra Guragain, an ecommerce growth specialist in Kathmandu. I build online stores, fix the SEO that gets them found, and run Meta and Google Ads that turn visitors into customers.",
+    "I'm Dipendra Guragain, an ecommerce SEO specialist and web developer in Kathmandu. I build Shopify, WooCommerce and custom stores, improve technical SEO for Google, and run Meta and Google Ads that turn visitors into paying customers.",
 
   location: 'Kathmandu, Nepal',
 
@@ -45,7 +45,7 @@ export const profile: Profile = {
    * contact card and the Google Maps link all state it) rather than being
    * restated in front of every status line.
    */
-  availabilityText: 'Taking on new projects',
+  availabilityText: 'Available for ecommerce growth projects',
 
   avatar: '/images/dipendra-avatar.jpg',
   profileImage: '/images/profile.png',
@@ -71,7 +71,7 @@ export const profile: Profile = {
    */
   socialLinks: {
     linkedin: 'https://www.linkedin.com/in/dipendra-guragain-88988a272',
-    github: 'https://github.com/guragain11',
+    github: 'https://github.com/69-Insomnia',
     facebook: 'https://www.facebook.com/dipendra.guragain11',
     instagram: 'https://www.instagram.com/guragai12/',
     tiktok: '',
