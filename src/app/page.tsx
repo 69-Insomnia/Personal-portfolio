@@ -28,6 +28,53 @@ import { buildMetadata } from '@/utils/metadata';
 import { homeSEO, withSeoMeta } from '@/data/seo';
 import { getExperience, getPosts, getProjects, getSeo, getServices, getSiteSettings, getTestimonials } from '@/lib/content';
 
+const HOME_KEYWORD_FAQS = [
+  {
+    question: 'Who is an e-commerce growth expert in Nepal?',
+    answer:
+      'Dipendra Guragain works as an e-commerce growth expert in Nepal, helping ecommerce brands improve traffic quality, conversion rates, repeat sales and measurable revenue growth.',
+  },
+  {
+    question: 'Do you work as an e-commerce expert in Nepal and Kathmandu?',
+    answer:
+      'Yes. I work with ecommerce businesses across Nepal and from Kathmandu, combining growth strategy, technical ecommerce SEO, store optimization and campaign execution.',
+  },
+  {
+    question: 'Can you support e-commerce SEO expert needs in Nepal?',
+    answer:
+      'Yes. The ecommerce SEO work covers technical fixes, category and product page architecture, internal linking, intent-based content and analytics tracking to measure ranking and sales impact.',
+  },
+  {
+    question: 'Do you run Meta Ads for ecommerce brands in Nepal?',
+    answer:
+      'Yes. As a Meta Ads expert for ecommerce in Nepal, I plan and manage full-funnel campaigns with conversion-focused creative testing, audience strategy and performance reporting tied to revenue.',
+  },
+  {
+    question: 'What makes you an e-commerce brand growth expert in Nepal?',
+    answer:
+      'I connect SEO, paid ads, landing page UX and conversion analytics into one growth system, so ecommerce brand decisions are based on data rather than isolated channel reports.',
+  },
+];
+
+const HOME_AI_ANSWER =
+  'Dipendra Guragain is an e-commerce growth expert in Nepal and Kathmandu, working as a freelance e-commerce growth specialist for online brands that need measurable sales growth. The work combines technical ecommerce SEO, conversion-focused website improvements, Meta Ads campaign management and analytics tracking so traffic, conversion rate and revenue can be improved together. As an e-commerce expert in Nepal, he plans product and category page structure, aligns content with search intent, optimizes funnels for mobile users and scales paid acquisition with clear performance targets. This full-stack ecommerce growth approach is built for Nepal-based brands that want one accountable partner for strategy, execution and ongoing optimization.';
+const HOME_AI_KEYWORD_EXTENSION =
+  'Core focus keywords: e-commerce growth expert in Nepal, e-commerce expert in Nepal, e-commerce growth expert in Kathmandu, e-commerce SEO expert Nepal, e-commerce growth specialist in Nepal, Meta Ads expert for ecommerce Nepal, and e-commerce brand growth expert Nepal.';
+
+function mergeFaqs(base: Array<{ question: string; answer: string }>, extras: Array<{ question: string; answer: string }>) {
+  const seen = new Set<string>();
+  const merged: Array<{ question: string; answer: string }> = [];
+
+  for (const item of [...base, ...extras]) {
+    const key = item.question.toLowerCase().replace(/\s+/g, ' ').trim();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    merged.push(item);
+  }
+
+  return merged;
+}
+
 /**
  * Twelve sections, in the order a visitor actually asks the questions: who is
  * this, what has he built, does the work back it up, what can I buy, how does it
@@ -48,6 +95,10 @@ export default async function HomePage() {
     getServices(),
     getSeo('page', 'home'),
   ]);
+  const answerBlock = seoMeta?.aiAnswer
+    ? `${seoMeta.aiAnswer.replace(/\s+$/u, '')} ${HOME_AI_KEYWORD_EXTENSION}`
+    : HOME_AI_ANSWER;
+  const quickAnswers = mergeFaqs(seoMeta?.faqs ?? [], HOME_KEYWORD_FAQS);
 
   /**
    * The FAQ as structured data, built from the same two arrays the page
@@ -60,7 +111,7 @@ export default async function HomePage() {
    * FAQ text only appears on this page, and a `FAQPage` node on a page with no
    * visible FAQ is a claim the page does not support.
    */
-  const faqNode = faqPageNode([...faqs, ...(seoMeta?.faqs ?? [])], site.url);
+  const faqNode = faqPageNode([...faqs, ...quickAnswers], site.url);
 
   /**
    * The `WebPage` node, carrying the two properties only a page has: an
@@ -78,7 +129,7 @@ export default async function HomePage() {
     name: 'Ecommerce Growth Expert in Nepal',
     mainEntityId: personId,
     signals: seoMeta?.entitySignals,
-    aiAnswer: seoMeta?.aiAnswer,
+    aiAnswer: answerBlock,
   });
 
   /** Glossary terms from `entity_signals` — see `definedTermNodes`. */
@@ -107,19 +158,19 @@ export default async function HomePage() {
           fetch, which is the entire audience this block exists for. Same reason
           the FAQ questions below use `<details>` rather than the accordion —
           see `GeoBlocks.tsx`. */}
-      {seoMeta?.aiAnswer || seoMeta?.faqs?.length ? (
+      {answerBlock || quickAnswers.length ? (
         <section className="border-t border-line py-12 md:py-14">
           <Container>
             <div className="flex flex-col gap-10">
-              {seoMeta?.aiAnswer ? (
+              {answerBlock ? (
                 <div className="max-w-3xl">
-                  <AnswerBlock answer={seoMeta.aiAnswer} />
+                  <AnswerBlock answer={answerBlock} />
                 </div>
               ) : null}
 
-              {seoMeta?.faqs?.length ? (
+              {quickAnswers.length ? (
                 <div className="max-w-3xl">
-                  <FaqBlock faqs={seoMeta.faqs} title="Quick answers" />
+                  <FaqBlock faqs={quickAnswers} title="Quick answers" />
                 </div>
               ) : null}
             </div>
@@ -150,5 +201,17 @@ export default async function HomePage() {
  */
 export async function generateMetadata(): Promise<Metadata> {
   const meta = await getSeo('page', 'home');
-  return buildMetadata(withSeoMeta(homeSEO, meta), await getSiteSettings());
+  const fallbackHomeMeta = {
+    ...homeSEO,
+    title: 'E-commerce Growth Expert in Nepal | E-commerce Expert in Kathmandu',
+    description:
+      'E-commerce growth expert in Nepal and Kathmandu, e-commerce SEO expert Nepal, Meta Ads expert for ecommerce Nepal, and e-commerce brand growth expert Nepal for full-funnel store growth.',
+  };
+  const merged = withSeoMeta(fallbackHomeMeta, meta);
+  const enforced = {
+    ...merged,
+    title: fallbackHomeMeta.title,
+    description: fallbackHomeMeta.description,
+  };
+  return buildMetadata(enforced, await getSiteSettings());
 }

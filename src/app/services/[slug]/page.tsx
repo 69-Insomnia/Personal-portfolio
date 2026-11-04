@@ -29,6 +29,48 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+const WEB_DEVELOPMENT_FAQ_BOOSTERS = [
+  {
+    question: 'Who is a professional website developer in Nepal?',
+    answer:
+      'I provide website development services from Kathmandu for businesses across Nepal, handling strategy, design, development and launch support as one workflow.',
+  },
+  {
+    question: 'Can I hire a freelance web developer in Nepal for a full project?',
+    answer:
+      'Yes. Most projects run end-to-end: discovery, UX and UI design, frontend and backend implementation, SEO-ready structure, analytics setup, launch and post-launch fixes.',
+  },
+  {
+    question: 'Do you work as a full stack developer in Nepal?',
+    answer:
+      'Yes. I handle frontend architecture, backend integrations, CMS or ecommerce setup, API wiring, and deployment so the website and the business logic are delivered together.',
+  },
+  {
+    question: 'Do you also provide web design in Nepal?',
+    answer:
+      'Yes. I design the information structure, page layouts and conversion paths before development, so the finished site stays fast, readable and easy to use on mobile.',
+  },
+  {
+    question: 'Are you available as a website developer in Kathmandu?',
+    answer:
+      'Yes. I am based in Kathmandu and work with local and remote clients across Nepal, with project communication through WhatsApp, email and scheduled calls.',
+  },
+];
+
+function mergeFaqs(base: Array<{ question: string; answer: string }>, extras: Array<{ question: string; answer: string }>) {
+  const seen = new Set<string>();
+  const merged: Array<{ question: string; answer: string }> = [];
+
+  for (const entry of [...base, ...extras]) {
+    const key = entry.question.toLowerCase().replace(/\s+/g, ' ').trim();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    merged.push(entry);
+  }
+
+  return merged;
+}
+
 export async function generateStaticParams() {
   const live = await getServices();
   const slugs = new Set([...services.map((s) => s.slug), ...live.map((s) => s.slug)]);
@@ -121,25 +163,33 @@ export default async function ServicePage({ params }: PageProps) {
     signals: seoMeta?.entitySignals,
     aiAnswer: seoMeta?.aiAnswer,
   });
+  const fallbackFaqs = [
+    {
+      question: `What does ${service.title.toLowerCase()} include?`,
+      answer: service.shortDescription,
+    },
+    {
+      question: `Who is ${service.title.toLowerCase()} for?`,
+      answer:
+        service.bestFor ??
+        `Businesses in Nepal that need ${service.shortDescription.replace(/[.!?]+$/, '')}`,
+    },
+    {
+      question: `How do I get started with ${service.title.toLowerCase()}?`,
+      answer:
+        'Send a short project brief through the contact page. I will review the scope and reply with a practical next step.',
+    },
+  ];
   const serviceFaqs = seoMeta?.faqs?.length
     ? seoMeta.faqs
-    : [
-        {
-          question: `What does ${service.title.toLowerCase()} include?`,
-          answer: service.shortDescription,
-        },
-        {
-          question: `Who is ${service.title.toLowerCase()} for?`,
-          answer:
-            service.bestFor ??
-            `Businesses in Nepal that need ${service.shortDescription.replace(/[.!?]+$/, '')}`,
-        },
-        {
-          question: `How do I get started with ${service.title.toLowerCase()}?`,
-          answer:
-            'Send a short project brief through the contact page. I will review the scope and reply with a practical next step.',
-        },
-      ];
+    : fallbackFaqs;
+  const boostedFaqs = service.slug === 'web-development'
+    ? mergeFaqs(serviceFaqs, WEB_DEVELOPMENT_FAQ_BOOSTERS)
+    : serviceFaqs;
+  const answerBlock = seoMeta?.aiAnswer ??
+    (service.slug === 'web-development'
+      ? 'Dipendra Guragain is a professional website developer in Nepal and a freelance full stack developer based in Kathmandu, building custom websites, web applications, landing pages and online stores. The process covers planning, web design, development, SEO-ready architecture and analytics setup so the site is fast, measurable and easy to manage after launch. Projects are built with React and Next.js for custom requirements, or WordPress and Shopify when teams need simple day-to-day editing. The work includes both frontend and backend implementation, API integrations, performance optimization and post-launch support, making this service suitable for businesses that want one accountable web developer in Nepal from strategy to go-live.'
+      : undefined);
 
   /**
    * The page's Q&A as structured data, from the same array `FaqBlock` renders
@@ -147,7 +197,7 @@ export default async function ServicePage({ params }: PageProps) {
    * node on a page with no visible FAQ would be a claim the page does not
    * support, which is why this is conditional rather than always emitted.
    */
-  const faqNode = faqPageNode(serviceFaqs, `${site.url}/services/${service.slug}`);
+  const faqNode = faqPageNode(boostedFaqs, `${site.url}/services/${service.slug}`);
 
   return (
     <article>
@@ -196,9 +246,9 @@ export default async function ServicePage({ params }: PageProps) {
                   crawlers that do not run scripts, and `Reveal` ships
                   `opacity:0` in the raw HTML. See `src/components/common/
                   GeoBlocks.tsx`. */}
-              {seoMeta?.aiAnswer ? (
+              {answerBlock ? (
                 <div className="mt-8">
-                  <AnswerBlock answer={seoMeta.aiAnswer} />
+                  <AnswerBlock answer={answerBlock} />
                 </div>
               ) : null}
             </div>
@@ -302,13 +352,13 @@ export default async function ServicePage({ params }: PageProps) {
           ) : null}
 
             {/* Visible Q&A and its schema are generated from the same array. */}
-            {serviceFaqs.length ? (
+            {boostedFaqs.length ? (
             <div className="mt-14 grid gap-10 border-t border-line pt-14 lg:grid-cols-12">
               <div className="lg:col-span-3">
                 <SectionLabel label="Questions" />
               </div>
               <div className="lg:col-span-8 lg:col-start-5">
-                <FaqBlock faqs={serviceFaqs} title="Questions about this service" />
+                <FaqBlock faqs={boostedFaqs} title="Questions about this service" />
               </div>
             </div>
           ) : null}
