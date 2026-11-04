@@ -20,14 +20,16 @@ import { profile } from '@/data/profile';
  * years it cannot support is the fastest way to lose the room in a client call.
  */
 /** Split by hand — the breaks are a typographic decision, not the measure's. */
-const HEADLINE = ['Web Development,', 'SEO and Ads,', 'ALL IN ONE.'];
+const HEADLINE = ['Web Development, SEO,', 'Marketing & Ecommerce Growth --', 'All in One.'];
 
 const BIO = [
-  "I'm Dipendra Guragain — a web developer and SEO specialist based in Kathmandu, Nepal. I work across React and Next.js on one side and search and paid media on the other. Most projects need both, and most teams split them between two people.",
-  "I spent a year at DrillThru, a web design and digital marketing agency in Nepal, building the agency's own site on Next.js: service pages, a work showcase, testimonials, blog and enquiry flows, plus the structured data that feeds their search results. Working alongside the SEO and ads side is where I stopped thinking of a website as the finish line.",
-  "Six months on POM's Penthouse, a serviced-apartment residence in Lakeside, Pokhara, went further. Guests compare 1, 2 and 3 BHK apartments with amenities and nightly rates, then reserve over WhatsApp in one tap rather than filling in a form and waiting. It is the clearest example I have of a decision that came from asking how the customer actually behaves rather than how the site usually works.",
-  'The work usually starts with the same question: where are people dropping off? A page that takes four seconds to load on a phone, a query that lands somewhere that does not answer it, an ad pointing at a category when someone wanted one product. Finding it is usually cheaper than the thing everyone assumed was the problem.',
-  'I am studying for a BCA at Ratna Rajyalaxmi Campus alongside client work. Most of what I know came from shipping things and then watching what happened.',
+  "I'm Dipendra Guragain, a Web Developer, SEO Specialist, and Ecommerce Growth enthusiast based in Kathmandu, Nepal. I work across web development, search engine optimization (SEO), Google Ads, Meta Ads, and digital marketing, helping businesses build their online presence, reach the right audience, and grow their sales.",
+  'I previously worked at DrillThru, a web design and digital marketing agency in Nepal, where I gained practical experience in website development, SEO, and digital marketing.',
+  "Currently, I'm working with Nano Store, focusing on ecommerce growth, product SEO, website optimization, and digital marketing strategies to improve online visibility and customer engagement.",
+  'My technical experience includes React, Next.js, modern website development, and SEO optimization. Beyond development, I focus on ecommerce strategies, organic search visibility, Google Ads, Meta Ads, and conversion optimization.',
+  'I believe successful online growth comes from combining the right technology, marketing strategy, and customer experience.',
+  "Alongside my professional work, I'm pursuing a Bachelor of Computer Applications (BCA) at Ratna Rajyalaxmi Campus, Kathmandu.",
+  'My goal is simple: Build better websites, improve search visibility, attract the right customers, and turn digital opportunities into business growth.',
 ];
 
 const CAPABILITIES = [
