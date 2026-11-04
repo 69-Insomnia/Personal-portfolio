@@ -6,6 +6,17 @@ import type { ExperienceItem } from '@/types';
  */
 export const experience: ExperienceItem[] = [
   {
+    id: 'nano-store',
+    period: '1 Year',
+    role: 'Ecommerce Growth Expert',
+    company: 'Nano Store',
+    description:
+      'Worked as an ecommerce growth expert in Nepal at Nano Store (https://nanostore.com.np/), improving ecommerce SEO, product visibility, conversion flow, and paid acquisition across Google Ads and Meta Ads. The role focused on growing qualified traffic, improving store performance, and increasing online sales through data-driven ecommerce growth strategies.',
+    technologies: ['Ecommerce Growth', 'SEO', 'Google Ads', 'Meta Ads', 'Conversion Optimization'],
+    url: 'https://nanostore.com.np/',
+    isPlaceholder: false,
+  },
+  {
     id: 'drillthru',
     period: '1 Year',
     role: 'Web Developer',

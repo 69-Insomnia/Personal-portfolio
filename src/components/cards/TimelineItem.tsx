@@ -1,6 +1,7 @@
 'use client';
 
 import { PlaceholderBadge } from '@/components/common/PlaceholderBadge';
+import { Button } from '@/components/ui/Button';
 import type { ExperienceItem } from '@/types';
 
 /**
@@ -45,6 +46,12 @@ export function TimelineItem({ item }: { item: ExperienceItem }) {
             </li>
           ))}
         </ul>
+
+        {item.url ? (
+          <Button href={item.url} variant="outline" size="sm" showArrow className="mt-5">
+            Visit site
+          </Button>
+        ) : null}
       </div>
     </li>
   );

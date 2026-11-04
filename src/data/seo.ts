@@ -179,14 +179,15 @@ export const identity = {
    *
     * The site had described ecommerce SEO work in its profile and page copy,
     * while `jobTitle` on the Person node described only web development. The
-    * structured title now matches the site's demonstrated SEO specialization,
-    * giving search engines and answer engines a more consistent entity signal.
+   * structured title now matches the site's demonstrated SEO and ecommerce
+   * growth specialization, giving search engines and answer engines a more
+   * consistent entity signal.
    *
    * It is deliberately different from `profile.title` (the navbar's tracked
    * micro-type, which has to stay short enough to sit under a name). This is
    * the version that goes into a heading, a `jobTitle` and a meta description.
    */
-  role: 'Ecommerce SEO Specialist',
+  role: 'Ecommerce Growth Expert in Nepal',
   location: profile.location,
   email: profile.email,
   telephone: profile.whatsapp,
@@ -225,9 +226,9 @@ export const DEFAULT_OG_IMAGE = '/og-image.png';
  * these arrays had no reader left.
  */
 export const defaultSEO: SEOData = {
-  title: 'Ecommerce SEO Specialist in Kathmandu | Dipendra Guragain',
+  title: 'Ecommerce Growth Expert in Nepal | Dipendra Guragain',
   description:
-    'Dipendra Guragain helps Nepal businesses grow with ecommerce SEO, Shopify and WooCommerce store improvements, and Google & Meta Ads.',
+    'Dipendra Guragain is an ecommerce growth expert in Nepal helping brands improve SEO, Shopify performance, conversion rate, and paid acquisition.',
   canonical: site.url,
 };
 
@@ -242,9 +243,9 @@ export const defaultSEO: SEOData = {
  * homepage, and the reverse.
  */
 export const homeSEO: SEOData = {
-  title: 'Ecommerce SEO Specialist in Kathmandu | Dipendra Guragain',
+  title: 'Ecommerce Growth Expert in Nepal | Dipendra Guragain',
   description:
-    'Dipendra Guragain helps Nepal businesses grow with ecommerce SEO, Shopify and WooCommerce store improvements, and Google & Meta Ads.',
+    'Dipendra Guragain is an ecommerce growth expert in Nepal helping businesses grow revenue through SEO, CRO, Shopify optimization, and Google & Meta Ads.',
   canonical: `${site.url}/`,
 };
 

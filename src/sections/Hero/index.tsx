@@ -12,7 +12,7 @@ import { profile } from '@/data/profile';
  * The page's one `<h1>`, and the reason the display line sits inside it.
  *
  * Two sentences share one heading element here. The first is the exact target
- * query — "Ecommerce SEO specialist in Kathmandu" — because a heading that
+ * query — "Ecommerce growth expert in Nepal" — because a heading that
  * matches the query verbatim is the strongest thing this page can say about
  * what it is for, and it names the role and the place that the Person entity at
  * `#person` publishes.
@@ -27,10 +27,10 @@ import { profile } from '@/data/profile';
  * identical to the heading immediately above it reads as a copy-paste error.
  * The link keeps a keyword-bearing anchor; it just no longer duplicates the H1.
  */
-const H1_KEYWORD = 'Ecommerce SEO specialist in Kathmandu';
+const H1_KEYWORD = 'Ecommerce growth expert in Nepal';
 
 /** Split by hand — the breaks are a typographic decision, not the measure's. */
-const DISPLAY_LINES = ['Stores that load fast,', 'rank well, and close', 'the sale.'];
+const DISPLAY_LINES = ['Stores that rank,', 'convert, and grow.'];
 
 export function Hero() {
   const whatsappHref = profile.whatsapp
@@ -89,37 +89,27 @@ export function Hero() {
               transition={{ delay: 0.48, duration: 0.6, ease: 'easeOut' }}
               className="measure mt-8 text-lead text-muted"
             >
-              I handle the storefront, the search visibility and the paid campaigns as one
-              job — because the drop-off is usually in the gap between them.
+              I&apos;m Dipendra Guragain, an ecommerce growth expert in Nepal and the
+              ecommerce growth consultant Nepal&apos;s online stores hire to improve
+              visibility, increase conversions, and scale revenue through SEO, Shopify
+              optimization, Google Ads, Meta Ads, and performance marketing.
             </motion.p>
 
-            {/*
-              One primary button and one text link, which is the whole action set.
-
-              The old hero carried two full buttons (a site link and a WhatsApp
-              link) plus a third link below them. Three equally weighted exits
-              from one section is a menu, not a recommendation, and it pushed the
-              availability line below the fold on a laptop.
-            */}
             <motion.div
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.58, duration: 0.6, ease: 'easeOut' }}
               className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4"
             >
-              <Button href="/work" size="lg" showArrow>
-                View selected work
+              <Button href="/contact" size="lg" showArrow>
+                Book a strategy call
               </Button>
 
-              {/* The keyword-rich internal link to the money page. Anchor text
-                  still carries the phrase — it is the only link on the homepage
-                  whose text matches the query this site is chasing — but not the
-                  full heading, which sits directly above it. */}
               <Link
-                href="/services/ecommerce-growth"
+                href="/work"
                 className="group inline-flex min-h-[44px] items-center gap-1.5 text-[15px] font-medium text-ink transition-colors duration-200 hover:text-accent"
               >
-                How I run ecommerce growth in Kathmandu
+                See selected work
                 <ArrowRight
                   size={16}
                   aria-hidden

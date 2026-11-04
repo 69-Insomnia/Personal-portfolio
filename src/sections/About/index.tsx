@@ -34,16 +34,21 @@ export function Introduction() {
         <Reveal delay={0.1}>
           <div className="measure mt-8 flex flex-col gap-5">
             <p className="text-lead text-muted">
-              I&apos;m a web developer with React and Next.js on one side and search and
-              paid media on the other. Most projects need both, and most teams split them
-              between two people.
+              I&apos;m an ecommerce growth expert in Kathmandu who works with React and
+              Next.js on one side and search and paid media on the other. Most projects
+              need both, and most teams split them between two people.
             </p>
             <p className="text-lead text-muted">
-              The work usually starts with the same question: where are people dropping
-              off? A page that takes four seconds to load. A query that lands on a page
-              which doesn&apos;t answer it. An ad pointing at a category when someone
-              wanted one product. Finding it is usually cheaper than the thing everyone
-              assumed was the problem.
+              Whether the brief is for an ecommerce growth specialist in Kathmandu or an
+              ecommerce marketing expert in Nepal, the job is the same: make the store
+              easier to find, easier to buy from, and cheaper to grow.
+            </p>
+            <p className="text-lead text-muted">
+              For an online store, the work usually starts with the same question: where
+              are people dropping off? A page that takes four seconds to load. A query
+              that lands on a page which doesn&apos;t answer it. An ad pointing at a
+              category when someone wanted one product. Finding it is usually cheaper than
+              the thing everyone assumed was the problem.
             </p>
           </div>
 

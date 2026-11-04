@@ -299,6 +299,7 @@ function mapExperience(row: Record<string, unknown>): ExperienceItem {
     company: str(row.company),
     description: str(row.description),
     technologies: strList(row.technologies),
+    url: strOr(row.url),
     isPlaceholder: row.is_placeholder === true,
   };
 }

@@ -212,7 +212,11 @@ export function Footer() {
             <p className="text-sm text-muted">
               © {year} {profile.name}. All rights reserved.
             </p>
-            <p className="text-sm text-muted">{identity.role} · {profile.location}</p>
+            {/* The target keyword as a literal, sentence case — not
+                `identity.role` (title case) and not paired with the location.
+                Kathmandu still appears in the contact column above, so the
+                local signal is not lost by dropping it from this line. */}
+            <p className="text-sm text-muted">Ecommerce growth expert in Nepal</p>
           </div>
         </Container>
       </div>

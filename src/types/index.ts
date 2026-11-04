@@ -389,6 +389,8 @@ export interface ExperienceItem {
   company: string;
   description: string;
   technologies: string[];
+  /** Optional live link for the entry — rendered as a "Visit site" button. */
+  url?: string;
   isPlaceholder?: boolean;
 }
 
