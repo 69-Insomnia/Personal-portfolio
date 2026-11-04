@@ -92,7 +92,15 @@ export function ProfileIntro() {
             <div className="mt-9 flex flex-col gap-5">
               {BIO.map((paragraph, index) => (
                 <Reveal key={paragraph} delay={index * 0.04}>
-                  <p className="max-w-2xl leading-relaxed text-muted">{paragraph}</p>
+                  <p className="max-w-2xl leading-relaxed text-muted">
+                    {paragraph.startsWith('My goal is simple:') ? (
+                      <em>
+                        <strong>{paragraph}</strong>
+                      </em>
+                    ) : (
+                      paragraph
+                    )}
+                  </p>
                 </Reveal>
               ))}
             </div>
