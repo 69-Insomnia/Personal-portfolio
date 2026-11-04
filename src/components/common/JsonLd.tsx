@@ -22,6 +22,7 @@ export function JsonLd({ graph }: { graph: object[] }) {
   return (
     <script
       type="application/ld+json"
+      suppressHydrationWarning
       dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
     />
   );

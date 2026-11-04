@@ -58,8 +58,6 @@ const HOME_KEYWORD_FAQS = [
 
 const HOME_AI_ANSWER =
   'Dipendra Guragain is an e-commerce growth expert in Nepal and Kathmandu, working as a freelance e-commerce growth specialist for online brands that need measurable sales growth. The work combines technical ecommerce SEO, conversion-focused website improvements, Meta Ads campaign management and analytics tracking so traffic, conversion rate and revenue can be improved together. As an e-commerce expert in Nepal, he plans product and category page structure, aligns content with search intent, optimizes funnels for mobile users and scales paid acquisition with clear performance targets. This full-stack ecommerce growth approach is built for Nepal-based brands that want one accountable partner for strategy, execution and ongoing optimization.';
-const HOME_AI_KEYWORD_EXTENSION =
-  'Core focus keywords: e-commerce growth expert in Nepal, e-commerce expert in Nepal, e-commerce growth expert in Kathmandu, e-commerce SEO expert Nepal, e-commerce growth specialist in Nepal, Meta Ads expert for ecommerce Nepal, and e-commerce brand growth expert Nepal.';
 
 function mergeFaqs(base: Array<{ question: string; answer: string }>, extras: Array<{ question: string; answer: string }>) {
   const seen = new Set<string>();
@@ -95,9 +93,7 @@ export default async function HomePage() {
     getServices(),
     getSeo('page', 'home'),
   ]);
-  const answerBlock = seoMeta?.aiAnswer
-    ? `${seoMeta.aiAnswer.replace(/\s+$/u, '')} ${HOME_AI_KEYWORD_EXTENSION}`
-    : HOME_AI_ANSWER;
+  const answerBlock = seoMeta?.aiAnswer ?? HOME_AI_ANSWER;
   const quickAnswers = mergeFaqs(seoMeta?.faqs ?? [], HOME_KEYWORD_FAQS);
 
   /**
@@ -203,7 +199,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const meta = await getSeo('page', 'home');
   const fallbackHomeMeta = {
     ...homeSEO,
-    title: 'E-commerce Growth Expert in Nepal | E-commerce Expert in Kathmandu',
+    title: 'E-commerce Growth Expert in Nepal | Ecommerce SEO & Meta Ads',
     description:
       'E-commerce growth expert in Nepal and Kathmandu, e-commerce SEO expert Nepal, Meta Ads expert for ecommerce Nepal, and e-commerce brand growth expert Nepal for full-funnel store growth.',
   };
