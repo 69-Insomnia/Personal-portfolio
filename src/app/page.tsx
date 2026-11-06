@@ -54,6 +54,25 @@ const HOME_KEYWORD_FAQS = [
     answer:
       'I connect SEO, paid ads, landing page UX and conversion analytics into one growth system, so ecommerce brand decisions are based on data rather than isolated channel reports.',
   },
+  // The plural phrasings. Singular questions answer what the work is; these
+  // answer the comparison a reader actually searches — "experts" and
+  // "specialists" imply a shortlist, so the third one answers the choice
+  // itself rather than the service.
+  {
+    question: 'Who are the best e-commerce growth experts in Nepal?',
+    answer:
+      'The e-commerce growth experts in Nepal worth shortlisting are the ones who can show what they changed and what happened next. This practice works that way: technical ecommerce SEO, conversion-focused store improvements, Meta Ads and analytics handled as one growth system, with the numbers tied to sales rather than vanity metrics.',
+  },
+  {
+    question: 'What does an e-commerce growth specialist in Kathmandu do?',
+    answer:
+      'An e-commerce growth specialist in Kathmandu works on the whole funnel — storefront speed, product and category page SEO, paid campaigns and analytics — so traffic, conversion rate and revenue improve together instead of one at the expense of another. That is the job from Kathmandu, for stores in Nepal and remote.',
+  },
+  {
+    question: 'How do I choose an e-commerce growth expert in Nepal?',
+    answer:
+      'Ask three things: what would you fix first and why, how will you measure it, and what is a realistic timeline. An e-commerce growth expert in Nepal should answer in plain language, tie the work to sales rather than rankings alone, and be accountable for the result without a chain of handovers.',
+  },
 ];
 
 const HOME_AI_ANSWER =
@@ -199,9 +218,17 @@ export async function generateMetadata(): Promise<Metadata> {
   const meta = await getSeo('page', 'home');
   const fallbackHomeMeta = {
     ...homeSEO,
-    title: 'E-commerce Growth Expert in Nepal | Ecommerce SEO & Meta Ads',
+    /**
+     * Enforced over the database row below — the admin panel cannot out-edit
+     * these two. The title carries keyword 1 exactly (hyphenated, as searched)
+     * plus the plural Kathmandu variant; the description carries the plural
+     * Kathmandu phrase. The remaining variants live in the FAQs and the
+     * answer block, because sixty characters cannot hold all four.
+     * 60 / 155 characters.
+     */
+    title: 'E-commerce Growth Expert in Nepal | Specialists in Kathmandu',
     description:
-      'E-commerce growth expert in Nepal and Kathmandu, e-commerce SEO expert Nepal, Meta Ads expert for ecommerce Nepal, and e-commerce brand growth expert Nepal for full-funnel store growth.',
+      'E-commerce growth expert in Nepal and e-commerce growth specialists in Kathmandu: ecommerce SEO, Meta Ads and CRO for stores that need measurable growth.',
   };
   const merged = withSeoMeta(fallbackHomeMeta, meta);
   const enforced = {

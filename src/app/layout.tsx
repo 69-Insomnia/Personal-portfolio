@@ -236,6 +236,12 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       data-scroll-behavior="smooth"
     >
       <body>
+        {/* Hoisted into <head> by React 19. `/llms.txt` has always been
+            served, but nothing pointed at it: the file only helps if a
+            crawler thinks to ask. Google states llms.txt neither helps nor
+            hurts its rankings — this exists for the AI crawlers that do
+            read it, alongside the robots.txt allowances. */}
+        <link rel="alternate" type="text/plain" title="llms.txt" href={`${site.url}/llms.txt`} />
         <MotionConfig reducedMotion="user">
           <ConditionalChrome
             socialLinks={socialLinks}
