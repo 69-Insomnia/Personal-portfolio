@@ -96,7 +96,7 @@ const serviceOrder: UnnumberedService[] = [
   },
   {
     slug: 'seo-services',
-    title: 'SEO Services',
+    title: 'SEO Services in Kathmandu',
     shortDescription: 'Technical SEO, keyword research and content work for businesses in Nepal.',
     description:
       "I do SEO for businesses across Nepal, based in Kathmandu. The job is to make a site findable for the searches that bring customers, and then to show that it worked. That starts with technical foundations, because nothing survives on top of a broken base: whether a crawler can read the page, whether it renders in under two seconds on a phone, and whether each page is about one thing. Only then does keyword and content work make sense. I also handle the part most audits skip, which is whether your conversion tracking fires correctly. Optimising against a number that is wrong costs more than doing nothing, and it is the most common problem I find on sites that already spend on SEO.",
@@ -285,7 +285,7 @@ const serviceOrder: UnnumberedService[] = [
   },
   {
     slug: 'ecommerce-growth',
-    title: 'Ecommerce Growth Specialist',
+    title: 'Ecommerce Growth Services',
     /**
      * The one service with a hand-written title. Every other page follows the
      * `${title} in Nepal | ${name}` pattern; this one targets a city-level
@@ -343,7 +343,7 @@ const serviceOrder: UnnumberedService[] = [
   },
   {
     slug: 'digital-marketing',
-    title: 'Digital Marketing Specialist',
+    title: 'Digital Marketing Services',
     shortDescription:
       'Digital marketing specialist in Nepal: one strategy across content, SEO, paid media and conversion, instead of four separate suppliers.',
     description:

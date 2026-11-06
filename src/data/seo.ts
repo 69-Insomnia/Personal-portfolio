@@ -423,12 +423,12 @@ export function projectSEO(project: Project, meta?: SeoMeta): SEOData {
  * Service pages.
  *
  * The title is `${service.title} in Nepal`, which means the page's own name
- * decides what it targets — so a service named "Ecommerce Growth Specialist"
+ * decides what it targets — so a service named "Ecommerce Growth Services"
  * and one named "Web Development Services" both produce a query-shaped title
  * without anything being forced into a template.
  *
  * `base` strips the role suffix so the shorter term is covered too. "Ecommerce
- * Growth Specialist" is how the service is named, but "Ecommerce Growth" and
+ * Growth Services" is how the service is named, but "Ecommerce Growth" and
  * "Ecommerce Growth Nepal" are what more people type, and a page should not
  * miss the shorter version of its own name because of the longer one it chose.
  * Nothing here is invented: every term is a prefix of the page's own title.
