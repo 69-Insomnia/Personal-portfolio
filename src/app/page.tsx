@@ -220,15 +220,12 @@ export async function generateMetadata(): Promise<Metadata> {
     ...homeSEO,
     /**
      * Enforced over the database row below — the admin panel cannot out-edit
-     * these two. The title carries keyword 1 exactly (hyphenated, as searched)
-     * plus the plural Kathmandu variant; the description carries the plural
-     * Kathmandu phrase. The remaining variants live in the FAQs and the
-     * answer block, because sixty characters cannot hold all four.
-     * 60 / 155 characters.
+     * these two. The title carries the exact Nepal + Kathmandu intent while
+     * staying readable in Google search results.
      */
-    title: 'E-commerce Growth Expert in Nepal | Specialists in Kathmandu',
+    title: 'Ecommerce Growth Expert in Nepal | Ecommerce Growth Specialist in Kathmandu',
     description:
-      'E-commerce growth expert in Nepal and e-commerce growth specialists in Kathmandu: ecommerce SEO, Meta Ads and CRO for stores that need measurable growth.',
+      'Ecommerce growth expert in Nepal and ecommerce growth specialist in Kathmandu helping online stores improve SEO, conversion rate, Shopify growth and paid acquisition.',
   };
   const merged = withSeoMeta(fallbackHomeMeta, meta);
   const enforced = {

@@ -287,54 +287,53 @@ const serviceOrder: UnnumberedService[] = [
     slug: 'ecommerce-growth',
     title: 'Ecommerce Growth Services',
     /**
-     * The one service with a hand-written title. Every other page follows the
-     * `${title} in Nepal | ${name}` pattern; this one targets a city-level
-     * query, and "in Kathmandu" is the part that has to be in the title
-     * verbatim. See `Service.seoTitle`.
+     * This page is the canonical target for the Nepal and Kathmandu ecommerce
+     * growth search cluster. The exact "Ecommerce Growth Specialist in Kathmandu"
+     * phrase is kept in the seoTitle so the page title matches high-intent
+     * commercial queries without duplicating the homepage H1.
      */
-    seoTitle: 'Ecommerce Growth Specialist in Kathmandu | Services',
+    seoTitle: 'Ecommerce Growth Specialist in Kathmandu | Dipendra Guragain',
     shortDescription:
-      'Ecommerce growth specialist in Nepal. Storefront, ecommerce SEO, product pages, ads and analytics run as one funnel rather than four projects.',
+      'Ecommerce growth specialist in Nepal and Kathmandu. Storefront, SEO, product pages, ads and analytics are managed as one conversion system rather than separate projects.',
     description:
-      'I am an ecommerce growth specialist based in Kathmandu, working with online stores in Nepal and remotely. In practice the job means treating the storefront, product pages, ecommerce SEO, advertising and analytics as one system rather than four projects owned by four people. Most ecommerce problems arrive described as a single problem. Traffic is down, or conversion is down, or ad costs are up, and it usually turns out to be the same problem wearing different hats. A product page that takes four seconds to load on mobile is an SEO issue, an advertising issue and a merchandising issue at once, and because three people each see a different symptom, nobody fixes it. So I start by finding where people actually drop off, using the funnel rather than an opinion, and fix that before sending more traffic into a leaking store.',
+      'I am an ecommerce growth specialist in Kathmandu helping online stores in Nepal improve traffic quality, conversion rate, and revenue through a single growth system. In practice the work connects storefront performance, product page SEO, paid acquisition, analytics and conversion optimization so the store keeps converting instead of leaking customers at different points. Most ecommerce problems look like separate issues until you follow the funnel end to end. Traffic falls, ad cost rises, or checkout drops, and the real cause is usually a weak page, unclear product intent, poor mobile UX, or bad tracking that keeps the business guessing. I fix the leak first and then choose the channel changes that actually improve the result.',
     body: [
       {
-        heading: 'Why do ecommerce problems look like several problems?',
+        heading: 'Why do ecommerce growth problems look like several different issues?',
         paragraphs: [
-          'Because each specialist sees the symptom their tool measures. The SEO sees a Core Web Vitals failure. The ads manager sees a high bounce rate and blames the audience. The merchandiser sees a product with views and no carts.',
-          'All three are describing the same page and none of them is wrong. That is exactly why it goes unfixed: the problem is not inside anybody\'s remit, so it sits in the gap between them.',
+          'Because each team sees a different symptom. SEO notices a slow product page that cannot rank well. Ads sees a high cost per purchase. The store owner sees fewer completed sales. They are all describing the same leak, but from different parts of the funnel.',
+          'That is exactly why growth stalls. The problem is not a single channel failure; it is the missing connection between traffic, page experience, product intent and conversion tracking. I diagnose that entire path before recommending a paid campaign or new content.',
         ],
       },
       {
-        heading: 'How does ecommerce SEO differ from optimising a normal website?',
+        heading: 'How does ecommerce SEO differ from a normal website?',
         paragraphs: [
-          'Because the pages multiply. A store with two hundred products has two hundred pages that each need a title and a description matching what the product actually is, plus the category pages above them — and the categories are usually what should be ranking for the broad terms, not the individual products.',
-          'The failures repeat across almost every store I look at. Product pages that inherit the manufacturer description, so every shop selling the same item publishes the same words and none of them is the original. Category pages with no content at all, competing on nothing but internal links. Filter and sort parameters generating thousands of crawlable URLs that dilute the pages that matter. Missing product structured data, so price and availability cannot appear in the result even when the page ranks.',
-          'Nepali stores add one of their own: product names written in romanised Nepali on the page and in English in the title, so neither version is complete. Both belong on the page when both are how people search.',
+          'A normal website may have a handful of important pages. An ecommerce store has category pages, product pages, collection filters, tags, variants and transactional landing pages, all of which compete for the same search intent. If those pages do not match user search intent, the store cannot scale sustainably.',
+          'The biggest issues are usually repetitive product descriptions, thin category pages, poor internal linking, weak mobile performance, inconsistent product page metadata and conversion paths that fail on mobile. In Nepal, one extra challenge is that buyers often search using both English and Romanized Nepali terms, so the page has to serve both search styles naturally without keyword stuffing.',
         ],
       },
       {
-        heading: 'What does the funnel work actually involve?',
+        heading: 'What does a growth specialist actually work on?',
         paragraphs: [
-          'Unglamorous questions with specific answers. Which products get views but no carts. Which queries land on a page that does not answer them. Which ad sends someone to a category when they wanted one item. Which step of checkout has the highest abandonment.',
-          'Those answers usually point at a fix that costs nothing to ship, which is why I look for them before proposing new campaigns. Buying more traffic for a store that loses people at checkout is an expensive way to stay where you are.',
+          'I look at the full funnel: store speed, product page structure, category intent, search visibility, landing-page messaging, and analytics quality. If conversion tracking is wrong, the business is making decisions from poor data and spending money in the wrong place.',
+          'I fix the weak points that actually block growth first, then align SEO, paid media, CRO and merchandising so they reinforce each other instead of working against each other. That is how ecommerce growth becomes repeatable rather than dependent on guesswork.',
         ],
       },
       {
-        heading: 'Do you work on Shopify and WooCommerce?',
+        heading: 'Do you work on Shopify, WooCommerce and custom stores?',
         paragraphs: [
-          'Yes, and on custom storefronts. The platform changes what is easy, not what matters. The things that decide whether a store grows (page speed, product page clarity, search visibility, checkout friction, trustworthy analytics) are the same on every platform.',
-          'Where the platform does matter is in what I can change directly. On Shopify and WooCommerce some fixes are configuration and some need code; on a custom build it is all code. I will tell you which before quoting.',
+          'Yes. The platform influences the implementation, but not the strategy. The core growth problems are similar across Shopify, WooCommerce and custom storefronts: product intent, load speed, mobile checkout friction, page structure and trust signals.',
+          'I work on the areas that matter most for revenue, whether that means storefront changes, category architecture, product copy, tracking setup, or paid campaign alignment. I will explain what can be fixed quickly and what needs a deeper build before we commit.',
         ],
       },
     ],
     capabilities: ecommerceCapabilities,
     deliverables: [
-      'Storefront and product page work',
-      'Category structure built for search',
-      'Conversion work on the checkout path',
-      'Paid campaigns run as one funnel with the store',
-      'Analytics verified against a real test order',
+      'Storefront and product page optimization',
+      'Category structure built for search and conversion',
+      'Checkout and mobile funnel improvements',
+      'SEO + paid acquisition aligned as one growth system',
+      'Analytics and conversion tracking verified against real customer behavior',
     ],
     timeline: '4–10 weeks for a build, ongoing after',
     bestFor: 'An online store losing people before checkout',

@@ -89,10 +89,10 @@ export function Hero() {
               transition={{ delay: 0.48, duration: 0.6, ease: 'easeOut' }}
               className="measure mt-8 text-lead text-muted"
             >
-              I&apos;m Dipendra Guragain, an ecommerce growth expert in Nepal and the
-              ecommerce growth consultant Nepal&apos;s online stores hire to improve
-              visibility, increase conversions, and scale revenue through SEO, Shopify
-              optimization, Google Ads, Meta Ads, and performance marketing.
+              I&apos;m Dipendra Guragain, an ecommerce growth expert in Nepal and a
+              trusted ecommerce growth specialist in Kathmandu helping online stores
+              grow with stronger SEO, Shopify optimization, better conversion flows,
+              and data-driven paid acquisition.
             </motion.p>
 
             <motion.div

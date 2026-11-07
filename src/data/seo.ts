@@ -243,9 +243,9 @@ export const defaultSEO: SEOData = {
  * homepage, and the reverse.
  */
 export const homeSEO: SEOData = {
-  title: 'Ecommerce Growth Expert in Nepal | Dipendra Guragain',
+  title: 'Ecommerce Growth Expert in Nepal | Ecommerce Growth Specialist in Kathmandu',
   description:
-    'Dipendra Guragain is an ecommerce growth expert in Nepal helping businesses grow revenue through SEO, CRO, Shopify optimization, and Google & Meta Ads.',
+    'Dipendra Guragain is an ecommerce growth expert in Nepal and ecommerce growth specialist in Kathmandu helping brands grow with SEO, Shopify optimization, CRO, Meta Ads and Google Ads.',
   canonical: `${site.url}/`,
 };
 
