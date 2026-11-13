@@ -10,6 +10,14 @@ import { identity } from '@/data/seo';
 import { profile } from '@/data/profile';
 import type { SocialLinks as SocialLinksType } from '@/types';
 
+const footerServiceSlugs = [
+  'ecommerce-growth-expert-nepal',
+  'ecommerce-growth-specialist-kathmandu',
+  'ecommerce-growth-specialist-nepal',
+  'shopify-seo-nepal',
+  'woocommerce-seo-nepal',
+];
+
 const socialLabels: Record<keyof SocialLinksType, string> = {
   linkedin: 'LinkedIn',
   github: 'GitHub',
@@ -153,16 +161,18 @@ export function Footer() {
             <nav aria-label="Services">
               <p className="text-sm font-medium text-ink">Services</p>
               <ul className="mt-4 flex flex-col">
-                {services.map((service) => (
-                  <li key={service.slug}>
-                    <Link
-                      href={`/services/${service.slug}`}
-                      className="block py-1.5 text-[15px] text-muted transition-colors duration-200 hover:text-accent"
-                    >
-                      {service.title}
-                    </Link>
-                  </li>
-                ))}
+                {services
+                  .filter((service) => footerServiceSlugs.includes(service.slug))
+                  .map((service) => (
+                    <li key={service.slug}>
+                      <Link
+                        href={`/services/${service.slug}`}
+                        className="block py-1.5 text-[15px] text-muted transition-colors duration-200 hover:text-accent"
+                      >
+                        {service.title}
+                      </Link>
+                    </li>
+                  ))}
               </ul>
             </nav>
 
