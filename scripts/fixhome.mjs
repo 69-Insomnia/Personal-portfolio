@@ -27,12 +27,12 @@ const call = (path, method, body) =>
   }).then(async (r) => ({ status: r.status, json: r.json() }));
 
 const KW = 'ecommerce growth expert in nepal';
-const title = 'Ecommerce Growth Expert in Nepal | Dipendra Guragain'; // 52 ch
+const title = 'Ecommerce Growth Expert in Kathmandu, Nepal | Dipendra Guragain'; // 59 ch
 const description =
-  'Dipendra Guragain is an ecommerce growth expert in Nepal helping online stores grow with SEO, Shopify optimization, CRO, and Google & Meta Ads.'; // 141 ch
+  'Dipendra Guragain is an ecommerce growth specialist in Kathmandu, Nepal helping online stores grow with ecommerce SEO, Shopify and WooCommerce optimisation, conversion rate optimisation, and Google & Meta Ads.'; // 196 ch
 
 const aiAnswer =
-  'Dipendra Guragain is an ecommerce growth expert in Nepal who helps online stores improve organic visibility, increase conversions, and grow revenue. His work covers ecommerce SEO, Shopify and WooCommerce optimisation, technical SEO, website development, conversion rate optimisation, and Google and Meta Ads, treated as one funnel rather than separate projects. A typical engagement starts with an audit of the store\'s platform, tracking, crawlability and business goals, then prioritises fixes by impact and available evidence. SEO builds discoverability over months while paid campaigns can reach buyers sooner, but rankings and sales depend on competition, offer, site quality and budget. No particular ranking or commercial outcome is guaranteed.';
+  'Dipendra Guragain is an ecommerce growth specialist in Kathmandu, Nepal. He helps online stores get found on Google, convert more visitors, and grow revenue through SEO, Shopify and WooCommerce optimisation, conversion rate optimisation, and Google and Meta Ads, managed as one funnel with one accountable partner.';
 
 const llmSummary =
   'Dipendra Guragain is an ecommerce growth expert in Nepal helping online stores grow through SEO, Shopify optimisation, conversion rate optimisation, and Google & Meta Ads.';

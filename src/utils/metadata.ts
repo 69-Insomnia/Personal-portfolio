@@ -11,8 +11,8 @@ import { DEFAULT_OG_IMAGE, identity, site } from '@/data/seo';
  * a project page the tail is where the sentence finishes, so the visible half
  * reads as though it was cut off mid-thought.
  */
-const DESCRIPTION_LIMIT = 158;
-const TITLE_LIMIT = 60;
+const DESCRIPTION_LIMIT = 170;
+const TITLE_LIMIT = 72;
 
 /** Return a safe image reference for social metadata, falling back if invalid. */
 export function normalizeMetadataImage(value: string, fallback = DEFAULT_OG_IMAGE): string {

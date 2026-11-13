@@ -27,7 +27,7 @@ import { profile } from '@/data/profile';
  * identical to the heading immediately above it reads as a copy-paste error.
  * The link keeps a keyword-bearing anchor; it just no longer duplicates the H1.
  */
-const H1_KEYWORD = 'Ecommerce growth expert in Nepal';
+const H1_KEYWORD = 'Ecommerce growth expert in Kathmandu, Nepal';
 
 /** Split by hand — the breaks are a typographic decision, not the measure's. */
 const DISPLAY_LINES = ['Stores that rank,', 'convert, and grow.'];
@@ -89,10 +89,11 @@ export function Hero() {
               transition={{ delay: 0.48, duration: 0.6, ease: 'easeOut' }}
               className="measure mt-8 text-lead text-muted"
             >
-              I&apos;m Dipendra Guragain, an ecommerce growth expert in Nepal and a
-              trusted ecommerce growth specialist in Kathmandu helping online stores
-              grow with stronger SEO, Shopify optimization, better conversion flows,
-              and data-driven paid acquisition.
+              I&apos;m Dipendra Guragain, an ecommerce growth specialist in Kathmandu,
+              Nepal. I help online stores get found on Google, convert more visitors,
+              and grow revenue through SEO, Shopify and WooCommerce optimisation,
+              conversion rate optimisation, and Google and Meta Ads managed as one
+              funnel with one accountable partner.
             </motion.p>
 
             <motion.div

@@ -187,10 +187,9 @@ export const identity = {
    * micro-type, which has to stay short enough to sit under a name). This is
    * the version that goes into a heading, a `jobTitle` and a meta description.
    */
-  role: 'Ecommerce Growth Expert in Nepal',
-  location: profile.location,
-  email: profile.email,
-  telephone: profile.whatsapp,
+ role: 'Ecommerce Growth Expert in Kathmandu, Nepal', location: profile.location,
+ email: profile.email,
+ telephone: profile.whatsapp,
 } as const;
 
 export const site = {
@@ -226,9 +225,9 @@ export const DEFAULT_OG_IMAGE = '/og-image.png';
  * these arrays had no reader left.
  */
 export const defaultSEO: SEOData = {
-  title: 'Ecommerce Growth Expert in Nepal | Dipendra Guragain',
+  title: 'Ecommerce Growth Expert in Nepal | Shopify SEO, CRO & Google Ads Specialist',
   description:
-    'Dipendra Guragain is an ecommerce growth expert in Nepal helping brands improve SEO, Shopify performance, conversion rate, and paid acquisition.',
+    'Dipendra Guragain is an ecommerce growth specialist in Kathmandu, Nepal helping online stores rank on Google, increase conversion rate, and grow revenue with ecommerce SEO, Shopify SEO, WooCommerce SEO, CRO, and Google and Meta Ads.',
   canonical: site.url,
 };
 
@@ -243,36 +242,38 @@ export const defaultSEO: SEOData = {
  * homepage, and the reverse.
  */
 export const homeSEO: SEOData = {
-  title: 'Ecommerce Growth Expert in Nepal | Ecommerce Growth Specialist in Kathmandu',
+  title: 'Ecommerce Growth Expert in Nepal | SEO, Shopify & CRO Specialist',
   description:
-    'Dipendra Guragain is an ecommerce growth expert in Nepal and ecommerce growth specialist in Kathmandu helping brands grow with SEO, Shopify optimization, CRO, Meta Ads and Google Ads.',
+    'Dipendra Guragain is an ecommerce growth specialist in Kathmandu, Nepal helping online stores get found on Google, convert more visitors, and grow revenue through ecommerce SEO, Shopify SEO, WooCommerce optimisation, CRO, and Google and Meta Ads.',
   canonical: `${site.url}/`,
 };
 
 export const aboutSEO: SEOData = {
-  title: 'About Dipendra Guragain | Ecommerce SEO in Kathmandu',
+  title: 'About Dipendra Guragain | Ecommerce Growth Expert in Kathmandu, Nepal',
   description:
-    'Meet Dipendra Guragain, an ecommerce SEO specialist in Kathmandu, Nepal. Learn about his approach to technical SEO, ecommerce websites and paid advertising.',
-  keywords: ['web developer Kathmandu', 'React developer Nepal', 'SEO consultant Nepal'],
+    'Learn how Dipendra Guragain helps ecommerce brands in Nepal and Kathmandu grow with SEO, Shopify optimisation, conversion rate optimisation, and Google and Meta Ads.',
+  keywords: ['ecommerce growth expert Kathmandu', 'ecommerce growth specialist in Kathmandu', 'SEO consultant Nepal'],
   canonical: `${site.url}/about`,
 };
 
 export const workSEO: SEOData = {
-  title: `Work | Web & Ecommerce Projects in Nepal | ${profile.name}`,
+  title: `Work | Ecommerce Growth Projects in Nepal | ${profile.name}`,
   description:
-    'Selected web and ecommerce client projects for Nepal businesses, with project scope, build approach, SEO work, technologies and live site links.',
-  keywords: ['web design Nepal', 'ecommerce website Nepal', 'website portfolio Nepal'],
+    'Selected ecommerce growth projects for Nepal businesses, covering SEO, Shopify optimisation, conversion strategy, paid media, and performance improvements.',
+  keywords: ['ecommerce growth Nepal', 'Shopify SEO Nepal', 'ecommerce website Nepal'],
   canonical: `${site.url}/work`,
 };
 
 export const servicesSEO: SEOData = {
-  title: 'Services | SEO, Web Development & Ecommerce Growth in Nepal',
+  title: 'SEO Services in Nepal | Ecommerce SEO, Shopify SEO & WooCommerce SEO',
   description:
-    'Web development, SEO, paid ads, ecommerce growth and digital marketing. Seven services that usually get used together rather than one at a time.',
+    'SEO services in Nepal for ecommerce brands and online stores, including technical SEO, Shopify SEO, WooCommerce SEO, on-page optimisation, and conversion-focused growth strategy for Kathmandu and beyond.',
   keywords: [
     'SEO services Nepal',
-    'web development services Nepal',
-    'ecommerce growth Nepal',
+    'ecommerce SEO services Nepal',
+    'Shopify SEO Nepal',
+    'WooCommerce SEO Nepal',
+    'SEO specialist in Kathmandu',
     'Google Ads Nepal',
     'Meta Ads Nepal',
   ],
@@ -317,10 +318,10 @@ export const blogSEO: SEOData = {
 };
 
 export const contactSEO: SEOData = {
-  title: 'Contact Dipendra | Ecommerce SEO in Kathmandu, Nepal',
+  title: 'Contact Dipendra Guragain | Ecommerce Growth Expert in Kathmandu, Nepal',
   description:
-    'Contact Dipendra Guragain in Kathmandu about ecommerce SEO, website development or paid ads. Share your project goals and get a practical next step.',
-  keywords: ['hire web developer Nepal', 'contact SEO specialist Nepal'],
+    'Book a strategy call with Dipendra Guragain for ecommerce SEO, Shopify optimisation, conversion rate optimisation, and Google and Meta Ads for stores in Kathmandu and Nepal.',
+  keywords: ['hire ecommerce growth expert Nepal', 'ecommerce growth specialist Kathmandu', 'SEO consultant Nepal'],
   canonical: `${site.url}/contact`,
 };
 

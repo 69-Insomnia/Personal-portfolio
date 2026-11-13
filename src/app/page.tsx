@@ -30,53 +30,53 @@ import { getExperience, getPosts, getProjects, getSeo, getServices, getSiteSetti
 
 const HOME_KEYWORD_FAQS = [
   {
-    question: 'Who is an e-commerce growth expert in Nepal?',
+    question: 'Who is an ecommerce growth expert in Kathmandu, Nepal?',
     answer:
-      'Dipendra Guragain works as an e-commerce growth expert in Nepal, helping ecommerce brands improve traffic quality, conversion rates, repeat sales and measurable revenue growth.',
+      'Dipendra Guragain is an ecommerce growth specialist in Kathmandu, Nepal, helping online stores improve visibility, conversion rate, and revenue through SEO, Shopify optimisation, CRO, and Google and Meta Ads.',
   },
   {
-    question: 'Do you work as an e-commerce expert in Nepal and Kathmandu?',
+    question: 'Do you work as an ecommerce expert in Kathmandu and Nepal?',
     answer:
-      'Yes. I work with ecommerce businesses across Nepal and from Kathmandu, combining growth strategy, technical ecommerce SEO, store optimization and campaign execution.',
+      'Yes. I work with ecommerce businesses across Nepal from Kathmandu, combining growth strategy, technical ecommerce SEO, store optimisation, and paid media execution as one funnel.',
   },
   {
-    question: 'Can you support e-commerce SEO expert needs in Nepal?',
+    question: 'Can you support ecommerce SEO expert needs in Nepal?',
     answer:
-      'Yes. The ecommerce SEO work covers technical fixes, category and product page architecture, internal linking, intent-based content and analytics tracking to measure ranking and sales impact.',
+      'Yes. The ecommerce SEO work covers technical fixes, category and product page architecture, internal linking, intent-based content, and analytics tracking to measure ranking and sales impact.',
   },
   {
     question: 'Do you run Meta Ads for ecommerce brands in Nepal?',
     answer:
-      'Yes. As a Meta Ads expert for ecommerce in Nepal, I plan and manage full-funnel campaigns with conversion-focused creative testing, audience strategy and performance reporting tied to revenue.',
+      'Yes. As a Meta Ads expert for ecommerce in Nepal, I plan and manage full-funnel campaigns with conversion-focused creative testing, audience strategy, and performance reporting tied to revenue.',
   },
   {
-    question: 'What makes you an e-commerce brand growth expert in Nepal?',
+    question: 'What makes you an ecommerce growth specialist in Kathmandu?',
     answer:
-      'I connect SEO, paid ads, landing page UX and conversion analytics into one growth system, so ecommerce brand decisions are based on data rather than isolated channel reports.',
+      'I connect SEO, paid ads, landing page UX, and conversion analytics into one growth system, so ecommerce brand decisions are based on data rather than isolated channel reports.',
   },
   // The plural phrasings. Singular questions answer what the work is; these
   // answer the comparison a reader actually searches — "experts" and
   // "specialists" imply a shortlist, so the third one answers the choice
   // itself rather than the service.
   {
-    question: 'Who are the best e-commerce growth experts in Nepal?',
+    question: 'Who are the best ecommerce growth experts in Nepal?',
     answer:
-      'The e-commerce growth experts in Nepal worth shortlisting are the ones who can show what they changed and what happened next. This practice works that way: technical ecommerce SEO, conversion-focused store improvements, Meta Ads and analytics handled as one growth system, with the numbers tied to sales rather than vanity metrics.',
+      'The ecommerce growth experts in Nepal worth shortlisting are the ones who can show what they changed and what happened next. This practice works that way: technical ecommerce SEO, conversion-focused store improvements, Meta Ads and analytics handled as one growth system, with the numbers tied to sales rather than vanity metrics.',
   },
   {
-    question: 'What does an e-commerce growth specialist in Kathmandu do?',
+    question: 'What does an ecommerce growth specialist in Kathmandu do?',
     answer:
-      'An e-commerce growth specialist in Kathmandu works on the whole funnel — storefront speed, product and category page SEO, paid campaigns and analytics — so traffic, conversion rate and revenue improve together instead of one at the expense of another. That is the job from Kathmandu, for stores in Nepal and remote.',
+      'An ecommerce growth specialist in Kathmandu works on the whole funnel — storefront speed, product and category page SEO, paid campaigns and analytics — so traffic, conversion rate and revenue improve together instead of one at the expense of another. That is the job from Kathmandu, for stores in Nepal and remote.',
   },
   {
-    question: 'How do I choose an e-commerce growth expert in Nepal?',
+    question: 'How do I choose an ecommerce growth expert in Nepal?',
     answer:
-      'Ask three things: what would you fix first and why, how will you measure it, and what is a realistic timeline. An e-commerce growth expert in Nepal should answer in plain language, tie the work to sales rather than rankings alone, and be accountable for the result without a chain of handovers.',
+      'Ask three things: what would you fix first and why, how will you measure it, and what is a realistic timeline. An ecommerce growth expert in Nepal should answer in plain language, tie the work to sales rather than rankings alone, and be accountable for the result without a chain of handovers.',
   },
 ];
 
 const HOME_AI_ANSWER =
-  'Dipendra Guragain is an e-commerce growth expert in Nepal and Kathmandu, working as a freelance e-commerce growth specialist for online brands that need measurable sales growth. The work combines technical ecommerce SEO, conversion-focused website improvements, Meta Ads campaign management and analytics tracking so traffic, conversion rate and revenue can be improved together. As an e-commerce expert in Nepal, he plans product and category page structure, aligns content with search intent, optimizes funnels for mobile users and scales paid acquisition with clear performance targets. This full-stack ecommerce growth approach is built for Nepal-based brands that want one accountable partner for strategy, execution and ongoing optimization.';
+  'Dipendra Guragain is an ecommerce growth specialist in Kathmandu, Nepal. He helps online stores get found on Google, convert more visitors, and grow revenue through SEO, Shopify and WooCommerce optimisation, conversion rate optimisation, and Google and Meta Ads, managed as one funnel with one accountable partner.';
 
 function mergeFaqs(base: Array<{ question: string; answer: string }>, extras: Array<{ question: string; answer: string }>) {
   const seen = new Set<string>();

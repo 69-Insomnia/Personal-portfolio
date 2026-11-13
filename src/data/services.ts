@@ -96,10 +96,11 @@ const serviceOrder: UnnumberedService[] = [
   },
   {
     slug: 'seo-services',
-    title: 'SEO Services in Kathmandu',
-    shortDescription: 'Technical SEO, keyword research and content work for businesses in Nepal.',
+    title: 'SEO Services',
+    seoTitle: 'SEO Services in Nepal | Ecommerce SEO Expert in Kathmandu',
+    shortDescription: 'Technical SEO, ecommerce SEO, and conversion-focused growth for stores and businesses in Nepal.',
     description:
-      "I do SEO for businesses across Nepal, based in Kathmandu. The job is to make a site findable for the searches that bring customers, and then to show that it worked. That starts with technical foundations, because nothing survives on top of a broken base: whether a crawler can read the page, whether it renders in under two seconds on a phone, and whether each page is about one thing. Only then does keyword and content work make sense. I also handle the part most audits skip, which is whether your conversion tracking fires correctly. Optimising against a number that is wrong costs more than doing nothing, and it is the most common problem I find on sites that already spend on SEO.",
+      "I provide SEO services for ecommerce brands and businesses across Nepal, focused on technical foundations, search visibility, and revenue impact. The work begins by checking whether search engines can read the site, whether pages load quickly on mobile, and whether each page clearly matches the intent behind the search. From there, I improve keyword targeting, on-page optimisation, content structure, and conversion tracking so the ranking work is tied to actual sales and leads. I also verify whether analytics and conversion data are trustworthy, because optimising against the wrong numbers is one of the fastest ways to lose budget and momentum.",
     body: [
       {
         heading: 'What does SEO actually involve?',
@@ -244,7 +245,7 @@ const serviceOrder: UnnumberedService[] = [
   {
     slug: 'google-ads',
     title: 'Google Ads Management',
-    shortDescription: 'Search, Display, YouTube and remarketing campaigns aimed at people already looking.',
+    shortDescription: 'Search, Display, YouTube and remarketing campaigns for businesses that want qualified buyers ready to purchase.',
     description:
       "I run Google Ads, and the difference between it and most other channels is intent: the person is already searching for the thing, so most of the work is about not wasting the click. That means tight accounts rather than broad ones, keywords matched to what the landing page actually delivers, and negative keyword lists that get maintained rather than set once and forgotten. I run Search, Display, YouTube and remarketing campaigns, and I would rather spend a week getting conversion tracking right than a month optimising against numbers I do not trust. For a business in Nepal, Search carries most of the value, because it catches demand that already exists. Display and YouTube do a different job, which is keeping a brand in view while someone decides.",
     body: [
@@ -294,9 +295,9 @@ const serviceOrder: UnnumberedService[] = [
      */
     seoTitle: 'Ecommerce Growth Specialist in Kathmandu | Dipendra Guragain',
     shortDescription:
-      'Ecommerce growth specialist in Nepal and Kathmandu. Storefront, SEO, product pages, ads and analytics are managed as one conversion system rather than separate projects.',
+      'Ecommerce growth expert in Nepal and Kathmandu. Storefront, SEO, product pages, ads and analytics are managed as one funnel for sustainable growth.',
     description:
-      'I am an ecommerce growth specialist in Kathmandu helping online stores in Nepal improve traffic quality, conversion rate, and revenue through a single growth system. In practice the work connects storefront performance, product page SEO, paid acquisition, analytics and conversion optimization so the store keeps converting instead of leaking customers at different points. Most ecommerce problems look like separate issues until you follow the funnel end to end. Traffic falls, ad cost rises, or checkout drops, and the real cause is usually a weak page, unclear product intent, poor mobile UX, or bad tracking that keeps the business guessing. I fix the leak first and then choose the channel changes that actually improve the result.',
+      'I am an ecommerce growth specialist in Kathmandu helping online stores in Nepal improve traffic quality, conversion rate, and revenue through a single growth system. In practice the work connects storefront performance, product page SEO, paid acquisition, analytics, and conversion optimization so the store keeps converting instead of leaking customers at different points. Most ecommerce problems look like separate issues until you follow the funnel end to end. Traffic falls, ad cost rises, or checkout drops, and the real cause is usually a weak page, unclear product intent, poor mobile UX, or bad tracking that keeps the business guessing. I fix the leak first and then choose the channel changes that actually improve the result.',
     body: [
       {
         heading: 'Why do ecommerce growth problems look like several different issues?',

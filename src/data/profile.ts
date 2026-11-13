@@ -8,9 +8,9 @@ export const profile: Profile = {
    * which is why it is not the full positioning line — `identity.role` in
    * `src/data/seo.ts` carries that.
    */
-  title: 'Ecommerce Growth Expert in Nepal · Shopify & Growth Consultant',
+  title: 'Ecommerce Growth Expert',
 
-  headline: 'I help ecommerce brands in Kathmandu and Nepal grow with smarter strategy, better SEO, and stronger conversion performance.',
+  headline: 'I help ecommerce brands in Kathmandu and Nepal grow with SEO, Shopify and WooCommerce optimisation, and stronger conversion performance.',
 
   /**
    * The one sentence that describes what this is, reused rather than rewritten
@@ -26,7 +26,7 @@ export const profile: Profile = {
    * page — it is the most quotable sentence on the site.
    */
   description:
-    "I'm Dipendra Guragain, an ecommerce growth expert in Nepal helping online brands increase visibility, improve conversion rates, and grow revenue through SEO, Shopify optimization, conversion rate improvement, Google Ads, Meta Ads, and performance marketing.",
+    "I'm Dipendra Guragain, an ecommerce growth specialist in Kathmandu, Nepal. I help online stores get found on Google, convert more visitors, and grow revenue through SEO, Shopify and WooCommerce optimisation, conversion rate optimisation, and Google and Meta Ads.",
 
   location: 'Kathmandu, Nepal',
 
