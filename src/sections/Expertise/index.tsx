@@ -6,18 +6,21 @@ import { Container } from '@/components/ui/Container';
 import { Reveal } from '@/components/ui/Reveal';
 import { Section } from '@/components/ui/Section';
 import { SectionHeading } from '@/components/ui/SectionHeading';
-import { services } from '@/data/services';
 import type { Service } from '@/types';
 
 interface ExpertiseProps {
   /** Hide the "All Services" CTA on pages where it would link to the current page. */
   showAllServices?: boolean;
-  /** CMS-provided services; falls back to the static data file. */
-  data?: Service[];
+  /**
+   * CMS-provided services, straight from `getServices()`. Required and with
+   * no static-file fallback: this grid is a public render of service data,
+   * and every public render of service data comes from the database.
+   */
+  data: Service[];
 }
 
 export function Expertise({ showAllServices = true, data }: ExpertiseProps) {
-  const items = data ?? services;
+  const items = data;
   return (
     <Section id="expertise" className="border-t border-line">
       <Container>

@@ -5,6 +5,14 @@ import { getPosts, getProjects, getSeoMap, getServices, seoKey } from '@/lib/con
 import { isoDate } from '@/utils/dates';
 
 /**
+ * The sitemap re-renders every five minutes as a safety net for the admin's
+ * purge (`/api/admin/revalidate` also expires this route directly, so a save
+ * normally lands immediately) — a service created or deleted in /admin
+ * reaches the sitemap without waiting for the next deploy either way.
+ */
+export const revalidate = 300;
+
+/**
  * The sitemap lists exactly what the site can actually serve *and* wants
  * indexed, and dates each entry from its real last edit.
  *

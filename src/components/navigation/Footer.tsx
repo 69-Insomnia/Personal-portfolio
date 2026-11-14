@@ -5,30 +5,51 @@ import { Container } from '@/components/ui/Container';
 import { SocialIcon } from '@/components/common/SocialIcon';
 import { WhatsAppIcon } from '@/components/common/WhatsAppIcon';
 import { footerNavigation } from '@/data/navigation';
-import { services } from '@/data/services';
 import { identity } from '@/data/seo';
 import { profile } from '@/data/profile';
-import type { SocialLinks as SocialLinksType } from '@/types';
+import { mailtoUrl, socialLabels, telUrl, whatsappUrl } from '@/utils/links';
+import type { Service, SocialLinks as SocialLinksType } from '@/types';
 
-const footerServiceSlugs = [
-  'ecommerce-growth-expert-nepal',
-  'ecommerce-growth-specialist-kathmandu',
-  'ecommerce-growth-specialist-nepal',
-  'shopify-seo-nepal',
-  'woocommerce-seo-nepal',
-];
+interface FooterProps {
+  /**
+   * The published services, in list order — the same `getServices()` read
+   * `/services` renders its cards from, narrowed to the fields this
+   * column shows. Passed down from the root layout because nothing below
+   * `ConditionalChrome` can await a database read.
+   *
+   * This column used to hardcode five slugs, and the list had drifted from
+   * the page it was supposed to mirror: it linked services `/services` no
+   * longer listed, under titles the site's own rule keeps out of visible UI.
+   * One source means the two cannot disagree again.
+   */
+  services: Pick<Service, 'slug' | 'title' | 'shortName'>[];
+}
 
-const socialLabels: Record<keyof SocialLinksType, string> = {
-  linkedin: 'LinkedIn',
-  github: 'GitHub',
-  facebook: 'Facebook',
-  instagram: 'Instagram',
-  tiktok: 'TikTok',
-  youtube: 'YouTube',
-  x: 'X',
-};
+/**
+ * Short display name for a service in this column.
+ *
+ * The full titles carry the page's keyword shape — "SEO Services in
+ * Kathmandu", "Web Development Services" — and they keep it everywhere it
+ * counts: the card, the H1 and the meta title. A footer column is navigation,
+ * not a heading, and repeating "Services" and the location on every row reads
+ * like ad copy rather than a menu.
+ *
+ * Only those two suffixes are stripped, location first (a title ending in
+ * "…Kathmandu" never ends in "Services", so the order is what makes
+ * "SEO Services in Kathmandu" land on "SEO"). Anything else passes through:
+ * "AI Search Optimization" and "Meta Ads Management" are untouched, and a
+ * future title with a different location suffix keeps it rather than being
+ * guessed at.
+ *
+ * This derivation is the fallback: when the admin has set `short_name` on the
+ * row, that wins — the label becomes editable in /admin without the title,
+ * the H1 or the meta ever changing.
+ */
+function listServiceName(title: string): string {
+  return title.replace(/ in (Kathmandu|Nepal)$/, '').replace(/ Services$/, '');
+}
 
-export function Footer() {
+export function Footer({ services }: FooterProps) {
   // Server component, so this is resolved at render time on the server — no
   // hydration mismatch, and it stops going stale the way a literal did.
   const year = new Date().getFullYear();
@@ -37,12 +58,8 @@ export function Footer() {
     ([, href]) => typeof href === 'string' && href.trim().length > 0,
   ) as Array<[keyof SocialLinksType, string]>;
 
-  const telHref = profile.whatsapp
-    ? `tel:${profile.whatsapp.replace(/[^\d+]/g, '')}`
-    : null;
-  const waHref = profile.whatsapp
-    ? `https://wa.me/${profile.whatsapp.replace(/\D/g, '')}`
-    : null;
+  const telHref = telUrl(profile.whatsapp);
+  const waHref = whatsappUrl(profile.whatsapp);
 
   return (
     <footer>
@@ -160,20 +177,20 @@ export function Footer() {
 
             <nav aria-label="Services">
               <p className="text-sm font-medium text-ink">Services</p>
-              <ul className="mt-4 flex flex-col">
-                {services
-                  .filter((service) => footerServiceSlugs.includes(service.slug))
-                  .map((service) => (
+              {services.length > 0 ? (
+                <ul className="mt-4 flex flex-col">
+                  {services.map((service) => (
                     <li key={service.slug}>
                       <Link
                         href={`/services/${service.slug}`}
                         className="block py-1.5 text-[15px] text-muted transition-colors duration-200 hover:text-accent"
                       >
-                        {service.title}
+                        {service.shortName ?? listServiceName(service.title)}
                       </Link>
                     </li>
                   ))}
-              </ul>
+                </ul>
+              ) : null}
             </nav>
 
             <div>
@@ -199,7 +216,7 @@ export function Footer() {
                 ) : null}
                 {profile.email ? (
                   <a
-                    href={`mailto:${profile.email}`}
+                    href={mailtoUrl(profile.email) ?? undefined}
                     className="block py-1.5 break-words text-[15px] text-muted transition-colors duration-200 hover:text-accent"
                   >
                     {profile.email}

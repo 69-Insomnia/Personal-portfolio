@@ -5,7 +5,7 @@ import { MotionConfig } from 'framer-motion';
 import { ConditionalChrome } from '@/components/layout/ConditionalChrome';
 import { resolveAnalytics } from '@/data/analytics';
 import { DEFAULT_OG_IMAGE, defaultSEO, identity, site } from '@/data/seo';
-import { getSiteSettings } from '@/lib/content';
+import { getServices, getSiteSettings } from '@/lib/content';
 import {
   clampDescription,
   clampTitle,
@@ -97,7 +97,6 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(site.url),
     title,
     description,
-    keywords: defaultSEO.keywords,
     applicationName: profile.name,
     authors: [{ name: profile.name, url: site.url }],
     creator: profile.name,
@@ -185,7 +184,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
    * read. `SiteChrome`, `SiteJsonLd` and `Analytics` all sit below
    * `ConditionalChrome`, which is a client component, so each of them receives
    * its values as a prop rather than looking them up. That constraint is the
-   * reason this function reads four separate things.
+   * reason this function reads five separate things.
    *
    * Each value is passed in the form its consumer expects, and none of them is
    * defaulted here:
@@ -197,6 +196,10 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
    *    `resolveAnalytics`, which is where the GA4 fallback lives.
    *  - `person` carries the admin's job title and knows-about list; `personNode`
    *    falls back to the repo constants for either one.
+   *  - `services` is the footer's Services column — the same `getServices()`
+   *    read `/services` renders its cards from, narrowed to `slug` and
+   *    `title`. Same source, so the column cannot link services the page
+   *    does not list.
    *
    * Defaulting in this component as well would mean two places deciding what
    * an unset field means, which is exactly how they drift apart.
@@ -212,6 +215,8 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     jobTitle: settings.personJobTitle,
     knowsAbout: settings.personKnowsAbout,
   };
+
+  const services = (await getServices()).map(({ slug, title }) => ({ slug, title }));
 
   /**
    * `data-scroll-behavior="smooth"` pairs with the `scroll-behavior: smooth`
@@ -248,6 +253,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             analytics={analytics}
             person={person}
             customJsonLd={settings.customJsonLd}
+            services={services}
           >
             {children}
           </ConditionalChrome>

@@ -23,7 +23,6 @@ export interface Profile {
   profileImage: string;
   /** Transparent cutout used by the hero when present. */
   profileImageCutout?: string;
-  resumeUrl?: string;
   email?: string;
   /** Display format, e.g. '+977-9840814142'. Digits are used for the wa.me link. */
   whatsapp?: string;
@@ -290,13 +289,22 @@ export interface Service {
   slug: string;
   index: string;
   title: string;
+  /**
+   * Short display label for navigation columns (the footer's Services list).
+   *
+   * NULL on every row until set, and then `undefined` after mapping — the
+   * footer derives its label from `title` in that case, which is the
+   * behaviour that existed before this field. The full `title` keeps
+   * everything else: cards, H1, meta, schema.
+   */
+  shortName?: string;
   shortDescription: string;
   /**
    * The front-loaded answer block. Written to stand alone in roughly 134-167
    * words, which is the passage length AI citations tend to pull.
    */
   description: string;
-  /** Long-form page body. Code-managed — not exposed in the admin editor. */
+  /** Long-form page body, rendered as the page's "In Detail" section. */
   body?: ServiceSection[];
   capabilities: string[];
   icon: IconName;
@@ -488,24 +496,18 @@ export interface TechnologyCategory {
 /**
  * A tool as the components render it: a name plus the marks to show beside it.
  *
- * `logo` is the mark shown in light mode — either a local path in `/logos/` or
+ * `logo` is the mark — either a local path in `/logos/` or
  * a URL. Marks are sized by HEIGHT with `width: auto`, so a wide wordmark
  * (WooCommerce) renders at its natural aspect instead of being crushed into a
  * square slot.
  *
- * `logoDark` is only for marks that are effectively invisible on a dark chip —
- * a near-black logo like Next.js. Everything else keeps one asset for both
- * themes, since brand colours already read against a dark surface.
- *
- * Both are optional: a tool with no mark renders as a monogram, which is the
+ * Optional: a tool with no mark renders as a monogram, which is the
  * intended fallback rather than an error state.
  */
 export interface PlatformTool {
   name: string;
-  /** Mark used in light mode. Local path or URL. */
+  /** Mark used in the chip. Local path or URL. */
   logo?: string;
-  /** Optional replacement for dark mode, when the default is too dark to read. */
-  logoDark?: string;
 }
 
 /**
@@ -518,18 +520,12 @@ export interface PlatformTool {
  * behind a strict `Content-Security-Policy`. `slug` is kept as provenance — it
  * is what you search for when a mark needs re-fetching, and it is how these
  * files were originally obtained.
- *
- * `srcDark` is a second, white mark for a near-black logo that would otherwise
- * vanish against a dark chip. See `toPlatformTool` for how the two become a
- * `PlatformTool`.
  */
 export interface ToolLogo {
   /** Simple Icons identifier, kept for provenance and re-fetching. */
   slug: string;
   /** The mark, as a path relative to `public/`. */
   src: string;
-  /** Optional white variant, for a near-black mark on a dark chip. */
-  srcDark?: string;
 }
 
 export interface CapabilityGroup {

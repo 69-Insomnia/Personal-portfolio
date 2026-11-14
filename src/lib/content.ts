@@ -2,8 +2,8 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { blogPosts as staticPosts } from '@/data/blog';
 import { experience as staticExperience } from '@/data/experience';
 import { projects as staticProjects } from '@/data/projects';
-import { numberServices, services as staticServices, type UnnumberedService } from '@/data/services';
-import { testimonials as staticTestimonials } from '@/data/testimonials';
+import { numberServices, type UnnumberedService } from '@/data/services';
+import { normalizeHttpUrl } from '@/utils/links';
 import type {
   BlogPost,
   EntitySignals,
@@ -16,7 +16,6 @@ import type {
   Service,
   ServiceSection,
   SiteSettings,
-  Testimonial,
 } from '@/types';
 
 /**
@@ -25,6 +24,12 @@ import type {
  * The site keeps rendering exactly what it renders today whenever the
  * database is unreachable, unprovisioned or returns nothing — the CMS only
  * takes over once real rows exist. GETs are cached for 5 minutes by Next.
+ *
+ * **Services are the exception and have no fallback** — `getServices` passes
+ * `null` where the other readers pass a file, so a failed read throws (see
+ * `readAll`). The static `src/data/services.ts` is seed material, not a
+ * second copy of the live content: every public render of service data comes
+ * from the database.
  */
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -51,10 +56,19 @@ function db(): SupabaseClient | null {
   return client;
 }
 
+/**
+ * `fallback: null` means "this reader must never fall back": every failure
+ * branch below throws instead of returning repo content, so the render fails
+ * loudly — or Next serves the last ISR-cached copy, which is the "last cached
+ * data" half of the same contract — rather than publishing `src/data/*` as if
+ * it were the database. `getServices` reads this way; a service edit that
+ * cannot reach the page has to be visible as an error, not masked by a file
+ * that silently reverts the site to its shipped copy.
+ */
 async function readAll<T>(
   table: string,
   map: (row: Record<string, unknown>) => T,
-  fallback: T[],
+  fallback: T[] | null,
 ): Promise<T[]> {
   const c = db();
   if (!c) {
@@ -69,6 +83,13 @@ async function readAll<T>(
         `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY unset) — serving the static ` +
         `fallback. Nothing added in /admin will appear on the site.`,
     );
+    if (!fallback) {
+      throw new Error(
+        `[content] ${table}: Supabase is not configured, and this reader has ` +
+          `no static fallback by design. Set NEXT_PUBLIC_SUPABASE_URL and ` +
+          `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.`,
+      );
+    }
     return fallback;
   }
   try {
@@ -99,6 +120,13 @@ async function readAll<T>(
           `static fallback. Anything added in /admin is invisible until this ` +
           `is fixed.`,
       );
+      if (!fallback) {
+        throw new Error(
+          `[content] ${table}: query failed (${error.message}). This reader ` +
+            `has no static fallback, so the page will serve its last ` +
+            `ISR-cached copy or an error — never the repo file.`,
+        );
+      }
       return fallback;
     }
 
@@ -115,15 +143,35 @@ async function readAll<T>(
         `[content] ${table}: no published rows — serving the static fallback. ` +
           `If you have just saved an item here, check its Published toggle.`,
       );
+      if (!fallback) {
+        throw new Error(
+          `[content] ${table}: zero published rows in the database, and this ` +
+            `reader has no static fallback. Check the Published toggles in ` +
+            `/admin, or run the seed script if the table was never filled.`,
+        );
+      }
       return fallback;
     }
 
     return data.map(map);
   } catch (e) {
+    if (e instanceof Error && e.message.startsWith(`[content] ${table}:`)) {
+      // A deliberate failure from one of the branches above. It has already
+      // been logged with its real reason; rethrow rather than re-reporting it
+      // as a fallback.
+      throw e;
+    }
     console.error(
       `[content] ${table}: threw (${e instanceof Error ? e.message : String(e)}) ` +
         `— serving the static fallback.`,
     );
+    if (!fallback) {
+      throw new Error(
+        `[content] ${table}: read failed (${e instanceof Error ? e.message : String(e)}). ` +
+          `This reader has no static fallback, so the page will serve its ` +
+          `last ISR-cached copy or an error — never the repo file.`,
+      );
+    }
     return fallback;
   }
 }
@@ -137,7 +185,7 @@ function imageUrl(value: unknown): string | undefined {
   if (typeof value !== 'string') return undefined;
   const raw = value.trim();
   if (!raw) return undefined;
-  const normalized = raw.replace(/^https\/\//i, 'https://').replace(/^http\/\//i, 'http://');
+  const normalized = normalizeHttpUrl(raw);
 
   if (normalized.startsWith('/') && !normalized.startsWith('//')) return normalized;
   try {
@@ -220,27 +268,6 @@ export async function getProject(slug: string): Promise<Project | undefined> {
   return list.find((p) => p.slug === slug);
 }
 
-// ------------------------------------------------------------ testimonials --
-
-function mapTestimonial(row: Record<string, unknown>): Testimonial {
-  return {
-    id: str(row.id),
-    // The `testimonials.content` column holds the client's words, so it maps
-    // straight onto `quote`. A row with an empty cell resolves to `null`, which
-    // is what the section reads to decide whether the card is publishable —
-    // see the note on `Testimonial`.
-    quote: strOr(row.content) ?? null,
-    name: str(row.name),
-    role: str(row.role),
-    company: strOr(row.company),
-    avatar: strOr(row.avatar),
-  };
-}
-
-export async function getTestimonials(): Promise<Testimonial[]> {
-  return readAll('testimonials', mapTestimonial, staticTestimonials);
-}
-
 // ------------------------------------------------------------------ posts --
 
 interface PostRow {
@@ -313,6 +340,7 @@ export async function getExperience(): Promise<ExperienceItem[]> {
 interface ServiceRow {
   slug: string;
   title: string;
+  short_name: string | null;
   short_description: string;
   description: string;
   body: unknown;
@@ -347,6 +375,13 @@ function mapService(row: ServiceRow): UnnumberedService {
   return {
     slug: row.slug,
     title: row.title,
+    /**
+     * The admin's own short label for the footer/nav column. `undefined`
+     * when the column is NULL, which is every row until someone sets it —
+     * the footer then derives the label from the title exactly as before,
+     * so adding the column changed no visible text on its own.
+     */
+    shortName: strOr(row.short_name),
     shortDescription: row.short_description,
     description: row.description,
     body: serviceSections(row.body),
@@ -382,7 +417,10 @@ export async function getServices(): Promise<Service[]> {
   const rows = await readAll<UnnumberedService>(
     'services',
     (row) => mapService(row as unknown as ServiceRow),
-    staticServices,
+    // `null`: services never fall back to `src/data/services.ts`. A failed or
+    // empty read throws — see the `readAll` contract — so an admin edit can
+    // only be delayed by the ISR cache, never silently reverted to the file.
+    null,
   );
   return numberServices(rows);
 }

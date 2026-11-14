@@ -652,10 +652,11 @@ export const engagementOptions: EngagementOption[] = [
   },
 ];
 
-export function getServiceBySlug(slug: string): Service | undefined {
-  return services.find((service) => service.slug === slug);
-}
-
-export function getRelatedServices(slug: string, limit = 3): Service[] {
-  return services.filter((service) => service.slug !== slug).slice(0, limit);
-}
+/**
+ * `getServiceBySlug` used to live here — the static lookup every public page
+ * fell back to when the database had nothing. It is gone with the fallback:
+ * a slug the database does not hold has no page, and keeping a file-based
+ * lookup around is how a second, divergent copy of the registry gets
+ * re-wired in by accident. The seed script reads `services` above; that is
+ * the file's only remaining job.
+ */

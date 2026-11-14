@@ -12,7 +12,6 @@ import { Approach } from '@/sections/Approach';
 import { Technologies } from '@/sections/Technologies';
 import { Experience } from '@/sections/Experience';
 import { Blog } from '@/sections/Blog';
-import { Testimonials } from '@/sections/Testimonials';
 import { FAQ } from '@/sections/FAQ';
 import { Contact } from '@/sections/Contact';
 import { faqs } from '@/data/faqs';
@@ -26,7 +25,7 @@ import {
 } from '@/lib/structured-data';
 import { buildMetadata } from '@/utils/metadata';
 import { homeSEO, withSeoMeta } from '@/data/seo';
-import { getExperience, getPosts, getProjects, getSeo, getServices, getSiteSettings, getTestimonials } from '@/lib/content';
+import { getExperience, getPosts, getProjects, getSeo, getServices, getSiteSettings } from '@/lib/content';
 
 const HOME_KEYWORD_FAQS = [
   {
@@ -93,10 +92,10 @@ function mergeFaqs(base: Array<{ question: string; answer: string }>, extras: Ar
 }
 
 /**
- * Twelve sections, in the order a visitor actually asks the questions: who is
+ * Eleven sections, in the order a visitor actually asks the questions: who is
  * this, what has he built, does the work back it up, what can I buy, how does it
- * run, what does he use, where has he done it, what does he know, who vouches
- * for him, what about my specific worry, and how do I start.
+ * run, what does he use, where has he done it, what does he know, what about my
+ * specific worry, and how do I start.
  *
  * `Stats` is new and sits directly under the work — a count of case studies is
  * a claim until you have scrolled past the case studies, and a summary once you
@@ -104,9 +103,8 @@ function mergeFaqs(base: Array<{ question: string; answer: string }>, extras: Ar
  * `src/data/sections.ts` for the registry that mirrors this order.
  */
 export default async function HomePage() {
-  const [projects, testimonials, posts, experience, services, seoMeta] = await Promise.all([
+  const [projects, posts, experience, services, seoMeta] = await Promise.all([
     getProjects(),
-    getTestimonials(),
     getPosts(),
     getExperience(),
     getServices(),
@@ -195,13 +193,12 @@ export default async function HomePage() {
 
       <Introduction />
       <Projects data={projects} />
-      <Stats />
+      <Stats serviceCount={services.length} />
       <Services data={services} />
       <Approach />
       <Technologies />
       <Experience data={experience} />
       <Blog data={posts} />
-      <Testimonials data={testimonials} />
       <FAQ />
       <Contact />
     </SectionNumberingProvider>

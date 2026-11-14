@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import { SiteChrome } from '@/components/layout/SiteChrome';
-import type { AnalyticsConfig } from '@/types';
+import type { AnalyticsConfig, Service } from '@/types';
 import type { PersonOverrides } from '@/lib/structured-data';
 
 /**
@@ -39,6 +39,7 @@ export function ConditionalChrome({
   analytics,
   person,
   customJsonLd,
+  services,
 }: {
   children: ReactNode;
   /** Read from `site_settings` by the root layout. */
@@ -49,6 +50,8 @@ export function ConditionalChrome({
   person?: Omit<PersonOverrides, 'socials'>;
   /** Site-wide custom JSON-LD. Plain JSON, so it crosses the boundary safely. */
   customJsonLd?: unknown;
+  /** Published services for the footer. Plain JSON, like `customJsonLd`. */
+  services: Pick<Service, 'slug' | 'title' | 'shortName'>[];
 }) {
   const pathname = usePathname();
 
@@ -62,6 +65,7 @@ export function ConditionalChrome({
       analytics={analytics}
       person={person}
       customJsonLd={customJsonLd}
+      services={services}
     >
       {children}
     </SiteChrome>

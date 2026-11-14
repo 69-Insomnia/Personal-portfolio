@@ -50,14 +50,12 @@ export const profile: Profile = {
   avatar: '/images/dipendra-avatar.jpg',
   profileImage: '/images/profile.png',
   /**
-   * The hero portrait. Background-removed to transparent (rembg, see
-   * `scripts/cutout.py`) so the figure sits flush on the cream card and rests
-   * on the marigold base bar. Regenerate with that script if `profile.png`
-   * changes; the hero falls back to `profileImage` if this is ever unset.
+   * The hero portrait. Background-removed to transparent (rembg) so the figure
+   * sits flush on the cream card and rests on the marigold base bar. Re-run the
+   * cutout if `profile.png` changes; the hero falls back to `profileImage` if
+   * this is ever unset.
    */
   profileImageCutout: '/images/profile-cutout.png',
-
-  resumeUrl: '',
 
   email: 'guragaidipendra6@gmail.com',
 
@@ -74,7 +72,5 @@ export const profile: Profile = {
     github: 'https://github.com/69-Insomnia',
     facebook: 'https://www.facebook.com/dipendra.guragain11',
     instagram: 'https://www.instagram.com/guragai12/',
-    tiktok: '',
-    youtube: '',
   },
 };

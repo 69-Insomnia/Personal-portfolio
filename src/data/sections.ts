@@ -26,22 +26,6 @@ export interface SectionMeta {
   chapter: ChapterId;
 }
 
-export const chapterLabels: Record<ChapterId, string> = {
-  intro: 'Introduction',
-  capabilities: 'Capabilities',
-  work: 'Work & Services',
-  background: 'Background',
-  engage: 'Work Together',
-};
-
-export const chapterOrder: ChapterId[] = [
-  'intro',
-  'capabilities',
-  'work',
-  'background',
-  'engage',
-];
-
 /**
  * Every section id the site knows about, in the order the HOME page renders
  * them. `home: false` marks a section that still renders on a subpage — /about
@@ -68,7 +52,6 @@ const sectionOrder = [
   { id: 'technologies', label: 'Stack', navLabel: 'Stack', chapter: 'capabilities', home: true },
   { id: 'experience', label: 'Journey', navLabel: 'Experience', chapter: 'background', home: true },
   { id: 'insights', label: 'Insights', navLabel: 'Insights', chapter: 'background', home: true },
-  { id: 'testimonials', label: 'Testimonials', navLabel: 'Testimonials', chapter: 'engage', home: true },
   { id: 'faq', label: 'FAQ', navLabel: 'FAQ', chapter: 'engage', home: true },
   { id: 'contact', label: 'Contact', navLabel: 'Contact', chapter: 'engage', home: true },
 
@@ -90,12 +73,6 @@ const byId = new Map<string, Omit<SectionMeta, 'index'>>(
 );
 
 /**
- * Stable id list for `useActiveSection`. Module-level so the reference never
- * changes between renders — the hook uses it as an effect dependency.
- */
-export const homeSectionIds: string[] = homeSections.map((section) => section.id);
-
-/**
  * Throws on an unknown id so a typo fails the build instead of silently
  * rendering an empty eyebrow. Subpage-only sections resolve here too, with an
  * empty index — they are never numbered.
@@ -111,8 +88,4 @@ export function getSection(id: string): SectionMeta {
 
   const indexed = homeSections.find((s) => s.id === id);
   return { ...section, index: indexed?.index ?? '' };
-}
-
-export function sectionsInChapter(chapter: ChapterId): SectionMeta[] {
-  return homeSections.filter((section) => section.chapter === chapter);
 }

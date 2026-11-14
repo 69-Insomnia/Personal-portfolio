@@ -3,7 +3,7 @@ import { Analytics } from '@/components/common/Analytics';
 import { Navbar } from '@/components/navigation/Navbar';
 import { Footer } from '@/components/navigation/Footer';
 import { SiteJsonLd } from '@/components/common/JsonLd';
-import type { AnalyticsConfig } from '@/types';
+import type { AnalyticsConfig, Service } from '@/types';
 import type { PersonOverrides } from '@/lib/structured-data';
 
 /**
@@ -23,10 +23,10 @@ import type { PersonOverrides } from '@/lib/structured-data';
  * This sits below `ConditionalChrome`, which is a client component, so nothing
  * here can await a database read. The root layout — the one server component
  * above the boundary — does the read and threads the values down. That is why
- * `socialLinks`, `analytics`, `person` and `customJsonLd` are all parameters
- * rather than lookups, and why each is optional: omitting one falls back to
- * the repo constant, so the site renders correctly even when the database is
- * unreachable.
+ * `socialLinks`, `analytics`, `person`, `customJsonLd` and `services` are all
+ * parameters rather than lookups, and why each is optional: omitting one falls
+ * back to the repo constant, so the site renders correctly even when the
+ * database is unreachable.
  *
  * `Analytics` is mounted here rather than inside `Footer` because the GA4 tag
  * used to be hardcoded into the footer markup, which coupled measurement to a
@@ -38,6 +38,7 @@ export function SiteChrome({
   analytics,
   person,
   customJsonLd,
+  services = [],
 }: {
   children: ReactNode;
   /** Admin-configured `sameAs` profiles. */
@@ -48,6 +49,8 @@ export function SiteChrome({
   person?: Omit<PersonOverrides, 'socials'>;
   /** Site-wide custom JSON-LD, merged into the base graph. */
   customJsonLd?: unknown;
+  /** Published services for the footer's Services column, in list order. */
+  services?: Pick<Service, 'slug' | 'title' | 'shortName'>[];
 }) {
   return (
     <>
@@ -64,7 +67,7 @@ export function SiteChrome({
       </a>
       <Navbar />
       <main id="main-content">{children}</main>
-      <Footer />
+      <Footer services={services} />
       {analytics ? <Analytics config={analytics} /> : null}
     </>
   );

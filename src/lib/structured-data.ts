@@ -113,11 +113,11 @@ export function personNode(overrides: PersonOverrides = {}): Node {
     name: identity.name,
     /**
      * The admin's job title when set, then `identity.role`, never
-     * `profile.title`. The navbar renders a shortened title ("Web Developer ·
-     * SEO · Digital Growth") because it has to fit under a name at 10px; that
-     * string was once published as this person's `jobTitle`, so the entity
-     * described itself differently from every heading and meta description on
-     * the site. The repo fallback is the full role, not the navbar's.
+     * `profile.title`. The profile's title is the full positioning line
+     * ("Ecommerce Growth Specialist · SEO · Meta & Google Ads") — phrased as
+     * marketing, and far longer than a `jobTitle` should be. The navbar shows
+     * `identity.role` under the name, so the entity describes itself with the
+     * same words the navigation does.
      */
     jobTitle: jobTitle || identity.role,
     description: profile.description,

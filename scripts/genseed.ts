@@ -8,7 +8,6 @@ import { resolve } from 'node:path';
 import { projects } from '../src/data/projects';
 import { blogPosts } from '../src/data/blog';
 import { experience } from '../src/data/experience';
-import { testimonials } from '../src/data/testimonials';
 import { services } from '../src/data/services';
 
 const NAME_MAP: Record<string, string> = {
@@ -64,7 +63,6 @@ const TABLES: { table: string; rows: Record<string, unknown>[] }[] = [
     rows: blogPosts.map(({ faqs: _faqs, ...post }) => post) as unknown as Record<string, unknown>[],
   },
   { table: 'experience', rows: experience as unknown as Record<string, unknown>[] },
-  { table: 'testimonials', rows: testimonials as unknown as Record<string, unknown>[] },
   {
     table: 'services',
     // SEO title overrides are template metadata, not a services table column.

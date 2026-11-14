@@ -6,7 +6,6 @@ import { Icon } from '@/components/common/Icon';
 import { Reveal } from '@/components/ui/Reveal';
 import { Section } from '@/components/ui/Section';
 import { SectionHeading } from '@/components/ui/SectionHeading';
-import { services as staticServices } from '@/data/services';
 import type { Service } from '@/types';
 
 /**
@@ -18,6 +17,10 @@ import type { Service } from '@/types';
  * registry or the CMS reorders rows. The slice is the fallback for the case
  * where a slug is missing — better to show three adjacent services than an
  * empty band.
+ *
+ * `data` comes from `getServices()` (the database) and is required: there is
+ * no static-file fallback here anymore, so an empty or failed read renders no
+ * band rather than quietly reverting the homepage to the repo's copy.
  *
  * This used to be three hand-written "pillars" (Search / Paid Ads / Ecommerce)
  * built from `skills.ts`, which were prose — they had no slugs, so no card
@@ -35,9 +38,8 @@ function pickHomepageServices(all: Service[]): Service[] {
   return chosen.length === 3 ? chosen : all.slice(0, 3);
 }
 
-export function Services({ data }: { data?: Service[] }) {
-  const all = data && data.length > 0 ? data : staticServices;
-  const featured = pickHomepageServices(all);
+export function Services({ data }: { data: Service[] }) {
+  const featured = pickHomepageServices(data);
 
   if (featured.length === 0) return null;
 
@@ -89,7 +91,7 @@ export function Services({ data }: { data?: Service[] }) {
                     {service.capabilities.slice(0, 3).map((capability) => (
                       <li
                         key={capability}
-                        className="rounded-full border border-line px-3 py-1 text-label text-muted"
+                        className="chip"
                       >
                         {capability}
                       </li>

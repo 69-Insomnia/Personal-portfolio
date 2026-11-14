@@ -3,7 +3,6 @@ import { Reveal } from '@/components/ui/Reveal';
 import { Section } from '@/components/ui/Section';
 import { experience } from '@/data/experience';
 import { projects } from '@/data/projects';
-import { services } from '@/data/services';
 
 /**
  * Months of client work, derived from the `period` strings on the experience
@@ -54,7 +53,7 @@ function clientMonths(): number | null {
  * See the note in the handoff for where stronger numbers should go once real
  * outcomes exist to back them.
  */
-export function Stats() {
+export function Stats({ serviceCount }: { serviceCount: number }) {
   const months = clientMonths();
 
   const stats = [
@@ -63,7 +62,11 @@ export function Stats() {
       label: 'Case studies, written up in full',
     },
     {
-      value: String(services.length),
+      // Passed in from the home page's `getServices()` read — the database
+      // count, not `src/data/services.ts`'s. The file ships twelve records
+      // (seven live services plus five URL-variant rows), so reading it here
+      // published a number the site's own /services grid contradicted.
+      value: String(serviceCount),
       label: 'Services, from storefront to paid media',
     },
     {
