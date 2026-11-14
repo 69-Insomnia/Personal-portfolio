@@ -1,6 +1,7 @@
 'use client';
 
 import { Icon } from '@/components/common/Icon';
+import { Card } from '@/components/ui/Card';
 import type { IconName } from '@/types';
 
 interface SkillCardProps {
@@ -20,7 +21,7 @@ interface SkillCardProps {
  */
 export function SkillCard({ title, icon, index }: SkillCardProps) {
   return (
-    <li className="card group flex items-center gap-3 px-4 py-3">
+    <Card as="li" className="group flex items-center gap-3 px-4 py-3">
       {icon ? (
         <Icon
           name={icon}
@@ -34,6 +35,6 @@ export function SkillCard({ title, icon, index }: SkillCardProps) {
         </span>
       ) : null}
       <span className="text-sm font-medium tracking-tight text-ink">{title}</span>
-    </li>
+    </Card>
   );
 }

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Clock } from 'lucide-react';
 import { PlaceholderBadge } from '@/components/common/PlaceholderBadge';
+import { Card } from '@/components/ui/Card';
 import { postImageAlt } from '@/utils/images';
 import type { BlogPost } from '@/types';
 
@@ -11,7 +12,7 @@ export function BlogCard({ post }: { post: BlogPost }) {
   return (
     <article className="group flex h-full flex-col">
       <Link href={`/blog/${post.slug}`} className="flex h-full flex-col">
-        <div className="card relative aspect-[16/10] overflow-hidden">
+        <Card className="relative aspect-[16/10] overflow-hidden">
           <Image
             src={post.image}
             alt={postImageAlt(post)}
@@ -25,7 +26,7 @@ export function BlogCard({ post }: { post: BlogPost }) {
             className="object-contain transition-transform duration-700 ease-out group-hover:scale-[1.05]"
           />
           {post.isPlaceholder ? <PlaceholderBadge className="absolute left-3 top-3" /> : null}
-        </div>
+        </Card>
 
         {/* Sentence case, no tracked uppercase — the category read as a system
             tag rather than a section of a magazine. The rule between the two

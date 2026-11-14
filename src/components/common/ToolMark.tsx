@@ -44,17 +44,15 @@ const imageProps: ImgHTMLAttributes<HTMLImageElement> = {
  * The mark beside a tool's name.
  *
  * Marks sit directly on the chip — no backdrop tile, and no CSS filter to
- * recolour them. The only theme problem is a near-black logo on a dark chip,
- * and `logoDark` handles that explicitly rather than tiling every mark for the
- * sake of the two brands it affects.
+ * recolour them. The site is light-only, so one asset per brand is enough.
  *
  * Falls back to a monogram if the image fails, in the same 18px box so a
  * failure doesn't shift the chip's layout.
  *
- * Both branches are decorative — the tool's name always sits beside them — so
- * they're hidden from the accessibility tree and the chip's accessible name
- * comes from its text. A plain <img> rather than next/image: these are tiny
- * local SVGs, where the optimizer adds a round trip and buys nothing.
+ * The mark is decorative — the tool's name always sits beside it — so it is
+ * hidden from the accessibility tree and the chip's accessible name comes from
+ * its text. A plain <img> rather than next/image: these are tiny local SVGs,
+ * where the optimizer adds a round trip and buys nothing.
  */
 export function ToolMark({ tool }: { tool: PlatformTool }) {
   const [failed, setFailed] = useState(false);
@@ -70,37 +68,5 @@ export function ToolMark({ tool }: { tool: PlatformTool }) {
     );
   }
 
-  // A near-black mark needs a light variant in dark mode. Both are rendered and
-  // toggled in CSS rather than by reading the theme in JS, which would risk a
-  // hydration mismatch against the pre-paint theme script in layout.tsx.
-  if (tool.logoDark) {
-    return (
-      <>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          {...imageProps}
-          src={tool.logo}
-          onError={() => setFailed(true)}
-          className={`${imageClasses} dark:hidden`}
-        />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          {...imageProps}
-          src={tool.logoDark}
-          onError={() => setFailed(true)}
-          className={`${imageClasses} hidden dark:block`}
-        />
-      </>
-    );
-  }
-
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      {...imageProps}
-      src={tool.logo}
-      onError={() => setFailed(true)}
-      className={imageClasses}
-    />
-  );
+  return <img {...imageProps} src={tool.logo} onError={() => setFailed(true)} className={imageClasses} />;
 }

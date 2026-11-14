@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ProjectCard } from '@/components/cards/ProjectCard';
 import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { Container } from '@/components/ui/Container';
 import { Section } from '@/components/ui/Section';
 import { SectionHeading } from '@/components/ui/SectionHeading';
@@ -99,9 +100,9 @@ export function Projects({
         </motion.ul>
 
         {filtered.length === 0 ? (
-          <p className="card mt-10 p-10 text-center text-muted">
+          <Card as="p" className="mt-10 p-10 text-center text-muted">
             No projects in this category yet.
-          </p>
+          </Card>
         ) : null}
       </Container>
     </Section>

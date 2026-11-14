@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { LoaderCircle, LockKeyhole } from 'lucide-react';
 import { getSupabase } from '@/lib/supabase-browser';
+import { Button } from '@/components/ui/Button';
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -91,14 +92,15 @@ export default function AdminLoginPage() {
             </p>
           ) : null}
 
-          <button
+          <Button
             type="submit"
             disabled={busy || checking}
-            className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-strong disabled:opacity-60"
+            size="sm"
+            className="mt-2"
           >
             {busy ? <LoaderCircle size={15} className="animate-spin" aria-hidden /> : null}
             {checking ? 'Checking session…' : 'Sign in'}
-          </button>
+          </Button>
         </form>
 
         <p className="mt-6 text-xs leading-relaxed text-muted">

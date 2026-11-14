@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowLeft, Check, ExternalLink, LoaderCircle, Save } from 'lucide-react';
 import { getSupabase } from '@/lib/supabase-browser';
 import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
+import { Button } from '@/components/ui/Button';
 import {
   SeoPanel,
   emptySeoValues,
@@ -192,11 +193,11 @@ export function StaticPageSeoForm({ page }: { page: StaticPage }) {
       </div>
 
       <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-line pt-6">
-        <button
+        <Button
           type="button"
           disabled={saving}
           onClick={() => void save()}
-          className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-strong disabled:opacity-60"
+          size="sm"
         >
           {saving ? (
             <LoaderCircle size={15} className="animate-spin" aria-hidden />
@@ -204,7 +205,7 @@ export function StaticPageSeoForm({ page }: { page: StaticPage }) {
             <Save size={15} aria-hidden />
           )}
           Save changes
-        </button>
+        </Button>
         <a
           href={page.path || '/'}
           target="_blank"

@@ -190,7 +190,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                   {post.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-full border border-line px-3 py-1 text-label font-medium text-muted"
+                      className="chip"
                     >
                       {tag}
                     </span>

@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, type Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
 import type { ElementType, ReactNode } from 'react';
 import { useRevealOnView } from '@/hooks/useRevealOnView';
 import { fadeUp } from '@/utils/variants';
@@ -16,7 +16,6 @@ interface RevealProps {
   children: ReactNode;
   className?: string;
   delay?: number;
-  variants?: Variants;
   /**
    * Rendered tag. Defaults to `div`.
    *
@@ -44,7 +43,6 @@ export function Reveal({
   children,
   className,
   delay = 0,
-  variants = fadeUp,
   as = 'div',
 }: RevealProps) {
   const { ref, shown } = useRevealOnView<HTMLDivElement>(0.15);
@@ -71,7 +69,7 @@ export function Reveal({
       initial="hidden"
       animate={shown ? 'show' : 'hidden'}
       custom={delay}
-      variants={variants}
+      variants={fadeUp}
       className={cn(className)}
     >
       {children}

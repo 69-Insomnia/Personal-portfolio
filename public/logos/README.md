@@ -34,22 +34,6 @@ is not what React was reacting to.
 1. Fetch the SVG into this folder. `https://cdn.simpleicons.org/<slug>` serves
    it in the brand's own colour.
 2. Add an entry to `toolLogos` with `slug` (provenance) and `src`.
-3. Set `srcDark` as well **only** if the mark is near-black and disappears on a
-   dark chip. Both files then render and Tailwind's `dark:hidden` /
-   `hidden dark:block` switches between them — in CSS rather than by reading the
-   theme in JS, which would race the pre-paint theme script in `layout.tsx` and
-   risk a hydration mismatch.
-
-```ts
-'Express.js': {
-  slug: 'express',
-  src: '/logos/express.svg',
-  srcDark: '/logos/express-white.svg',
-},
-```
-
-The white variant is the same slug with a colour appended:
-`https://cdn.simpleicons.org/express/FFFFFF`.
 
 Slugs in use:
 
@@ -97,15 +81,14 @@ fill has to be set on the way in. `npm i simple-icons` and copy from
   ship a 24×24 viewBox, so they render 18×18 in the chip. `ToolMark` sizes by
   height with `width: auto` and a 92px cap anyway, so a wider asset from a
   brand's own press kit would still lay out correctly if one is ever dropped in.
-- **Marks sit directly on the chip — no backdrop tile and no CSS filter.** The
-  single theme problem is a near-black logo on a dark chip, which is what
-  `srcDark` is for. Only Next.js and Express.js need it so far.
+- **Marks sit directly on the chip — no backdrop tile, no CSS filter, and one
+  file per mark** (the dark-mode `srcDark` variant went with dark mode).
 - **Keep the SVGs square-ish or landscape, not tiny.** A very small viewBox
   renders soft at 18px.
 - **Simple Icons draws monochrome paths.** Google's four-colour G and
   WooCommerce's purple wordmark come through as single-colour versions. If the
-  full-colour asset matters, use the brand's own press kit — but then check it
-  against both themes.
+  full-colour asset matters, use the brand's own press kit — but check it
+  renders cleanly on the chip background.
 - **These are third-party trademarks.** Simple Icons' CC0 licence covers the
   *files*, not the marks; normal nominative-fair-use rules still apply. Using
   them to describe tools you work with is the intended use.

@@ -109,7 +109,7 @@
   --color-danger: #b91c1c;
   --color-info: #1d4ed8;
 
-  /* WhatsApp brand. Deliberately NOT re-pointed in `.dark` or the inverse band
+  /* WhatsApp brand. Deliberately NOT re-pointed in the inverse band
      — the green is the product's identity, not part of our palette, and it
      keeps its meaning only if it is the same colour everywhere. The ink is a
      near-black green so the label sits at ~8.4:1 on `--color-whatsapp`. */
@@ -153,52 +153,9 @@
   --radius-card: 1rem;
 }
 
-/* Inert today: `darkMode: 'class'` is configured in tailwind.config.ts but
-   nothing in the app ever applies `.dark`, so the site is light-only. Kept in
-   step with the token structure above so enabling it is a one-line change
-   rather than a re-derivation. */
-.dark {
-  color-scheme: dark;
-
-  --color-paper: #0c1a12;
-  --color-subtle: #12241a;
-  --color-surface: #16291d;
-  --color-paper-blur: rgba(12, 26, 18, 0.78);
-
-  --color-ink: #f4f8f5;
-  --color-muted: #a8c4b3;
-  --color-faint: #8aab98;
-
-  --color-line: rgba(244, 248, 245, 0.13);
-  --color-line-strong: #6f8b7c;
-
-  /* On a dark page "more emphasis" means more light, which is the opposite of
-     the light theme. The 400 step is the same family read from the other end. */
-  --color-accent: #5c9e77;
-  --color-accent-strong: #8fc0a1;
-  --color-accent-soft: rgba(92, 158, 119, 0.16);
-  --color-on-accent: #061e10;
-
-  --color-marigold-ink: #f0bb52;
-
-  --color-success: #4aa876;
-  --color-danger: #f87171;
-  --color-info: #7dabf8;
-
-  --color-ring: #8fc0a1;
-
-  --color-inverse: #000000;
-  --color-inverse-surface: #0f1a13;
-  --color-inverse-raised: #16241b;
-  --color-inverse-line: #24382b;
-
-  --color-scrim: rgba(0, 0, 0, 0.95);
-
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.5);
-  --shadow-sm: 0 8px 30px rgba(0, 0, 0, 0.45);
-  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
-}
+/* The site is light-only: `color-scheme: light` above is the whole theme
+   decision, and nothing in the app applies a dark class. A dark variant would
+   be a re-derivation of every token in this file, not a toggle. */
 
 @layer base {
   * {
@@ -321,22 +278,19 @@
     @apply inline-flex items-center gap-2.5 text-sm font-medium text-accent;
   }
 
-  /* The three surface roles, as named recipes rather than repeated class
+  /* The two surface roles, as named recipes rather than repeated class
      strings. This is what stops the site drifting back into two accidental card
      languages — the problem was never that there were two, it was that nothing
      said which was which.
 
-       Band   Full-bleed section background: `bg-paper` / `bg-subtle` on the
-              <Section> itself. Breaks up a long scroll.
-       Card   Top-level content — projects, services, posts, the Stack panels.
-              `surface` fill, a hairline, and one soft shadow. It lifts on hover.
-       Inset  A panel nested INSIDE a card or band. `subtle` fill, no hairline,
-              and it never lifts — it isn't a thing you can click, so motion
-              there would be decoration.
+        Band   Full-bleed section background: `bg-paper` / `bg-subtle` on the
+               <Section> itself. Breaks up a long scroll.
+        Card   Top-level content — projects, services, posts, the Stack panels.
+               `surface` fill, a hairline, and one soft shadow. It lifts on hover.
 
-     Card and Inset share `--radius-card` so a card containing an inset still
-     reads as a single object. Only Card gets `.card-interactive`; adding the
-     pair to a component is the whole contract. */
+     A panel nested INSIDE a card is just `rounded-card bg-subtle` — it has no
+     lift because it isn't a thing you can click. Card gets `.card-interactive`;
+     adding the pair to a component is the whole contract. */
   .card {
     @apply rounded-card border border-line bg-surface shadow-sm;
   }
@@ -352,12 +306,16 @@
     @apply -translate-y-1 border-line-strong shadow-lg;
   }
 
-  .inset {
-    @apply rounded-card bg-subtle;
+  /* Tag chips — the category and technology pills on cards, timeline items and
+     articles. The same string was hand-typed at five call sites, and one of
+     them had quietly grown a `font-medium` the other four did not have. One
+     recipe, one weight. */
+  .chip {
+    @apply rounded-full border border-line px-3 py-1 text-label text-muted;
   }
 
   /* Re-points the token variables for everything inside, so the existing
-     primitives (Badge, Button, SkillCard, Section…) re-theme with no
+     primitives (Button, SkillCard, Section…) re-theme with no
      per-component changes. The `* { border-color: var(--color-line) }` rule in
      the base layer picks this up too, which is what makes plain `border-line`
      work inside the band. */

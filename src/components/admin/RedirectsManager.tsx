@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { AlertTriangle, LoaderCircle, Plus, Trash2 } from 'lucide-react';
 import { getSupabase } from '@/lib/supabase-browser';
 import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
+import { Button } from '@/components/ui/Button';
 import { inputClass } from '@/components/admin/FieldControl';
 import { cn } from '@/utils/cn';
 
@@ -274,11 +275,11 @@ export function RedirectsManager() {
               <option value={301}>301 (permanent)</option>
             </select>
           </div>
-          <button
+          <Button
             type="button"
             disabled={adding || rows === null}
             onClick={() => void add()}
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-accent px-5 text-sm font-medium text-on-accent transition-colors hover:bg-accent-strong disabled:opacity-60"
+            size="sm"
           >
             {adding ? (
               <LoaderCircle size={15} className="animate-spin" aria-hidden />
@@ -286,7 +287,7 @@ export function RedirectsManager() {
               <Plus size={15} aria-hidden />
             )}
             Add
-          </button>
+          </Button>
         </div>
 
         {(normalizedFrom || normalizedTo) && !formError ? (

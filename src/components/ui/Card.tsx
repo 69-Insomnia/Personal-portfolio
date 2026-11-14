@@ -23,9 +23,12 @@ interface CardProps {
 }
 
 const variantClasses: Record<CardVariant, string> = {
-  surface: 'border border-line bg-surface shadow-sm',
-  outline: 'border border-line',
-  plain: '',
+  /* Routed through the `.card` recipe in globals.css rather than retyping its
+     classes here — the recipe is the single source of truth for what a card
+     looks like, and this component is its API. */
+  surface: 'card',
+  outline: 'rounded-card border border-line',
+  plain: 'rounded-card',
 };
 
 /**
@@ -52,7 +55,6 @@ export function Card({
   return (
     <Tag
       className={cn(
-        'rounded-card',
         variantClasses[variant],
         interactive && 'card-interactive',
         className,

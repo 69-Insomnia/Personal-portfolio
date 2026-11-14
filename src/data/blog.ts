@@ -203,21 +203,6 @@ export const blogPosts: BlogPost[] = [
   },
 ];
 
-export const blogCategories = [
-  'Web Development',
-  'SEO',
-  'Google Ads',
-  'Meta Ads',
-  'Ecommerce',
-  'Digital Marketing',
-  'Technology',
-  'Tutorials',
-] as const;
-
 export function getPostBySlug(slug: string): BlogPost | undefined {
   return blogPosts.find((post) => post.slug === slug);
-}
-
-export function getRelatedPosts(post: BlogPost, limit = 2): BlogPost[] {
-  return blogPosts.filter((item) => item.slug !== post.slug).slice(0, limit);
 }

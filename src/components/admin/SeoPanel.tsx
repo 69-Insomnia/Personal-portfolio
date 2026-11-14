@@ -541,7 +541,6 @@ function SocialPreview({
           // URL that has not been added to next.config's remotePatterns, and
           // routing it through the optimiser would throw at runtime for any
           // host not on that list.
-          // eslint-disable-next-line @next/next/no-img-element
           <img src={image} alt="" className="h-full w-full object-cover" />
         ) : (
           <span className="text-xs text-muted">No image — the site default is used</span>
@@ -660,11 +659,6 @@ export function SeoPanel({
 
   const set = <K extends keyof SeoFormValues>(key: K, value: SeoFormValues[K]) =>
     onChange({ ...values, [key]: value });
-
-  const onTitleSourceChange = (next: string) => {
-    if (slugLocked || disabled) return;
-    onSlugChange(slugify(next));
-  };
 
   const effectiveTitle = values.meta_title || fallbackTitle;
   const effectiveDescription = values.meta_description || fallbackDescription;

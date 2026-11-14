@@ -10,11 +10,6 @@ import type { PlatformTool, TechnologyCategory, ToolLogo } from '@/types';
  * as provenance — it is what you search for when a mark needs re-fetching. See
  * `public/logos/README.md`.
  *
- * `srcDark` is a second, white mark for dark chips. It is set only where the
- * brand mark is near-black and would otherwise vanish against a dark surface;
- * every other brand colour already reads on both, so this stays the exception
- * rather than the rule.
- *
  * A name absent from this map is not an error — `ToolMark` falls back to a
  * lettered monogram, so a tool added to a category list is never a broken
  * image.
@@ -27,7 +22,7 @@ import type { PlatformTool, TechnologyCategory, ToolLogo } from '@/types';
  */
 export const toolLogos: Record<string, ToolLogo> = {
   React: { slug: 'react', src: '/logos/react.svg' },
-  'Next.js': { slug: 'nextdotjs', src: '/logos/nextdotjs.svg', srcDark: '/logos/nextdotjs-white.svg' },
+  'Next.js': { slug: 'nextdotjs', src: '/logos/nextdotjs.svg' },
   JavaScript: { slug: 'javascript', src: '/logos/javascript.svg' },
   TypeScript: { slug: 'typescript', src: '/logos/typescript.svg' },
   HTML: { slug: 'html5', src: '/logos/html5.svg' },
@@ -35,7 +30,7 @@ export const toolLogos: Record<string, ToolLogo> = {
   'Tailwind CSS': { slug: 'tailwindcss', src: '/logos/tailwindcss.svg' },
 
   'Node.js': { slug: 'nodedotjs', src: '/logos/nodedotjs.svg' },
-  'Express.js': { slug: 'express', src: '/logos/express.svg', srcDark: '/logos/express-white.svg' },
+  'Express.js': { slug: 'express', src: '/logos/express.svg' },
   PHP: { slug: 'php', src: '/logos/php.svg' },
 
   MongoDB: { slug: 'mongodb', src: '/logos/mongodb.svg' },
@@ -78,7 +73,6 @@ export function toPlatformTool(name: string): PlatformTool {
   return {
     name,
     logo: logo.src,
-    logoDark: logo.srcDark,
   };
 }
 

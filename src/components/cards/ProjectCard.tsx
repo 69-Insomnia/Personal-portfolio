@@ -73,7 +73,7 @@ export function ProjectCard({ project, priority = false }: ProjectCardProps) {
             {project.technologies.map((technology) => (
               <li
                 key={technology}
-                className="rounded-full border border-line px-3 py-1 text-label text-muted"
+                className="chip"
               >
                 {technology}
               </li>

@@ -38,7 +38,7 @@ export function ServiceCard({ service }: { service: Service }) {
           {visibleCapabilities.map((capability) => (
             <li
               key={capability}
-              className="rounded-full border border-line px-3 py-1 text-label text-muted"
+              className="chip"
             >
               {capability}
             </li>

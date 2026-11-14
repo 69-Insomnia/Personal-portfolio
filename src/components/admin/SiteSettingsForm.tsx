@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { AlertTriangle, Check, LoaderCircle, Save } from 'lucide-react';
 import { getSupabase } from '@/lib/supabase-browser';
 import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
+import { Button } from '@/components/ui/Button';
 import { inputClass } from '@/components/admin/FieldControl';
 import { cn } from '@/utils/cn';
 
@@ -238,11 +239,11 @@ export function SiteSettingsForm() {
         eyebrow="seo"
         title="Global SEO settings"
         actions={
-          <button
+          <Button
             type="button"
             disabled={saving}
             onClick={() => void save()}
-            className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-on-accent transition-colors hover:bg-accent-strong disabled:opacity-60"
+            size="sm"
           >
             {saving ? (
               <LoaderCircle size={15} className="animate-spin" aria-hidden />
@@ -250,7 +251,7 @@ export function SiteSettingsForm() {
               <Save size={15} aria-hidden />
             )}
             Save
-          </button>
+          </Button>
         }
       />
 
@@ -334,7 +335,6 @@ export function SiteSettingsForm() {
         </Field>
         <div className="flex items-center justify-center border border-line bg-subtle p-3">
           {values.default_og_image ? (
-            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={values.default_og_image}
               alt=""
@@ -385,7 +385,7 @@ export function SiteSettingsForm() {
         <Field
           id="settings-ga4"
           label="GA4 measurement ID"
-          help="Looks like G-XXXXXXXXXX. Leave blank to keep the built-in tag. Not loaded when a Tag Manager container is set below — a container is expected to own your tags, and running both double-counts every page view."
+          help="Looks like G-XXXXXXXXXX. Leave blank to keep the built-in ID. With a container set below, this ID is pushed to the container's dataLayer and GA4 fires from a tag inside GTM rather than as a standalone script."
         >
           <input
             id="settings-ga4"
@@ -398,7 +398,7 @@ export function SiteSettingsForm() {
         <Field
           id="settings-gtm"
           label="Google Tag Manager ID"
-          help="Looks like GTM-XXXXXXX. Setting this turns the standalone GA4 tag off — see above."
+          help="Looks like GTM-XXXXXXX. The container becomes the single async loader: GA4 and Meta tags live inside it and read the IDs on this page from the dataLayer."
         >
           <input
             id="settings-gtm"
@@ -411,7 +411,7 @@ export function SiteSettingsForm() {
         <Field
           id="settings-pixel"
           label="Meta Pixel ID"
-          help="Numeric only. Leave blank if you deploy the pixel through a Tag Manager container."
+          help="Numeric only. Pushed to the container's dataLayer — the pixel itself fires from inside GTM, never as a standalone script. Leave blank when no container is set."
         >
           <input
             id="settings-pixel"
@@ -505,11 +505,11 @@ export function SiteSettingsForm() {
       </div>
 
       <div className="mt-8 flex items-center gap-3 border-t border-line pt-6">
-        <button
+        <Button
           type="button"
           disabled={saving}
           onClick={() => void save()}
-          className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-strong disabled:opacity-60"
+          size="sm"
         >
           {saving ? (
             <LoaderCircle size={15} className="animate-spin" aria-hidden />
@@ -517,7 +517,7 @@ export function SiteSettingsForm() {
             <Save size={15} aria-hidden />
           )}
           Save settings
-        </button>
+        </Button>
       </div>
     </div>
   );

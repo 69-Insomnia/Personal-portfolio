@@ -5,10 +5,12 @@ import { Mail } from 'lucide-react';
 import { Breadcrumb } from '@/components/common/Breadcrumb';
 import { WhatsAppIcon } from '@/components/common/WhatsAppIcon';
 import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { Container } from '@/components/ui/Container';
 import { Reveal } from '@/components/ui/Reveal';
 import { Section } from '@/components/ui/Section';
 import { profile } from '@/data/profile';
+import { mailtoUrl, whatsappUrl } from '@/utils/links';
 
 /**
  * The about page as a profile: a first-person column beside a card carrying the
@@ -65,9 +67,7 @@ const FACTS = [
 ];
 
 export function ProfileIntro() {
-  const whatsappHref = profile.whatsapp
-    ? `https://wa.me/${profile.whatsapp.replace(/\D/g, '')}`
-    : null;
+  const whatsappHref = whatsappUrl(profile.whatsapp);
 
   return (
     <Section className="border-b border-line pb-14 pt-32 md:pb-20 md:pt-40 lg:pb-24 lg:pt-44">
@@ -122,7 +122,7 @@ export function ProfileIntro() {
           <aside className="lg:col-span-4 lg:col-start-9">
             <div className="flex flex-col gap-4 lg:sticky lg:top-28">
               <Reveal>
-                <div className="card p-4">
+                <Card className="p-4">
                   <div className="relative aspect-square overflow-hidden">
                     <Image
                       src="/images/dipendra-guragain.jpg"
@@ -138,11 +138,11 @@ export function ProfileIntro() {
                       {profile.title} · {profile.location}
                     </p>
                   </div>
-                </div>
+                </Card>
               </Reveal>
 
               <Reveal delay={0.08}>
-                <div className="card p-5">
+                <Card className="p-5">
                   <p className="flex items-start gap-2.5 text-label font-semibold text-ink">
                     <span
                       aria-hidden
@@ -165,7 +165,7 @@ export function ProfileIntro() {
                   <div className="mt-5 flex flex-col gap-2.5 border-t border-line pt-5">
                     {profile.email ? (
                       <Button
-                        href={`mailto:${profile.email}`}
+                        href={mailtoUrl(profile.email) ?? undefined}
                         variant="outline"
                         className="w-full justify-center"
                         ariaLabel={`Email ${profile.email}`}
@@ -194,7 +194,7 @@ export function ProfileIntro() {
                       Start a project
                     </Button>
                   </div>
-                </div>
+                </Card>
               </Reveal>
             </div>
           </aside>

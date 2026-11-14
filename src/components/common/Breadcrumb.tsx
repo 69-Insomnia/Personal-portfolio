@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { JsonLd } from '@/components/common/JsonLd';
 import { breadcrumbNode } from '@/lib/structured-data';
-import { cn } from '@/utils/cn';
 
 interface BreadcrumbProps {
   /** Ordered trail, first item usually Home. The last is the current page. */

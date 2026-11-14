@@ -26,7 +26,7 @@
  */
 const securityHeaders = [
   // Stops a browser from re-interpreting a response as a type it was not served
-  // as. The SVG logo pipeline (`dangerouslyAllowSVG` above) is the reason this
+  // as. The SVG logo pipeline (`dangerouslyAllowSVG` below) is the reason this
   // matters more here than on a typical site.
   { key: 'X-Content-Type-Options', value: 'nosniff' },
   // Sends the full URL to same-origin destinations and a bare origin

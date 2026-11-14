@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { AlertTriangle, ImagePlus, LoaderCircle, Trash2, Upload } from 'lucide-react';
 import { getSupabase } from '@/lib/supabase-browser';
 import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
+import { Button } from '@/components/ui/Button';
 import { inputClass } from '@/components/admin/FieldControl';
 import { altProblem, imageDimensions, uploadImage } from '@/components/admin/imageUpload';
 import { cn } from '@/utils/cn';
@@ -218,7 +219,6 @@ export function MediaManager() {
               className="flex aspect-video cursor-pointer flex-col items-center justify-center gap-2 border border-dashed border-line-strong bg-subtle text-muted transition-colors hover:border-ink hover:text-ink"
             >
               {pending ? (
-                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={pending.previewUrl}
                   alt=""
@@ -296,11 +296,11 @@ export function MediaManager() {
             ) : null}
 
             <div className="flex items-center gap-3">
-              <button
+              <Button
                 type="button"
                 disabled={!pending || saving || problem !== null}
                 onClick={() => void upload()}
-                className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-on-accent transition-colors hover:bg-accent-strong disabled:opacity-50"
+                size="sm"
               >
                 {saving ? (
                   <LoaderCircle size={15} className="animate-spin" aria-hidden />
@@ -308,7 +308,7 @@ export function MediaManager() {
                   <Upload size={15} aria-hidden />
                 )}
                 Save image
-              </button>
+              </Button>
               {pending && problem && alt.length === 0 ? (
                 <span className="text-xs text-muted">
                   Add alt text to enable saving.
@@ -347,7 +347,6 @@ export function MediaManager() {
           {rows.map((row) => (
             <li key={row.id} className="border border-line bg-surface">
               <div className="flex h-36 items-center justify-center overflow-hidden border-b border-line bg-subtle">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={row.src} alt={row.alt} className="max-h-full max-w-full object-contain" />
               </div>
               <div className="p-3">

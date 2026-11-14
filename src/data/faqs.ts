@@ -29,9 +29,6 @@ import type { FAQ } from '@/types';
  * want to publish a starting figure, put it here — but a number a visitor can
  * hold you to should be one you would honour, and "from NPR X" on a services
  * page is a quote.
- *
- * TODO(price): store-build starting figure, and standalone-audit fee. Neither
- * is invented here. See the handoff notes.
  */
 export const faqs: FAQ[] = [
   {

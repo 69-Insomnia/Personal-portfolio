@@ -1,7 +1,6 @@
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
-  darkMode: 'class',
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
     extend: {
@@ -148,8 +147,8 @@ const config: Config = {
            globals.css so either spelling works. */
         prose: '68ch',
       },
-      /* One radius for every card and inset, so a card containing an inset still
-         reads as a single object. Defined in globals.css. */
+      /* One radius for every card and nested panel, so a card containing a
+         panel still reads as a single object. Defined in globals.css. */
       borderRadius: {
         card: 'var(--radius-card)',
       },

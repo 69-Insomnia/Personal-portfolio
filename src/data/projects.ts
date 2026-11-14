@@ -1,18 +1,28 @@
 import type { Project, ProjectCategory, ProjectFilter } from '@/types';
 
-/** Filter chips on the work grid. Order is the order they render in. */
-export const projectFilters: ProjectFilter[] = [
-  'All',
+/**
+ * Every filterable project category, in chip order.
+ *
+ * Shared by the public chips and the admin category dropdown — two lists that
+ * had drifted (the dropdown knew `Ecommerce` and `Ads`, the chips did not, and
+ * the live database tags projects with both).
+ */
+export const projectCategoryFilters: ProjectCategory[] = [
   'Web Development',
   'SEO',
   'Marketing',
+  'Ecommerce',
+  'Ads',
 ];
+
+/** Filter chips on the work grid. Order is the order they render in. */
+export const projectFilters: ProjectFilter[] = ['All', ...projectCategoryFilters];
 
 /**
  * Real project case studies, newest first.
  * Do not publish results, metrics or client names that are not real.
  *
- * ## TODO(results): the result line on every work card is empty
+ * ## Why the result line on every work card is empty
  *
  * `ProjectCard` renders `results[0]` as a large figure above the description —
  * "2.4s LCP", "Lighthouse 98", "3× repeat orders" — and the case-study page has
@@ -129,11 +139,4 @@ export function projectCategories(project: Project): ProjectCategory[] {
 
 export function getProjectBySlug(slug: string): Project | undefined {
   return projects.find((project) => project.slug === slug);
-}
-
-export function getRelatedProjects(project: Project, limit = 2): Project[] {
-  return projects
-    .filter((item) => item.slug !== project.slug && item.category === project.category)
-    .concat(projects.filter((item) => item.slug !== project.slug && item.category !== project.category))
-    .slice(0, limit);
 }

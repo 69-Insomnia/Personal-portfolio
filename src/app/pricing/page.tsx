@@ -4,6 +4,7 @@ import { ArrowUpRight } from 'lucide-react';
 import { JsonLd } from '@/components/common/JsonLd';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { Container } from '@/components/ui/Container';
 import { Reveal } from '@/components/ui/Reveal';
 import { Section } from '@/components/ui/Section';
@@ -48,7 +49,7 @@ function TierCard({ tier }: { tier: PricingTier }) {
   const price = formatNpr(tier.fromNpr);
 
   return (
-    <li className="card flex flex-col p-6 md:p-7">
+    <Card as="li" className="flex flex-col p-6 md:p-7">
       <h3 className="text-h3">{tier.name}</h3>
       <p className="mt-3 text-sm leading-relaxed text-muted">{tier.summary}</p>
 
@@ -97,7 +98,7 @@ function TierCard({ tier }: { tier: PricingTier }) {
           </Link>
         ) : null}
       </div>
-    </li>
+    </Card>
   );
 }
 
