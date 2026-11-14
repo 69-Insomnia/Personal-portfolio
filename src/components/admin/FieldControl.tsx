@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ImagePlus, LoaderCircle, Plus, Trash2, Upload, X } from 'lucide-react';
 import type { Field } from './config';
+import { Button } from '@/components/ui/Button';
 import {
   altProblem,
   uploadImage,
@@ -86,7 +87,10 @@ export function FieldControl({
         >
           {field.options?.map((option) => (
             <option key={option} value={option}>
-              {option}
+              {/* An empty option is "unset", not an empty choice — used by
+                  fields like `price_basis` where NULL and a value are
+                  genuinely different states. */}
+              {option === '' ? '— not set —' : option}
             </option>
           ))}
         </select>
@@ -100,6 +104,8 @@ export function FieldControl({
           disabled={disabled}
           placeholder={field.placeholder}
           onChange={(event) => onChange(event.target.value)}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy}
           className={cn('mt-2', inputClass, field.pk && !disabled && 'font-mono')}
         />
       ) : null}
@@ -110,6 +116,8 @@ export function FieldControl({
           type="number"
           value={typeof value === 'number' ? value : 0}
           disabled={disabled}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy}
           onChange={(event) => onChange(Number(event.target.value) || 0)}
           className={cn('mt-2', inputClass)}
         />
@@ -131,6 +139,8 @@ export function FieldControl({
           // placeholder is visible instead of showing a price of zero.
           value={typeof value === 'number' ? value : ''}
           disabled={disabled}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy}
           placeholder={field.placeholder}
           onChange={(event) => {
             const raw = event.target.value.trim();
@@ -151,6 +161,8 @@ export function FieldControl({
           rows={4}
           value={String(value ?? '')}
           disabled={disabled}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy}
           placeholder={field.placeholder}
           onChange={(event) => onChange(event.target.value)}
           className={cn('mt-2 resize-y', inputClass)}
@@ -163,6 +175,8 @@ export function FieldControl({
           rows={12}
           value={(Array.isArray(value) ? (value as string[]) : []).join('\n\n')}
           disabled={disabled}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy}
           placeholder={'First paragraph.\n\nSecond paragraph.'}
           onChange={(event) =>
             onChange(
@@ -189,6 +203,14 @@ export function FieldControl({
       {field.type === 'results' ? (
         <ResultsControl
           value={Array.isArray(value) ? (value as { label: string; value: string }[]) : []}
+          disabled={disabled}
+          onChange={(next) => onChange(next)}
+        />
+      ) : null}
+
+      {field.type === 'sections' ? (
+        <SectionsControl
+          value={normaliseSections(value)}
           disabled={disabled}
           onChange={(next) => onChange(next)}
         />
@@ -339,6 +361,107 @@ function ResultsControl({
   );
 }
 
+type BodySection = { heading: string; paragraphs: string[] };
+
+/**
+ * Coerce whatever is in the `body` jsonb column into the shape the editor
+ * renders — the same defensive walk `serviceSections` does in
+ * `src/lib/content.ts`, for the same reason: a jsonb column accepts any
+ * valid JSON, and this panel opens rows a human typed into. Anything
+ * unusable becomes an empty section rather than a crash, and a section with
+ * nothing in it is dropped again by the reader at render time.
+ */
+function normaliseSections(value: unknown): BodySection[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((entry): BodySection[] => {
+    if (!entry || typeof entry !== 'object') return [];
+    const { heading, paragraphs } = entry as { heading?: unknown; paragraphs?: unknown };
+    return [
+      {
+        heading: typeof heading === 'string' ? heading : '',
+        paragraphs: Array.isArray(paragraphs)
+          ? paragraphs.filter((p): p is string => typeof p === 'string')
+          : [],
+      },
+    ];
+  });
+}
+
+/**
+ * The `services.body` editor: repeatable heading + paragraphs blocks.
+ *
+ * Paragraphs use the blank-line convention of the existing `paragraphs`
+ * type, so one mental model covers both editors — and the textarea is
+ * monospaced because it is edited as text, not as prose in a rich box. The
+ * rendered page does not care how this was authored; it reads the jsonb.
+ */
+function SectionsControl({
+  value,
+  disabled,
+  onChange,
+}: {
+  value: BodySection[];
+  disabled?: boolean;
+  onChange: (next: BodySection[]) => void;
+}) {
+  const update = (index: number, patch: Partial<BodySection>) =>
+    onChange(value.map((section, i) => (i === index ? { ...section, ...patch } : section)));
+
+  return (
+    <div className="mt-2 space-y-3">
+      {value.map((section, index) => (
+        <div key={index} className="grid gap-2 border border-line bg-surface p-3">
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              aria-label={`Section ${index + 1} heading`}
+              placeholder="Section heading"
+              value={section.heading}
+              disabled={disabled}
+              onChange={(event) => update(index, { heading: event.target.value })}
+              className={cn(inputClass, 'flex-1')}
+            />
+            <button
+              type="button"
+              aria-label={`Remove section ${index + 1}`}
+              disabled={disabled}
+              onClick={() => onChange(value.filter((_, i) => i !== index))}
+              className="flex h-9 w-9 shrink-0 items-center justify-center border border-line text-muted transition-colors hover:border-danger hover:text-danger"
+            >
+              <Trash2 size={15} aria-hidden />
+            </button>
+          </div>
+          <textarea
+            aria-label={`Section ${index + 1} paragraphs`}
+            rows={6}
+            value={section.paragraphs.join('\n\n')}
+            disabled={disabled}
+            placeholder={'First paragraph.\n\nSecond paragraph.'}
+            onChange={(event) =>
+              update(index, {
+                paragraphs: event.target.value
+                  .split(/\n\s*\n/)
+                  .map((paragraph) => paragraph.trim())
+                  .filter(Boolean),
+              })
+            }
+            className={cn('resize-y font-mono text-[13px]', inputClass)}
+          />
+        </div>
+      ))}
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={() => onChange([...value, { heading: '', paragraphs: [] }])}
+        className="inline-flex items-center gap-1.5 border border-line px-3 py-2 text-xs font-medium text-muted transition-colors hover:border-ink hover:text-ink"
+      >
+        <Plus size={13} aria-hidden />
+        Add section
+      </button>
+    </div>
+  );
+}
+
 /**
  * An image path, with the option to upload one from the machine instead.
  *
@@ -447,7 +570,6 @@ function ImageControl({
             // A plain <img>: the value may be an arbitrary admin-entered URL
             // that is not in next.config's remotePatterns, and routing it
             // through the optimiser would throw for any host not on that list.
-            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={preview ?? value}
               alt=""
@@ -544,11 +666,11 @@ function ImageControl({
           ) : null}
 
           <div className="flex items-center gap-3">
-            <button
+            <Button
               type="button"
               disabled={busy || altProblem(alt, file.name) !== null}
               onClick={() => void upload()}
-              className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-xs font-medium text-on-accent transition-colors hover:bg-accent-strong disabled:opacity-50"
+              size="sm"
             >
               {busy ? (
                 <LoaderCircle size={13} className="animate-spin" aria-hidden />
@@ -556,7 +678,7 @@ function ImageControl({
                 <Upload size={13} aria-hidden />
               )}
               Upload
-            </button>
+            </Button>
             <button
               type="button"
               disabled={busy}

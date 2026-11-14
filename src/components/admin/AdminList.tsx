@@ -2,10 +2,12 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Pencil, Plus, Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowUp, Pencil, Plus, Trash2 } from 'lucide-react';
 import { getSupabase } from '@/lib/supabase-browser';
 import type { Collection } from './config';
 import { AdminPageHeader } from './AdminPageHeader';
+import { pathsFor, revalidatePaths } from './revalidate';
+import { Button } from '@/components/ui/Button';
 import { cn } from '@/utils/cn';
 
 type Row = Record<string, unknown>;
@@ -55,6 +57,10 @@ export function AdminList({ collection }: { collection: Collection }) {
     setRows((prev) =>
       prev ? prev.map((r) => (r[collection.pk] === row[collection.pk] ? { ...r, published: next } : r)) : prev,
     );
+    // Hiding a service has to hide its page too: purge the detail path as
+    // well as the index, or the toggle would only show up on /services while
+    // /services/[slug] kept serving its cached copy.
+    await revalidatePaths(pathsFor(collection.seo?.pathPrefix, pk));
   };
 
   const remove = async (row: Row) => {
@@ -73,6 +79,53 @@ export function AdminList({ collection }: { collection: Collection }) {
       return;
     }
     setRows((prev) => (prev ? prev.filter((r) => r[collection.pk] !== row[collection.pk]) : prev));
+    await revalidatePaths(pathsFor(collection.seo?.pathPrefix, pk));
+  };
+
+  /**
+   * Move a row one place and resequence the whole list.
+   *
+   * Every row gets its displayed position written as `sort_order`, rather
+   * than the two participants swapping values: rows created without a manual
+   * order all sit at `0`, and a swap between two zeros changes nothing while
+   * reporting success. Resequencing also repairs historical ties in the same
+   * pass, so the list the admin sees and the list the site renders become the
+   * same order by construction.
+   *
+   * The purge covers the index, home and sitemap — order does not change any
+   * detail page's own content, so those keep their five-minute window.
+   */
+  const move = async (index: number, delta: -1 | 1) => {
+    if (!rows) return;
+    const target = index + delta;
+    if (target < 0 || target >= rows.length) return;
+
+    const pk = String(rows[index][collection.pk]);
+    setBusy(pk);
+    try {
+      const next = [...rows];
+      const [moved] = next.splice(index, 1);
+      next.splice(target, 0, moved);
+
+      for (const [position, row] of next.entries()) {
+        if (row.sort_order === position) continue;
+        const { error: err } = await getSupabase()
+          .from(collection.table)
+          .update({ sort_order: position })
+          .eq(collection.pk, String(row[collection.pk]));
+        if (err) throw new Error(err.message);
+      }
+
+      setRows(next);
+      await revalidatePaths(pathsFor(collection.seo?.pathPrefix));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Reorder failed');
+      // A mid-loop failure leaves some rows resequenced and some not, so the
+      // list is reloaded rather than trusted.
+      void load();
+    } finally {
+      setBusy(null);
+    }
   };
 
   return (
@@ -81,13 +134,10 @@ export function AdminList({ collection }: { collection: Collection }) {
         eyebrow={collection.table}
         title={collection.label}
         actions={
-          <Link
-            href={`/admin/${collection.key}/new`}
-            className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-on-accent transition-colors hover:bg-accent-strong"
-          >
+          <Button href={`/admin/${collection.key}/new`} size="sm">
             <Plus size={15} aria-hidden />
             New {collection.singular.toLowerCase()}
-          </Link>
+          </Button>
         }
       />
 
@@ -103,8 +153,7 @@ export function AdminList({ collection }: { collection: Collection }) {
         </div>
       ) : rows.length === 0 ? (
         <p className="mt-10 text-sm text-muted">
-          Nothing here yet. Create the first {collection.singular.toLowerCase()} — until rows exist
-          the public site keeps rendering the static defaults.
+          Nothing here yet. Create the first {collection.singular.toLowerCase()}.
         </p>
       ) : (
         <div className="mt-8 overflow-x-auto border border-line">
@@ -120,7 +169,7 @@ export function AdminList({ collection }: { collection: Collection }) {
               </tr>
             </thead>
             <tbody>
-              {rows.map((row) => {
+              {rows.map((row, index) => {
                 const pk = String(row[collection.pk]);
                 return (
                   <tr key={pk} className="border-b border-line last:border-0">
@@ -147,6 +196,30 @@ export function AdminList({ collection }: { collection: Collection }) {
                     ))}
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
+                        {rows.length > 1 ? (
+                          /* Reorder: explicit position, announced to screen
+                             readers, disabled at the ends of the list. */
+                          <span className="flex items-center gap-1">
+                            <button
+                              type="button"
+                              aria-label={`Move ${pk} up`}
+                              disabled={busy === pk || index === 0}
+                              onClick={() => void move(index, -1)}
+                              className="inline-flex h-8 w-8 items-center justify-center border border-line text-muted transition-colors hover:border-ink hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
+                            >
+                              <ArrowUp size={13} aria-hidden />
+                            </button>
+                            <button
+                              type="button"
+                              aria-label={`Move ${pk} down`}
+                              disabled={busy === pk || index === rows.length - 1}
+                              onClick={() => void move(index, 1)}
+                              className="inline-flex h-8 w-8 items-center justify-center border border-line text-muted transition-colors hover:border-ink hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
+                            >
+                              <ArrowDown size={13} aria-hidden />
+                            </button>
+                          </span>
+                        ) : null}
                         <Link
                           href={`/admin/${collection.key}/${encodeURIComponent(pk)}`}
                           className="inline-flex items-center gap-1.5 border border-line px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:border-ink hover:text-ink"

@@ -5,8 +5,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, LoaderCircle, Save } from 'lucide-react';
 import { getSupabase } from '@/lib/supabase-browser';
+import { pathsFor, revalidatePaths } from './revalidate';
 import { FieldControl } from './FieldControl';
 import { AdminPageHeader } from './AdminPageHeader';
+import { Button } from '@/components/ui/Button';
 import {
   SeoPanel,
   emptySeoValues,
@@ -175,6 +177,22 @@ export function AdminForm({ collection, id }: { collection: Collection; id: stri
         if (error) throw new Error(error.message);
       }
 
+      /**
+       * Purge the cached copies of every page this edit touches, so the next
+       * request re-renders from the database instead of waiting out the
+       * five-minute ISR window — the whole reason an edit used to look like it
+       * never saved. A slug rename revalidates the old address as well: the
+       * `slug_change` trigger has already logged the redirect, but the cached
+       * page at the old URL has to go too.
+       */
+      const paths = [
+        ...pathsFor(collection.seo?.pathPrefix, slug),
+        ...(originalPk && originalPk !== slug
+          ? pathsFor(collection.seo?.pathPrefix, originalPk)
+          : []),
+      ];
+      await revalidatePaths(paths);
+
       router.push(`/admin/${collection.key}`);
     } catch (e) {
       setSaveError(e instanceof Error ? e.message : 'Save failed');
@@ -277,14 +295,10 @@ export function AdminForm({ collection, id }: { collection: Collection; id: stri
           })}
 
           <div className="mt-2 flex items-center gap-3 border-t border-line pt-6">
-            <button
-              type="submit"
-              disabled={saving}
-              className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-medium text-on-accent transition-colors hover:bg-accent-strong disabled:opacity-60"
-            >
+            <Button type="submit" disabled={saving} size="sm">
               {saving ? <LoaderCircle size={15} className="animate-spin" aria-hidden /> : <Save size={15} aria-hidden />}
               {isNew ? 'Create' : 'Save changes'}
-            </button>
+            </Button>
             <Link
               href={`/admin/${collection.key}`}
               className="text-sm text-muted transition-colors hover:text-ink"

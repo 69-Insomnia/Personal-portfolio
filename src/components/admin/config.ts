@@ -1,5 +1,6 @@
 import type { ProjectCategory, BlogCategory, IconName } from '@/types';
 import { postSEO, projectSEO, serviceSEO } from '@/data/seo';
+import { projectCategoryFilters } from '@/data/projects';
 
 const str = (v: unknown): string => (typeof v === 'string' ? v : '');
 
@@ -27,6 +28,17 @@ export type FieldType =
   | 'price'
   | 'toggle'
   | 'results'
+  /**
+   * A repeatable `{ heading, paragraphs[] }` block — the `services.body`
+   * jsonb column, which is what renders as the page's "In Detail" section.
+   *
+   * This column always existed and the site always rendered it; only the
+   * editor is new. Keeping it out of the admin was documented as deliberate
+   * ("code-managed"), but it made the one long-form part of a service page
+   * the one part no one could edit — so it is exposed now, with the same
+   * blank-line paragraph convention the `paragraphs` type uses.
+   */
+  | 'sections'
   /**
    * An image path or URL, with an upload button beside it.
    *
@@ -98,13 +110,7 @@ export interface Collection {
   seo?: SeoConfig;
 }
 
-const PROJECT_CATEGORIES: ProjectCategory[] = [
-  'Web Development',
-  'Ecommerce',
-  'SEO',
-  'Marketing',
-  'Ads',
-];
+const PROJECT_CATEGORIES: ProjectCategory[] = projectCategoryFilters;
 
 const BLOG_CATEGORIES: BlogCategory[] = [
   'Web Development',
@@ -385,8 +391,21 @@ export const COLLECTIONS: Record<string, Collection> = {
     fields: [
       { name: 'slug', label: 'Slug (URL id)', type: 'text', pk: true, required: true },
       { name: 'title', label: 'Title', type: 'text', required: true },
+      {
+        name: 'short_name',
+        label: 'Short name (footer label)',
+        type: 'text',
+        placeholder: 'SEO',
+        help: 'What this service is called in the footer Services list. Leave blank and it is derived from the Title ("SEO Services in Kathmandu" → "SEO"). The cards, the H1 and the meta title always use the full Title, so this changes navigation only.',
+      },
       { name: 'short_description', label: 'Short description', type: 'textarea', required: true },
       { name: 'description', label: 'Full description', type: 'textarea', required: true },
+      {
+        name: 'body',
+        label: 'Page body sections',
+        type: 'sections',
+        help: 'The long-form "In Detail" section of the page: a heading plus its paragraphs, blank line between paragraphs. Leave empty and the page renders without that section.',
+      },
       { name: 'capabilities', label: 'Capabilities', type: 'array', help: 'One per line.' },
       /**
        * The comparison-table columns.
@@ -423,6 +442,13 @@ export const COLLECTIONS: Record<string, Collection> = {
         placeholder: '45000',
         help: 'Whole rupees. Leave blank for “Contact for a quote” — do not enter 0, which would publish a real price of zero.',
       },
+      {
+        name: 'price_basis',
+        label: 'Price basis',
+        type: 'select',
+        options: ['', 'one-off', 'monthly'],
+        help: 'Whether that starting figure is a one-off project fee or a monthly retainer. Stored on the row for reference; it is not rendered on the public pages yet.',
+      },
       { name: 'icon', label: 'Icon', type: 'select', options: ICONS, required: true },
       publishedField,
       sortField,
@@ -430,13 +456,16 @@ export const COLLECTIONS: Record<string, Collection> = {
     ],
     columns: [
       { name: 'title', label: 'Title' },
+      { name: 'sort_order', label: 'Order' },
       { name: 'published', label: 'Published' },
     ],
     defaults: {
       slug: '',
       title: '',
+      short_name: '',
       short_description: '',
       description: '',
+      body: [],
       capabilities: [],
       deliverables: [],
       timeline: '',
@@ -444,6 +473,9 @@ export const COLLECTIONS: Record<string, Collection> = {
       // `null`, not `0` — see the `price` field type note. This is the value a
       // brand-new service starts with, and it has to mean "no published price".
       from_npr: null,
+      // Blank, not a guessed basis: the column is new, so every existing row
+      // is NULL until someone confirms which it is.
+      price_basis: null,
       icon: 'code',
       published: true,
       sort_order: 0,
