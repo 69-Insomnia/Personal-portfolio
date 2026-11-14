@@ -4,29 +4,19 @@ import type { AnalyticsConfig } from '@/types';
  * The analytics IDs the site ships with, and why they live in the repo.
  *
  * These three are editable in `/admin/seo` (`ga4_measurement_id`,
- * `gtm_container_id`, `meta_pixel_id`), and until now **none of them were read
- * by anything**. The GA4 tag was hardcoded in two places — once in
- * `src/components/navigation/Footer.tsx`, which is the copy that actually
- * shipped, and once in an orphaned `src/components/common/GoogleAnalytics.tsx`
- * that no file imported. The GTM and Meta Pixel columns had no consumer at all.
- *
- * So the admin panel offered three fields, stored whatever was typed into them,
- * and changed nothing on the site.
+ * `gtm_container_id`, `meta_pixel_id`) and resolved here DB-first: a value in
+ * the database wins, a blank column falls back to the repo default. See
+ * `src/components/common/Analytics.tsx` for how each ID is loaded.
  *
  * ## Why the GA4 default is a real measurement ID
  *
- * The obvious fix — read the columns, render nothing when they are empty — is
- * wrong here, and would have been a regression rather than a repair. The live
- * site is currently tracked under `G-DVZRS8DRWT`, hardcoded. The database
- * column is `NULL`, because the seed never set it. A DB-only implementation
- * would therefore have deleted working analytics on the next deploy and given
- * no indication that it had.
- *
- * So the repo holds the current value as the default, and the database
- * overrides it when set. This is the same DB-first / repo-fallback rule the
- * rest of the site already uses — see `readAll` in `src/lib/content.ts` — and
- * it means an install that has never opened the analytics panel keeps tracking
- * exactly as it does today.
+ * The live site has always been tracked under `G-DVZRS8DRWT`, while the
+ * database column is blank on this install. A DB-only implementation would
+ * therefore delete working analytics on the next deploy and give no indication
+ * that it had. So the repo holds the current value as the default — the same
+ * DB-first / repo-fallback rule the rest of the site follows (see `readAll`
+ * in `src/lib/content.ts`), and an install that has never opened the
+ * analytics panel keeps tracking exactly as it does today.
  *
  * GTM and Meta Pixel have no default because they have never been configured.
  * They are `undefined`, and an undefined ID renders nothing at all — which is

@@ -4,28 +4,33 @@ import type { AnalyticsConfig } from '@/types';
 /**
  * The measurement tags, rendered from whatever the admin has configured.
  *
- * Previously the GA4 tag was hardcoded into `Footer.tsx`, so it was inseparable
- * from the footer markup and unchangeable without a deploy. The three
- * `site_settings` columns that were meant to control it — `ga4_measurement_id`,
- * `gtm_container_id`, `meta_pixel_id` — were written by the admin panel and
- * read by nothing. See `src/data/analytics.ts` for how the defaults resolve.
+ * ## GTM is the single loader
  *
- * ## GA4 and GTM are mutually exclusive, deliberately
+ * When a container ID is set, Google Tag Manager is the **only** tag the site
+ * loads. GA4 and the Meta Pixel fire as tags *inside* the container — their
+ * IDs are pushed onto the `dataLayer` before `gtm.js` evaluates, so container
+ * tags can read them as Data Layer Variables instead of hardcoding them twice.
+ * Neither `gtag.js` nor `fbevents.js` is ever loaded directly by the site when
+ * GTM is present, which is what guarantees nothing fires twice: there is one
+ * loader, so a duplicate requires a duplicate *inside the container*, where an
+ * operator can see it.
  *
- * When a GTM container is configured, `gtag.js` is **not** loaded alongside it.
- * That is the convention the two tools assume: GTM is a container, and a GA4
- * configuration tag inside it is the normal way to run Analytics once GTM is
- * present. Loading both would fire `page_view` twice for every visit, and the
- * result — traffic that has silently doubled — is very hard to notice from the
- * dashboard and very easy to notice when someone acts on it.
+ * The GTM snippet sets `j.async = true`, and is injected with Next's
+ * `afterInteractive` strategy — it never blocks first paint.
  *
- * So GTM wins when it is set, and the Analytics panel says so next to the
- * field. The alternative, loading both and trusting the operator to know, puts
- * the mistake in the one place it cannot be detected.
+ * ## GA4 keeps a fallback while no container is configured
  *
- * Meta Pixel is independent of both: it is a different vendor, and there is no
- * way to detect a pixel deployed through a GTM container from here. A site
- * running the pixel inside GTM should leave the field blank.
+ * The live site has always been tracked under the built-in GA4 ID (see
+ * `src/data/analytics.ts`), and the `gtm_container_id` column is still blank
+ * on this install. Dropping the direct GA4 loader unconditionally would
+ * therefore silently delete working analytics on the next deploy. So when —
+ * and only when — no valid container is set, the standalone `gtag.js` loader
+ * runs instead. The two paths are mutually exclusive by construction, so the
+ * fallback cannot double-count against GTM.
+ *
+ * The Meta Pixel has no fallback: it is pushed to the container's dataLayer
+ * and fires from there. A blank container means no pixel, same as before —
+ * the field has never been configured.
  *
  * ## Why the IDs are validated before they are interpolated
  *
@@ -51,9 +56,18 @@ const ID_PATTERNS = {
 /**
  * The GTM container snippet. Trimmed to the parts that matter and formatted
  * across lines for legibility in view-source.
+ *
+ * The optional pushes run inside the same script, before `gtm.js` is created,
+ * so container tags see the IDs on their very first event. Omitting an unset
+ * ID keeps `undefined` off the dataLayer.
  */
-function gtmSnippet(id: string): string {
+function gtmSnippet(id: string, ga4?: string, pixel?: string): string {
+  const idPushes = [
+    ga4 ? `dl.push({ga4MeasurementId:${JSON.stringify(ga4)}});` : '',
+    pixel ? `dl.push({metaPixelId:${JSON.stringify(pixel)}});` : '',
+  ].join('');
   return `
+    var dl=window.dataLayer=window.dataLayer||[];${idPushes}
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -62,6 +76,10 @@ function gtmSnippet(id: string): string {
   `;
 }
 
+/**
+ * The standalone GA4 loader — the no-container fallback only. Never rendered
+ * alongside GTM; see the mutual-exclusion note above.
+ */
 function gtagSnippet(id: string): string {
   return `
     window.dataLayer = window.dataLayer || [];
@@ -71,41 +89,25 @@ function gtagSnippet(id: string): string {
   `;
 }
 
-function metaPixelSnippet(id: string): string {
-  return `
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window,document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '${id}');
-    fbq('track', 'PageLoad');
-  `;
-}
-
 export function Analytics({ config }: { config: AnalyticsConfig }) {
   const ga4 = config.ga4MeasurementId;
   const gtm = config.gtmContainerId;
   const pixel = config.metaPixelId;
 
   const validGtm = gtm && ID_PATTERNS.gtm.test(gtm) ? gtm : undefined;
-  const validPixel =
-    pixel && ID_PATTERNS.metaPixel.test(pixel) ? pixel : undefined;
-  // Only consulted when GTM is absent — see the mutual-exclusion note above.
-  const validGa4 =
-    !validGtm && ga4 && ID_PATTERNS.ga4.test(ga4) ? ga4 : undefined;
+  const validGa4 = ga4 && ID_PATTERNS.ga4.test(ga4) ? ga4 : undefined;
+  const validPixel = pixel && ID_PATTERNS.metaPixel.test(pixel) ? pixel : undefined;
+  // Standalone GA4 runs only while no container is set — see the fallback note.
+  const fallbackGa4 = !validGtm ? validGa4 : undefined;
 
-  if (!validGtm && !validGa4 && !validPixel) return null;
+  if (!validGtm && !fallbackGa4) return null;
 
   return (
     <>
       {validGtm ? (
         <>
           <Script id="gtm" strategy="afterInteractive">
-            {gtmSnippet(validGtm)}
+            {gtmSnippet(validGtm, validGa4, validPixel)}
           </Script>
           {/* The container's fallback for visitors without JavaScript. */}
           <noscript>
@@ -120,34 +122,16 @@ export function Analytics({ config }: { config: AnalyticsConfig }) {
         </>
       ) : null}
 
-      {validGa4 ? (
+      {fallbackGa4 ? (
         <>
           <Script
             id="ga4-loader"
-            src={`https://www.googletagmanager.com/gtag/js?id=${validGa4}`}
+            src={`https://www.googletagmanager.com/gtag/js?id=${fallbackGa4}`}
             strategy="afterInteractive"
           />
           <Script id="ga4-config" strategy="afterInteractive">
-            {gtagSnippet(validGa4)}
+            {gtagSnippet(fallbackGa4)}
           </Script>
-        </>
-      ) : null}
-
-      {validPixel ? (
-        <>
-          <Script id="meta-pixel" strategy="afterInteractive">
-            {metaPixelSnippet(validPixel)}
-          </Script>
-          <noscript>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              height="1"
-              width="1"
-              style={{ display: 'none' }}
-              alt=""
-              src={`https://www.facebook.com/tr?id=${validPixel}&ev=PageLoad&noscript=1`}
-            />
-          </noscript>
         </>
       ) : null}
     </>
