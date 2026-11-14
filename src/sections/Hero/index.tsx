@@ -7,6 +7,7 @@ import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import { profile } from '@/data/profile';
+import { whatsappUrl } from '@/utils/links';
 
 /**
  * The page's one `<h1>`, and the reason the display line sits inside it.
@@ -33,9 +34,7 @@ const H1_KEYWORD = 'Ecommerce growth expert in Kathmandu, Nepal';
 const DISPLAY_LINES = ['Stores that rank,', 'convert, and grow.'];
 
 export function Hero() {
-  const whatsappHref = profile.whatsapp
-    ? `https://wa.me/${profile.whatsapp.replace(/\D/g, '')}`
-    : null;
+  const whatsappHref = whatsappUrl(profile.whatsapp);
 
   return (
     <section className="relative overflow-hidden pb-20 pt-32 md:pb-28 md:pt-40 lg:pt-44">

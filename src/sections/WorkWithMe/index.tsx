@@ -10,8 +10,11 @@ import { SectionHeading } from '@/components/ui/SectionHeading';
 import { WhatsAppIcon } from '@/components/common/WhatsAppIcon';
 import { engagementOptions } from '@/data/services';
 import { profile } from '@/data/profile';
+import { whatsappUrl } from '@/utils/links';
 
 export function WorkWithMe() {
+  const waHref = whatsappUrl(profile.whatsapp);
+
   return (
     <Section id="work-with-me" className="border-t border-line">
       <Container>
@@ -56,9 +59,9 @@ export function WorkWithMe() {
             <Button href="/contact" size="lg" showArrow>
               Start a project
             </Button>
-            {profile.whatsapp ? (
+            {waHref ? (
               <Button
-                href={`https://wa.me/${profile.whatsapp.replace(/\D/g, '')}`}
+                href={waHref}
                 variant="whatsapp"
                 size="lg"
                 ariaLabel={`Message me on WhatsApp at ${profile.whatsapp}`}

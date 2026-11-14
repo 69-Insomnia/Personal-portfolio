@@ -11,6 +11,8 @@ import { WhatsAppIcon } from '@/components/common/WhatsAppIcon';
 import { mainNavigation } from '@/data/navigation';
 import { identity } from '@/data/seo';
 import { profile } from '@/data/profile';
+import { whatsappUrl } from '@/utils/links';
+import { cn } from '@/utils/cn';
 
 interface MobileMenuProps {
   open: boolean;
@@ -24,6 +26,12 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
   const pathname = usePathname();
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const waHref = whatsappUrl(profile.whatsapp);
+
+  // Same rule as the desktop nav, so the two menus never disagree about which
+  // item is current.
+  const isActive = (href: string) =>
+    href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(`${href}/`);
 
   // Held in a ref so the keyboard effect can depend on `open` alone. Callers
   // pass an inline arrow, so depending on `onClose` directly would tear the
@@ -167,13 +175,19 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                     <Link
                       href={item.href}
                       onClick={onClose}
+                      aria-current={isActive(item.href) ? 'page' : undefined}
                       className="group flex min-h-[44px] items-center py-5"
                     >
                       {/* The two-digit ordinal that used to sit on the right of
                           this row is gone. It numbered the menu against the
                           reference site's numbered service cards, and it told a
                           reader nothing the list order did not. */}
-                      <span className="font-display text-2xl font-semibold text-ink transition-colors group-hover:text-accent">
+                      <span
+                        className={cn(
+                          'font-display text-2xl font-semibold transition-colors group-hover:text-accent',
+                          isActive(item.href) ? 'text-accent' : 'text-ink',
+                        )}
+                      >
                         {item.label}
                       </span>
                     </Link>
@@ -187,9 +201,9 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                 transition={{ delay: 0.4, duration: 0.45, ease: 'easeOut' }}
                 className="mt-8"
               >
-                {profile.whatsapp ? (
+                {waHref ? (
                   <Button
-                    href={`https://wa.me/${profile.whatsapp.replace(/\D/g, '')}`}
+                    href={waHref}
                     variant="whatsapp"
                     size="lg"
                     className="w-full"

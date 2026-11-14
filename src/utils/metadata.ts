@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import type { SEOData, SiteSettings } from '@/types';
 import { DEFAULT_OG_IMAGE, identity, site } from '@/data/seo';
+import { normalizeHttpUrl } from '@/utils/links';
 
 /**
  * How long a description can run before a search result truncates it.
@@ -17,7 +18,7 @@ const TITLE_LIMIT = 72;
 /** Return a safe image reference for social metadata, falling back if invalid. */
 export function normalizeMetadataImage(value: string, fallback = DEFAULT_OG_IMAGE): string {
   const raw = value.trim();
-  const normalized = raw.replace(/^https\/\//i, 'https://').replace(/^http\/\//i, 'http://');
+  const normalized = normalizeHttpUrl(raw);
   if (normalized.startsWith('/') && !normalized.startsWith('//')) return normalized;
   try {
     const parsed = new URL(normalized);

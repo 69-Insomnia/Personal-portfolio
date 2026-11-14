@@ -1,17 +1,8 @@
 import { ArrowUpRight } from 'lucide-react';
 import { SocialIcon } from '@/components/common/SocialIcon';
+import { socialLabels } from '@/utils/links';
 import type { SocialLinks as SocialLinksType } from '@/types';
 import { cn } from '@/utils/cn';
-
-const socialLabels: Record<keyof SocialLinksType, string> = {
-  linkedin: 'LinkedIn',
-  github: 'GitHub',
-  facebook: 'Facebook',
-  instagram: 'Instagram',
-  tiktok: 'TikTok',
-  youtube: 'YouTube',
-  x: 'X',
-};
 
 interface SocialLinksProps {
   links: SocialLinksType;

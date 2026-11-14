@@ -5,6 +5,7 @@ import { Trash2 } from 'lucide-react';
 import { getSupabase } from '@/lib/supabase-browser';
 import { AdminPageHeader } from '@/components/admin/AdminPageHeader';
 import { cn } from '@/utils/cn';
+import { mailtoUrl } from '@/utils/links';
 
 type Row = Record<string, unknown>;
 
@@ -118,7 +119,7 @@ export default function AdminMessagesPage() {
                     value={String(row.status)}
                     disabled={busy === id}
                     onChange={(event) => void setStatus(row, event.target.value)}
-                    className="border border-line bg-surface px-2 py-1.5 text-xs text-muted focus:border-accent"
+                    className="border border-line bg-surface px-2 py-1.5 text-xs text-muted focus:border-accent focus:ring-4 focus:ring-accent-soft"
                   >
                     {STATUSES.map((status) => (
                       <option key={status} value={status}>
@@ -147,7 +148,7 @@ export default function AdminMessagesPage() {
                       {String(row.message)}
                     </p>
                     <a
-                      href={`mailto:${String(row.email)}?subject=${encodeURIComponent(`Re: your message — ${String(row.name)}`)}`}
+                      href={mailtoUrl(String(row.email), `Re: your message — ${String(row.name)}`) ?? undefined}
                       className="mt-4 inline-block text-sm font-medium text-accent hover:underline"
                     >
                       Reply by email →

@@ -14,6 +14,7 @@ import { mainNavigation } from '@/data/navigation';
 import { identity } from '@/data/seo';
 import { profile } from '@/data/profile';
 import { cn } from '@/utils/cn';
+import { whatsappUrl } from '@/utils/links';
 
 export function Navbar() {
   const scrolled = useScrolled(24);
@@ -34,9 +35,7 @@ export function Navbar() {
   const isActive = (href: string) =>
     href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(`${href}/`);
 
-  const whatsappHref = profile.whatsapp
-    ? `https://wa.me/${profile.whatsapp.replace(/\D/g, '')}`
-    : null;
+  const whatsappHref = whatsappUrl(profile.whatsapp);
 
   return (
     <>

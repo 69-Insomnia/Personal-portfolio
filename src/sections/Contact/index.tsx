@@ -13,6 +13,7 @@ import { WhatsAppIcon } from '@/components/common/WhatsAppIcon';
 import { contactProcess } from '@/data/contact';
 import { profile } from '@/data/profile';
 import { cn } from '@/utils/cn';
+import { mailtoUrl, telUrl, whatsappUrl } from '@/utils/links';
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -95,7 +96,7 @@ export function Contact({ showHeading = true }: { showHeading?: boolean }) {
   // focus indicator, and a border colour change alone is too thin to rely on.
   const fieldClass = (field: keyof FormValues) =>
     cn(
-      'w-full rounded-[10px] border bg-surface px-4 py-3 text-base transition-colors duration-200 placeholder:text-faint focus:border-accent focus:ring-4 focus:ring-accent-soft',
+      'w-full rounded-card border bg-surface px-4 py-3 text-base transition-colors duration-200 placeholder:text-faint focus:border-accent focus:ring-4 focus:ring-accent-soft',
       errors[field] ? 'border-danger' : 'border-line-strong',
     );
 
@@ -147,7 +148,8 @@ export function Contact({ showHeading = true }: { showHeading?: boolean }) {
     }
   };
 
-  const whatsappDigits = profile.whatsapp?.replace(/\D/g, '') ?? '';
+  const waHref = whatsappUrl(profile.whatsapp);
+  const telHref = telUrl(profile.whatsapp);
   const hasSocials = Object.values(profile.socialLinks).some(
     (value) => typeof value === 'string' && value.trim().length > 0,
   );
@@ -338,7 +340,7 @@ export function Contact({ showHeading = true }: { showHeading?: boolean }) {
                     {status === 'error' ? (
                       <p
                         role="alert"
-                        className="mt-5 flex items-center gap-2 rounded-[10px] border border-danger px-4 py-3 text-sm text-danger"
+                        className="mt-5 flex items-center gap-2 rounded-card border border-danger px-4 py-3 text-sm text-danger"
                       >
                         <CircleAlert size={15} aria-hidden />
                         Something went wrong. Please try again.
@@ -387,7 +389,7 @@ export function Contact({ showHeading = true }: { showHeading?: boolean }) {
                 <div className="mt-4 flex flex-col gap-2.5">
                   {profile.email ? (
                     <a
-                      href={`mailto:${profile.email}`}
+                      href={mailtoUrl(profile.email) ?? undefined}
                       className="flex min-h-[44px] items-center gap-2.5 text-[15px] break-all text-muted transition-colors duration-200 hover:text-accent"
                     >
                       <Mail size={16} aria-hidden className="shrink-0 text-accent" />
@@ -395,9 +397,9 @@ export function Contact({ showHeading = true }: { showHeading?: boolean }) {
                     </a>
                   ) : null}
 
-                  {whatsappDigits ? (
+                  {telHref ? (
                     <a
-                      href={`tel:+${whatsappDigits}`}
+                      href={telHref}
                       className="flex min-h-[44px] items-center gap-2.5 text-[15px] text-muted transition-colors duration-200 hover:text-accent"
                       aria-label={`Call ${profile.whatsapp}`}
                     >
@@ -420,9 +422,9 @@ export function Contact({ showHeading = true }: { showHeading?: boolean }) {
                   ) : null}
                 </div>
 
-                {whatsappDigits ? (
+                {waHref ? (
                   <Button
-                    href={`https://wa.me/${whatsappDigits}`}
+                    href={waHref}
                     variant="whatsapp"
                     size="lg"
                     className="mt-5 w-full"
