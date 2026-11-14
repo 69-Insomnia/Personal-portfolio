@@ -411,40 +411,6 @@ export interface EducationItem {
   isPlaceholder?: boolean;
 }
 
-/**
- * A client's own words, attributed.
- *
- * ## Why `quote` is nullable
- *
- * This started as a required `content: string` holding a factual description of
- * the work delivered. That is not a testimonial — it is a project summary in
- * the shape of one, and rendered inside a `<blockquote>` with a quotation mark
- * above it, it read as though a client had said it. On a page whose entire
- * pitch is measured honesty, a paraphrased client voice is the most expensive
- * thing to get caught doing.
- *
- * `quote` is therefore null until someone supplies the verbatim sentence, and
- * the section renders only entries that have one. With no quotes anywhere the
- * block hides itself entirely rather than showing four cards of prose nobody
- * said. See `src/data/testimonials.ts` for the standing TODOs.
- *
- * `name`, `role` and `company` are the attribution the brief asks for: a
- * person, their job title, and where they work — in that order, because "Jane
- * Smith, Head of Ecommerce · Acme" is how a reader weights the sentence above
- * it.
- */
-export interface Testimonial {
-  id: string;
-  /** The client's words, verbatim. `null` until supplied — never paraphrased. */
-  quote: string | null;
-  /** The person who said it. */
-  name: string;
-  /** Their job title. */
-  role: string;
-  company?: string;
-  avatar?: string;
-}
-
 export type BlogCategory =
   | 'Web Development'
   | 'SEO'
