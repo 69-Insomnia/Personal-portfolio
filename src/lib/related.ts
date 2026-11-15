@@ -42,7 +42,7 @@ const EMPTY: Relations = { services: [], projects: [], posts: [] };
 const SERVICE_RELATIONS: Record<string, Relations> = {
   'web-development': {
     ...EMPTY,
-    projects: ['drillthru', 'trip-zone', 'starglobalvision', 'poms-penthouse'],
+    projects: ['drillthru', 'trip-zone', 'starglobalvision', 'poms-penthouse', 'resthru'],
     posts: ['whatsapp-booking-site'],
   },
   'seo-services': {
@@ -115,6 +115,12 @@ const PROJECT_RELATIONS: Record<string, Relations> = {
     services: ['web-development'],
     // The article is about this build specifically.
     posts: ['whatsapp-booking-site'],
+  },
+  resthru: {
+    ...EMPTY,
+    // A full-stack build, so the build service is the edge; no article on the
+    // site covers restaurant systems, so there is no honest post to pair.
+    services: ['web-development'],
   },
 };
 

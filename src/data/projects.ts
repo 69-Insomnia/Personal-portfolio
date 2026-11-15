@@ -31,7 +31,7 @@ export const projectFilters: ProjectFilter[] = ['All', ...projectCategoryFilters
  * `nano-store-ecommerce-seo` is the only project that defines it, and its two
  * figures (15,000+ monthly organic visits, 1,000+ ranking keywords) were
  * supplied with the case study brief and can be produced on request. The other
- * four deliberately do not: a performance number on a page selling measurement
+ * five deliberately do not: a performance number on a page selling measurement
  * is the first thing a careful buyer checks, and it is the one thing here that
  * would otherwise have to be invented.
  *
@@ -68,6 +68,26 @@ export const projects: Project[] = [
       { value: '1,000+', label: 'Ranking keywords on Google' },
     ],
     link: 'https://nanostore.com.np/',
+    isPlaceholder: false,
+  },
+  {
+    slug: 'resthru',
+    title: 'Resthru',
+    category: 'Web Development',
+    description:
+      'Complete restaurant management platform with QR ordering, kitchen display, billing and POS, inventory tracking and real-time analytics \u2014 built for the Nepali market with eSewa and Khalti payments, IRD-compliant billing and Bikram Sambat dates.',
+    image: '/images/project-resthru.png',
+    technologies: ['Next.js', 'React', 'Tailwind CSS', 'Offline Support'],
+    year: '2026',
+    overview:
+      'Resthru is a complete restaurant management system built to help restaurants manage their daily operations from one centralized platform. The system connects customers, restaurant staff, kitchen teams, and management through an integrated digital workflow.\n\nFrom QR-based customer ordering to kitchen order tracking, billing, inventory management, and real-time business reports, the platform is designed to make restaurant operations faster, more organized, and easier to manage.\n\nThe system is designed specifically for the Nepali restaurant industry, with support for local payment methods, IRD-compliant billing, and Bikram Sambat dates.',
+    challenge:
+      'Many restaurants still depend on manual order-taking, paper-based records, and disconnected systems to manage their daily operations.\n\nThis creates challenges such as:\n\n\u2022 Managing customer orders across multiple tables.\n\u2022 Communicating orders between waiters and kitchen staff.\n\u2022 Tracking inventory and stock availability.\n\u2022 Managing billing and payment records.\n\u2022 Monitoring daily revenue and business performance.\n\nThe goal was to develop a complete digital solution that brings these operations together in one easy-to-use system.',
+    approach:
+      'I developed Resthru as an integrated restaurant management platform with a centralized dashboard and connected operational modules. The system focuses on simplifying restaurant workflows, reducing manual work, and giving restaurant owners better visibility into their business.\n\n### Key features\n\n\u2022 QR Code Ordering: Customers can scan a QR code, explore the digital menu, and place orders directly from their phones.\n\u2022 Order Management: Manage customer orders and table activities from a centralized dashboard.\n\u2022 Kitchen Display System: Send orders directly to the kitchen screen and track preparation status.\n\u2022 Billing & POS: Generate bills, manage split payments, and handle restaurant transactions.\n\u2022 Inventory Management: Monitor stock levels and receive low-stock alerts.\n\u2022 Business Analytics: Track daily revenue, orders, popular dishes, and restaurant performance.',
+    development:
+      'I developed the complete Resthru restaurant management system, focusing on functionality, usability, and responsive design. The platform includes a centralized admin dashboard, customer-facing QR ordering experience, and dedicated workflows for restaurant operations.\n\n### Development focus\n\n\u2022 Responsive and user-friendly dashboard interfaces.\n\u2022 Connected ordering, kitchen, and billing workflows.\n\u2022 Real-time operational visibility.\n\u2022 Offline order handling with automatic synchronization when connectivity returns.\n\u2022 Nepal-focused payment and billing support.\n\u2022 Scalable architecture for restaurant management.\n\n### Built for the Nepali market\n\n\u2022 eSewa & Khalti: Digital payment support.\n\u2022 IRD Billing: Support for IRD-compliant billing.\n\u2022 Bikram Sambat: Nepali calendar date support.\n\u2022 English: Language accessibility.\n\u2022 Offline Support: Continue handling orders during internet interruptions and synchronize when connectivity returns.\n\nResthru brings essential restaurant operations into one connected management platform. It provides restaurant owners and staff with a centralized way to manage orders, kitchen operations, billing, inventory, and business reports while delivering a smoother ordering experience for customers.',
+    link: 'https://rest-thru.vercel.app/',
     isPlaceholder: false,
   },
   {

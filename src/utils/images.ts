@@ -29,6 +29,8 @@ const PROJECT_IMAGE_ALT: Record<string, string> = {
     'Homepage of the Star Global Vision consultancy website, headed "Study Abroad & Education Consultancy in Kathmandu, Nepal" over a photograph of students',
   'poms-penthouse':
     "Featured apartments section of the POM's Penthouse booking website, showing 3 BHK, 2 BHK and 1 BHK studio options with nightly rates and a WhatsApp booking button",
+  resthru:
+    'Resthru homepage on a green background \u2014 the headline "The whole restaurant. One screen." beside a dashboard card showing revenue, weekly orders and active tables',
 };
 
 const POST_IMAGE_ALT: Record<string, string> = {
