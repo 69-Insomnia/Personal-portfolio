@@ -8,22 +8,30 @@ import { Card } from '@/components/ui/Card';
 import { Container } from '@/components/ui/Container';
 import { Section } from '@/components/ui/Section';
 import { SectionHeading } from '@/components/ui/SectionHeading';
-import { scrollRow, scrollRowItemClassName } from '@/components/ui/ScrollRow';
 import { projectCategories, projectFilters, projects } from '@/data/projects';
 import type { Project, ProjectFilter } from '@/types';
 import { cn } from '@/utils/cn';
 
 /**
- * Two columns, not three.
+ * A row of small cards, not two giant tiles.
  *
- * The grid was three-up, which at this container width made every screenshot
- * about 380px wide — small enough that the work was unreadable and the section
- * read as a thumbnail wall. With a handful of case studies a 2×2 grid gives
- * each image roughly double the area, and the cards carry a description and a
- * stack row without either being cut to a line.
+ * The grid used to be two columns, which at this container width made every
+ * card ~500px tall — each project filling half the screen with a display-size
+ * title and a full screenshot. The request was to show the work as small cards
+ * in a row instead, so from `md` up the list is an auto-fill grid: cards size
+ * themselves to ~175px minimum and as many as will fit share one row (six on a
+ * desktop viewport, fewer on a laptop, wrapping to a second row only when the
+ * width runs out). The card itself is the compact `ProjectCard`.
  *
- * The `ScrollRow` wrapper is kept for its mobile behaviour: below `md` the cards
- * stay side by side and swipe rather than stacking into a very tall page.
+ * `auto-fill` rather than `auto-fit` is the load-bearing word: `auto-fit`
+ * collapses the empty tracks, so filtering the list down to a single project
+ * stretched that one card across the whole row — a 600px-tall screenshot where
+ * a small card was meant to be. `auto-fill` keeps the empty tracks, so a card
+ * is the same small size whether six projects or one match the active filter.
+ *
+ * The `ScrollRow` behaviour is kept on phones rather than replaced: below `md`
+ * the cards stay side by side and swipe so the section does not stack into a
+ * very tall page.
  */
 export function Projects({
   showHeading = true,
@@ -81,7 +89,13 @@ export function Projects({
           ))}
         </div>
 
-        <motion.ul layout className={scrollRow(2, 'mt-10 md:gap-6')}>
+        <motion.ul
+          layout
+          className={cn(
+            'no-scrollbar mt-10 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2',
+            'md:grid md:grid-cols-[repeat(auto-fill,minmax(175px,1fr))] md:gap-4 md:overflow-visible md:pb-0',
+          )}
+        >
           <AnimatePresence mode="popLayout">
             {filtered.map((project) => (
               <motion.li
@@ -91,7 +105,7 @@ export function Projects({
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.98 }}
                 transition={{ duration: 0.25, ease: 'easeOut' }}
-                className={cn('h-full', scrollRowItemClassName)}
+                className="h-full w-[64vw] max-w-[260px] shrink-0 snap-start md:w-auto md:max-w-none"
               >
                 <ProjectCard project={project} />
               </motion.li>
