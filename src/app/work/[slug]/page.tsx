@@ -24,6 +24,66 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+/**
+ * One rendered piece of a case-study block.
+ *
+ * The template has five fixed sections, so copy that needs its own structure
+ * carries it in the text with three small conventions: `### ` starts a
+ * sub-heading, `• ` (or `- `) marks a list item, and a blank line breaks a
+ * paragraph. Lines without any of those join into one paragraph, so every
+ * project written before this — a single paragraph per section — parses to
+ * exactly what it rendered as before.
+ */
+type DetailSegment =
+  | { kind: 'heading'; text: string }
+  | { kind: 'list'; items: string[] }
+  | { kind: 'paragraph'; text: string };
+
+function parseDetailBlock(text: string): DetailSegment[] {
+  const segments: DetailSegment[] = [];
+  let paragraph: string[] = [];
+  let items: string[] = [];
+
+  const flushParagraph = () => {
+    if (paragraph.length > 0) {
+      segments.push({ kind: 'paragraph', text: paragraph.join(' ') });
+      paragraph = [];
+    }
+  };
+  const flushList = () => {
+    if (items.length > 0) {
+      segments.push({ kind: 'list', items });
+      items = [];
+    }
+  };
+
+  for (const rawLine of text.split('\n')) {
+    const line = rawLine.trim();
+    if (!line) {
+      flushParagraph();
+      flushList();
+      continue;
+    }
+    if (line.startsWith('### ')) {
+      flushParagraph();
+      flushList();
+      segments.push({ kind: 'heading', text: line.slice(4).trim() });
+      continue;
+    }
+    const bullet = line.match(/^(?:[•*-])\s+(.*)$/);
+    if (bullet) {
+      flushParagraph();
+      items.push(bullet[1]);
+      continue;
+    }
+    flushList();
+    paragraph.push(line);
+  }
+  flushParagraph();
+  flushList();
+  return segments;
+}
+
 export async function generateStaticParams() {
   const live = await getProjects();
   const slugs = new Set([...projects.map((p) => p.slug), ...live.map((p) => p.slug)]);
@@ -189,7 +249,43 @@ export default async function ProjectPage({ params }: PageProps) {
               <Reveal key={block.key}>
                 <section className="border-t border-line pt-6">
                   <h2 className="text-h3">{block.label}</h2>
-                  <p className="mt-4 max-w-2xl leading-relaxed text-muted">{block.text}</p>
+                  <div className="mt-4 flex flex-col gap-4">
+                    {parseDetailBlock(block.text).map((segment, index) => {
+                      if (segment.kind === 'heading') {
+                        // One step below the section label (`text-h3`) and a
+                        // weight heavier than the body, so it reads as a
+                        // sub-heading at every width — on mobile the section
+                        // label is only 20px, so size alone cannot carry it.
+                        return (
+                          <h3
+                            key={index}
+                            className="mt-2 max-w-2xl text-lg font-medium tracking-tight"
+                          >
+                            {segment.text}
+                          </h3>
+                        );
+                      }
+                      if (segment.kind === 'list') {
+                        return (
+                          <ul key={index} className="max-w-2xl list-disc space-y-2 pl-5">
+                            {segment.items.map((item, itemIndex) => (
+                              <li
+                                key={itemIndex}
+                                className="leading-relaxed text-muted"
+                              >
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        );
+                      }
+                      return (
+                        <p key={index} className="max-w-2xl leading-relaxed text-muted">
+                          {segment.text}
+                        </p>
+                      );
+                    })}
+                  </div>
                 </section>
               </Reveal>
             ))}
