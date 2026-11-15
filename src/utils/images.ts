@@ -19,6 +19,8 @@
  */
 
 const PROJECT_IMAGE_ALT: Record<string, string> = {
+  'nano-store-ecommerce-seo':
+    'Circular Nano Store logo — a white "nano STORE" wordmark on a grey circle, centred on a black background',
   drillthru:
     'Homepage of the DrillThru agency website, with its dark hero headline and a row of proof statistics',
   'trip-zone':

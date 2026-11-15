@@ -47,7 +47,9 @@ const SERVICE_RELATIONS: Record<string, Relations> = {
   },
   'seo-services': {
     ...EMPTY,
-    projects: ['drillthru', 'trip-zone'],
+    // Nano Store first: it is the pure SEO case study — product pages,
+    // technical fixes and keyword mapping for an online store.
+    projects: ['nano-store-ecommerce-seo', 'drillthru', 'trip-zone'],
     posts: ['technical-seo-foundations'],
   },
   'ai-search': {
@@ -67,6 +69,9 @@ const SERVICE_RELATIONS: Record<string, Relations> = {
   },
   'ecommerce-growth': {
     ...EMPTY,
+    // The organic half of the funnel this service sells: an online store
+    // grown through product and category SEO, with the figures to show it.
+    projects: ['nano-store-ecommerce-seo'],
     posts: ['ecommerce-one-system'],
   },
   'digital-marketing': {
@@ -84,6 +89,12 @@ const SERVICE_RELATIONS: Record<string, Relations> = {
  * case studies instead of to the service it exists to support.
  */
 const PROJECT_RELATIONS: Record<string, Relations> = {
+  'nano-store-ecommerce-seo': {
+    ...EMPTY,
+    services: ['seo-services', 'ecommerce-growth'],
+    // The article sets out the technical checks this case study performed.
+    posts: ['technical-seo-foundations'],
+  },
   drillthru: {
     ...EMPTY,
     services: ['web-development', 'seo-services', 'digital-marketing', 'google-ads'],

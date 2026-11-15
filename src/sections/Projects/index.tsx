@@ -18,9 +18,9 @@ import { cn } from '@/utils/cn';
  *
  * The grid was three-up, which at this container width made every screenshot
  * about 380px wide — small enough that the work was unreadable and the section
- * read as a thumbnail wall. With four case studies a 2×2 grid gives each image
- * roughly double the area, and the cards carry a description and a stack row
- * without either being cut to a line.
+ * read as a thumbnail wall. With a handful of case studies a 2×2 grid gives
+ * each image roughly double the area, and the cards carry a description and a
+ * stack row without either being cut to a line.
  *
  * The `ScrollRow` wrapper is kept for its mobile behaviour: below `md` the cards
  * stay side by side and swipe rather than stacking into a very tall page.
@@ -47,7 +47,7 @@ export function Projects({
           <SectionHeading
             section="work"
             title="Selected work"
-            description="Four projects, written up properly — the brief, the decisions, and what was actually built."
+            description="Every project written up properly — the brief, the decisions, and what was actually built."
             action={
               <Button href="/work" variant="ghost" showArrow className="self-start">
                 All case studies

@@ -22,16 +22,18 @@ export const projectFilters: ProjectFilter[] = ['All', ...projectCategoryFilters
  * Real project case studies, newest first.
  * Do not publish results, metrics or client names that are not real.
  *
- * ## Why the result line on every work card is empty
+ * ## The result line on the work card
  *
  * `ProjectCard` renders `results[0]` as a large figure above the description —
  * "2.4s LCP", "Lighthouse 98", "3× repeat orders" — and the case-study page has
  * rendered `results` under a "Results" heading since it was written.
  *
- * Not one of the four projects below defines it. That is why the card looks
- * slightly short of a beat, and it is deliberate rather than an oversight: a
- * performance number on a page selling measurement is the first thing a careful
- * buyer checks, and the one thing here that cannot be sourced.
+ * `nano-store-ecommerce-seo` is the only project that defines it, and its two
+ * figures (15,000+ monthly organic visits, 1,000+ ranking keywords) were
+ * supplied with the case study brief and can be produced on request. The other
+ * four deliberately do not: a performance number on a page selling measurement
+ * is the first thing a careful buyer checks, and it is the one thing here that
+ * would otherwise have to be invented.
  *
  * To fill them in, add to any project:
  *
@@ -41,6 +43,33 @@ export const projectFilters: ProjectFilter[] = ['All', ...projectCategoryFilters
  * Use a figure you measured and can produce on request.
  */
 export const projects: Project[] = [
+  {
+    slug: 'nano-store-ecommerce-seo',
+    title: 'E-commerce SEO Expert in Nepal: Nano Store Case Study',
+    category: 'SEO',
+    secondaryCategories: ['Ecommerce'],
+    description:
+      'E-commerce SEO expert in Nepal: how I grew Nano Store to 15,000+ monthly organic visits and 1,000+ Google keywords.',
+    image: '/images/project-nanostore.png',
+    technologies: ['Technical SEO', 'On-page SEO', 'Keyword Research'],
+    year: '2026',
+    overview:
+      'Nano Store, an electronics and gadget retailer, now attracts over 15,000 organic visits every month and ranks for more than 1,000 keywords on Google. As an e-commerce SEO expert, e-commerce growth expert, and e-commerce specialist in Nepal, I handled its SEO, covering product-page optimization, category and brand visibility, technical SEO, and search-focused content.\n\nNano Store Pvt. Ltd. sells smartphones, cameras, drones, and photography equipment. Its catalog includes popular brands such as DJI and Insta360, plus digital cameras, action cameras, camera lenses, gimbals, and accessories.\n\nMy goal was to improve how these products and categories appeared in search results, so people searching for gadgets and photography gear could find the store organically.',
+    challenge:
+      "An electronics store has hundreds of products competing against large marketplaces and established retailers. Ranking only the homepage wasn't enough. Each product, category, and brand page needed its own keyword targeting and a clear match to what shoppers were searching for.",
+    approach:
+      'The work covered four areas: product pages, category and brand pages, technical SEO, and keyword research.\n\n### 1. Product Page SEO\n\n• Researched product-specific keywords and search intent\n• Wrote SEO-friendly product titles and meta descriptions\n• Structured H1, H2, and H3 headings for clarity and relevance\n• Improved product descriptions with useful details and relevant keywords\n• Optimized product URLs and on-page content\n• Added descriptive image alt text and SEO-friendly image file names\n\n### 2. Category and Brand Page Optimization\n\n• Optimized category pages for cameras, drones, smartphones, and accessories\n• Improved brand-level targeting for DJI, Insta360, and other electronics brands\n• Built category headings and intro content around relevant search terms\n• Strengthened internal linking between categories, brands, and product pages',
+    development:
+      '### 3. Technical SEO\n\n• Reviewed website indexability and crawlability\n• Checked the XML sitemap and robots.txt configuration\n• Found and fixed duplicate metadata and missing page elements\n• Reviewed canonical URLs and indexing signals\n• Improved image optimization and page performance\n• Identified structured data (Product schema) opportunities',
+    marketing:
+      '### 4. Keyword Research and Content Optimization\n\n• Identified transactional and commercial-intent keywords\n• Targeted searches for DJI drones, Insta360 cameras, action cameras, and photography equipment\n• Mapped keywords to the right product and category pages\n• Updated page content to match customer search intent\n\nStronger visibility for DJI drones, Insta360 cameras, digital cameras, smartphones, and photography accessories.\n\nThese results come from building a structured SEO foundation around products, categories, brands, and customer search intent.\n\n### Key Takeaway for Your Online Store\n\nEvery product, category, and brand page is a chance to bring in customers. Product optimization, keyword targeting, technical SEO, and strong internal linking build organic traffic that keeps growing without paying for every click.\n\n### Need an E-commerce SEO Expert in Nepal?\n\nI\u2019m an e-commerce growth expert and e-commerce specialist in Nepal, helping online stores grow through product SEO, category page optimization, and technical SEO.',
+    results: [
+      { value: '15,000+', label: 'Monthly organic visits' },
+      { value: '1,000+', label: 'Ranking keywords on Google' },
+    ],
+    link: 'https://nanostore.com.np/',
+    isPlaceholder: false,
+  },
   {
     slug: 'drillthru',
     title: 'DrillThru',
