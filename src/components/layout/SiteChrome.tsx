@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { Analytics } from '@/components/common/Analytics';
+import { FloatingWhatsApp } from '@/components/common/FloatingWhatsApp';
 import { Navbar } from '@/components/navigation/Navbar';
 import { Footer } from '@/components/navigation/Footer';
 import { SiteJsonLd } from '@/components/common/JsonLd';
@@ -68,6 +69,9 @@ export function SiteChrome({
       <Navbar />
       <main id="main-content">{children}</main>
       <Footer services={services} />
+      {/* Fixed to the viewport rather than placed in the flow: the contact
+          path stays reachable at any scroll depth. See `FloatingWhatsApp`. */}
+      <FloatingWhatsApp />
       {analytics ? <Analytics config={analytics} /> : null}
     </>
   );
