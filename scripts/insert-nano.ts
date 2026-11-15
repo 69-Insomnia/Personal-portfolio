@@ -27,11 +27,6 @@ const KEYWORDS = [
   'e-commerce specialist in Nepal',
 ];
 
-const project = projects.find((p) => p.slug === SLUG);
-if (!project) {
-  throw new Error(`"${SLUG}" is missing from src/data/projects.ts`);
-}
-
 const env = readFileSync('.env.local', 'utf8');
 const url = env.match(/^POOLER_URL=(.*)$/m)?.[1]?.trim() || env.match(/^DATABASE_URL=(.*)$/m)?.[1]?.trim();
 if (!url) throw new Error('no POOLER_URL or DATABASE_URL in .env.local');
@@ -39,6 +34,11 @@ if (!url) throw new Error('no POOLER_URL or DATABASE_URL in .env.local');
 const client = new pg.Client({ connectionString: url });
 
 async function main() {
+  const project = projects.find((p) => p.slug === SLUG);
+  if (!project) {
+    throw new Error(`"${SLUG}" is missing from src/data/projects.ts`);
+  }
+
   await client.connect();
 
   try {

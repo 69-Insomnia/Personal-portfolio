@@ -5,12 +5,24 @@ import { getPosts, getProjects, getSeoMap, getServices, seoKey } from '@/lib/con
 import { isoDate } from '@/utils/dates';
 
 /**
- * The sitemap re-renders every five minutes as a safety net for the admin's
- * purge (`/api/admin/revalidate` also expires this route directly, so a save
- * normally lands immediately) — a service created or deleted in /admin
- * reaches the sitemap without waiting for the next deploy either way.
+ * Rendered per request, not cached.
+ *
+ * This route used to export `revalidate = 300`, and on Vercel that froze it
+ * rather than refreshing it: the response `Age` climbed past the window for
+ * hours while every page route revalidated normally, and
+ * `revalidatePath('/sitemap.xml')` returned 200 without resetting it — a URL
+ * added to the database reached every page on the site but never the sitemap.
+ * The failure is silent by design (a background revalidation that errors just
+ * keeps serving the last good copy), so the only symptom was a sitemap that
+ * quietly disagreed with the site it maps.
+ *
+ * A sitemap is the one route where freshness beats caching: crawlers fetch it
+ * rarely, the underlying reads in `content.ts` are already deduplicated and
+ * cached for five minutes by the client's fetch, and a stale sitemap reports
+ * "Submitted URL not found" or omits live pages — both worse than paying for
+ * a render that happens a few times a day.
  */
-export const revalidate = 300;
+export const dynamic = 'force-dynamic';
 
 /**
  * The sitemap lists exactly what the site can actually serve *and* wants
