@@ -114,17 +114,38 @@ export default async function HomePage() {
   const quickAnswers = mergeFaqs(seoMeta?.faqs ?? [], HOME_KEYWORD_FAQS);
 
   /**
+   * The "Quick answers" list under the answer paragraph.
+   *
+   * Hidden at the owner's request (2026-11-16). Set back to `true` to restore
+   * it. Both the rendering and the `FAQPage` node below follow this flag,
+   * because structured data has to describe what a visitor can actually see —
+   * emitting these questions to schema after taking them off the page would be
+   * exactly the mismatch the note above `faqNode` was written to prevent.
+   */
+  const SHOW_QUICK_ANSWERS: boolean = false;
+  const numbers = [
+    { value: '3+', label: 'Years of web development & SEO experience' },
+    { value: '2+', label: 'Years of focused ecommerce growth experience' },
+    { value: '1+', label: 'Years in Meta & Google Ads' },
+    { value: '3', label: 'Ecommerce brands built' },
+    { value: '100%', label: 'Client satisfaction rate' },
+  ];
+  const growthSummary =
+    'I help ecommerce businesses in Nepal grow through SEO, conversion-focused websites, and Meta & Google Ads. I build stores that attract more traffic, turn visitors into customers, and improve revenue with data-driven growth strategies.';
+
+  /**
    * The FAQ as structured data, built from the same two arrays the page
-   * renders below — the static seven in the `FAQ` section and the admin's
-   * target-keyword questions in the `FaqBlock` — so the questions a search
-   * engine reads are the ones a visitor can actually see. See `faqPageNode`
-   * for why that is one node rather than two that have to be kept in step.
+   * renders below — the static seven in the `FAQ` section and, while
+   * `SHOW_QUICK_ANSWERS` is on, the admin's target-keyword questions in the
+   * `FaqBlock` — so the questions a search engine reads are the ones a
+   * visitor can actually see. See `faqPageNode` for why that is one node
+   * rather than two that have to be kept in step.
    *
    * Emitted here rather than in `SiteJsonLd`, which is mounted site-wide: the
    * FAQ text only appears on this page, and a `FAQPage` node on a page with no
    * visible FAQ is a claim the page does not support.
    */
-  const faqNode = faqPageNode([...faqs, ...quickAnswers], site.url);
+  const faqNode = faqPageNode(SHOW_QUICK_ANSWERS ? [...faqs, ...quickAnswers] : faqs, site.url);
 
   /**
    * The `WebPage` node, carrying the two properties only a page has: an
@@ -171,7 +192,7 @@ export default async function HomePage() {
           fetch, which is the entire audience this block exists for. Same reason
           the FAQ questions below use `<details>` rather than the accordion —
           see `GeoBlocks.tsx`. */}
-      {answerBlock || quickAnswers.length ? (
+      {answerBlock || (SHOW_QUICK_ANSWERS && quickAnswers.length) ? (
         <section className="border-t border-line py-12 md:py-14">
           <Container>
             <div className="flex flex-col gap-10">
@@ -181,7 +202,7 @@ export default async function HomePage() {
                 </div>
               ) : null}
 
-              {quickAnswers.length ? (
+              {SHOW_QUICK_ANSWERS && quickAnswers.length ? (
                 <div className="max-w-3xl">
                   <FaqBlock faqs={quickAnswers} title="Quick answers" />
                 </div>
@@ -190,6 +211,31 @@ export default async function HomePage() {
           </Container>
         </section>
       ) : null}
+
+      <section className="border-t border-line bg-paper py-12 md:py-14">
+        <Container>
+          <div className="flex flex-col gap-7">
+            <p className="text-balance text-[clamp(2.1rem,4vw,4.25rem)] font-semibold leading-[0.95] tracking-[-0.06em] text-ink">
+              Ecommerce growth specialist in Nepal, by the numbers.
+            </p>
+
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-5">
+              {numbers.map((item) => (
+                <div key={item.label} className="rounded-[1.4rem] border border-line bg-surface p-5 text-left shadow-sm">
+                  <div className="text-[clamp(2.1rem,3vw,4rem)] font-bold leading-none tracking-[-0.06em] text-accent">
+                    {item.value}
+                  </div>
+                  <div className="mt-4 text-[0.76rem] uppercase tracking-[0.16em] text-muted">
+                    {item.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <p className="max-w-4xl text-lead text-ink">{growthSummary}</p>
+          </div>
+        </Container>
+      </section>
 
       <Introduction />
       <Projects data={projects} />
