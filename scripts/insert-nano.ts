@@ -37,9 +37,11 @@ const url = env.match(/^POOLER_URL=(.*)$/m)?.[1]?.trim() || env.match(/^DATABASE
 if (!url) throw new Error('no POOLER_URL or DATABASE_URL in .env.local');
 
 const client = new pg.Client({ connectionString: url });
-await client.connect();
 
-try {
+async function main() {
+  await client.connect();
+
+  try {
   const existing = await client.query('SELECT slug FROM projects WHERE slug = $1', [SLUG]);
   if (existing.rows.length > 0) {
     console.log(`projects row for ${SLUG} already exists — untouched`);
@@ -97,6 +99,12 @@ try {
       ? 'seo_meta row upserted'
       : 'seo_meta row already had a title — left untouched',
   );
-} finally {
-  await client.end();
+  } finally {
+    await client.end();
+  }
 }
+
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
