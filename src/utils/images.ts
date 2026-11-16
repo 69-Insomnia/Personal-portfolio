@@ -40,6 +40,8 @@ const POST_IMAGE_ALT: Record<string, string> = {
     "Infographic contrasting a booking form with a WhatsApp conversation, and the mobile-first decisions behind the POM's Penthouse build",
   'ecommerce-one-system':
     'Infographic showing the storefront, search, advertising and reporting work as four separate desks feeding one customer experience',
+  'how-to-grow-ecommerce-in-nepal-2026':
+    'Infographic headed "Ecommerce Is One System, Not Four Channels" — storefront, search, ads and reporting desks converging on one customer experience',
 };
 
 interface ImageSubject {

@@ -50,7 +50,7 @@ const SERVICE_RELATIONS: Record<string, Relations> = {
     // Nano Store first: it is the pure SEO case study — product pages,
     // technical fixes and keyword mapping for an online store.
     projects: ['nano-store-ecommerce-seo', 'drillthru', 'trip-zone'],
-    posts: ['technical-seo-foundations'],
+    posts: ['technical-seo-foundations', 'how-to-grow-ecommerce-in-nepal-2026'],
   },
   'ai-search': {
     ...EMPTY,
@@ -72,7 +72,9 @@ const SERVICE_RELATIONS: Record<string, Relations> = {
     // The organic half of the funnel this service sells: an online store
     // grown through product and category SEO, with the figures to show it.
     projects: ['nano-store-ecommerce-seo'],
-    posts: ['ecommerce-one-system'],
+    // The step-by-step guide is the written version of this service's pitch,
+    // and it links back here from its own closing section.
+    posts: ['ecommerce-one-system', 'how-to-grow-ecommerce-in-nepal-2026'],
   },
   'digital-marketing': {
     ...EMPTY,
@@ -92,8 +94,11 @@ const PROJECT_RELATIONS: Record<string, Relations> = {
   'nano-store-ecommerce-seo': {
     ...EMPTY,
     services: ['seo-services', 'ecommerce-growth'],
-    // The article sets out the technical checks this case study performed.
-    posts: ['technical-seo-foundations'],
+    // The article sets out the technical checks this case study performed;
+    // the growth guide is the same work written as advice a reader can act on,
+    // and it asks readers to demand proof of real Nepali ecommerce work —
+    // this page is that proof.
+    posts: ['technical-seo-foundations', 'how-to-grow-ecommerce-in-nepal-2026'],
   },
   drillthru: {
     ...EMPTY,
@@ -131,6 +136,15 @@ const PROJECT_RELATIONS: Record<string, Relations> = {
  * from two sides, and linking them is the clearest single edge on the site.
  */
 const POST_RELATIONS: Record<string, Relations> = {
+  'how-to-grow-ecommerce-in-nepal-2026': {
+    ...EMPTY,
+    // The brief's own instruction: link from the article to the service page
+    // and back again. The Nano case study is where these steps were applied
+    // to a real store — the first-hand evidence the guide tells readers to
+    // look for.
+    services: ['ecommerce-growth', 'seo-services'],
+    projects: ['nano-store-ecommerce-seo'],
+  },
   'technical-seo-foundations': {
     ...EMPTY,
     services: ['seo-services', 'ai-search'],
