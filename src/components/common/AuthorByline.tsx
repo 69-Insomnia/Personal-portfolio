@@ -35,7 +35,7 @@ export function AuthorByline({ post }: { post: BlogPost }) {
           alt=""
           width={28}
           height={28}
-          className="h-7 w-7 shrink-0 rounded-full border border-line object-cover"
+          className="h-7 w-7 shrink-0 rounded-control border border-line object-cover"
         />
         <span>
           Written by{' '}

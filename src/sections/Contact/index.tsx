@@ -94,11 +94,18 @@ export function Contact({ showHeading = true }: { showHeading?: boolean }) {
   // composites to well under the 3:1 that WCAG 1.4.11 asks of a component
   // boundary. `outline-none` is also gone — for a text field the outline is the
   // focus indicator, and a border colour change alone is too thin to rely on.
+  // `rounded-control`, not `rounded-card`: inputs are controls, and they now
+  // share the button geometry so the form reads as one system.
   const fieldClass = (field: keyof FormValues) =>
     cn(
-      'w-full rounded-card border bg-surface px-4 py-3 text-base transition-colors duration-200 placeholder:text-faint focus:border-accent focus:ring-4 focus:ring-accent-soft',
+      'w-full rounded-control border bg-surface px-4 py-3 text-base transition-colors duration-200 placeholder:text-faint focus:border-accent focus:ring-4 focus:ring-accent-soft',
       errors[field] ? 'border-danger' : 'border-line-strong',
     );
+
+  // The label idiom: the same uppercase micro label the rest of the design
+  // uses for supporting type, so the form's chrome matches the section
+  // mastheads. The required asterisk stays a separate aria-hidden span.
+  const labelClass = 'text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-muted';
 
   const handleChange =
     (field: keyof FormValues) =>
@@ -155,7 +162,7 @@ export function Contact({ showHeading = true }: { showHeading?: boolean }) {
   );
 
   return (
-    <Section id="contact" className="border-t border-line bg-surface">
+    <Section id="contact" className="border-t border-line bg-subtle">
       <Container>
         {showHeading ? (
           <SectionHeading
@@ -166,7 +173,7 @@ export function Contact({ showHeading = true }: { showHeading?: boolean }) {
         ) : null}
 
         <div className={cn('grid gap-6 lg:grid-cols-12 lg:gap-8', showHeading && 'mt-14')}>
-          {/* Form — the wide column. */}
+          {/* Form — the wide column, as one white panel on the subtle band. */}
           <div className="lg:col-span-7">
             <Reveal delay={0.05}>
               <Card className="p-6 md:p-8">
@@ -175,7 +182,7 @@ export function Contact({ showHeading = true }: { showHeading?: boolean }) {
                     role="status"
                     className="flex min-h-[24rem] flex-col items-start justify-center"
                   >
-                    <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent-soft text-accent">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-control bg-accent-soft text-accent">
                       <CircleCheck size={22} aria-hidden />
                     </span>
                     <h3 className="mt-5 font-display text-h3">Message sent.</h3>
@@ -193,7 +200,7 @@ export function Contact({ showHeading = true }: { showHeading?: boolean }) {
                   <form onSubmit={handleSubmit} noValidate>
                     <div className="grid gap-5 sm:grid-cols-2">
                       <div>
-                        <label htmlFor="contact-name" className="text-sm font-medium">
+                        <label htmlFor="contact-name" className={labelClass}>
                           Name <span className="text-accent" aria-hidden>*</span>
                         </label>
                         <input
@@ -218,7 +225,7 @@ export function Contact({ showHeading = true }: { showHeading?: boolean }) {
                       </div>
 
                       <div>
-                        <label htmlFor="contact-email" className="text-sm font-medium">
+                        <label htmlFor="contact-email" className={labelClass}>
                           Email <span className="text-accent" aria-hidden>*</span>
                         </label>
                         <input
@@ -243,7 +250,7 @@ export function Contact({ showHeading = true }: { showHeading?: boolean }) {
                       </div>
 
                       <div>
-                        <label htmlFor="contact-company" className="text-sm font-medium">
+                        <label htmlFor="contact-company" className={labelClass}>
                           Company <span className="font-normal text-muted">(optional)</span>
                         </label>
                         <input
@@ -259,7 +266,7 @@ export function Contact({ showHeading = true }: { showHeading?: boolean }) {
                       </div>
 
                       <div>
-                        <label htmlFor="contact-service" className="text-sm font-medium">
+                        <label htmlFor="contact-service" className={labelClass}>
                           Service
                         </label>
                         <div className="relative mt-2">
@@ -286,7 +293,7 @@ export function Contact({ showHeading = true }: { showHeading?: boolean }) {
                       </div>
 
                       <div className="sm:col-span-2">
-                        <label htmlFor="contact-budget" className="text-sm font-medium">
+                        <label htmlFor="contact-budget" className={labelClass}>
                           Budget
                         </label>
                         <div className="relative mt-2">
@@ -313,7 +320,7 @@ export function Contact({ showHeading = true }: { showHeading?: boolean }) {
                       </div>
 
                       <div className="sm:col-span-2">
-                        <label htmlFor="contact-message" className="text-sm font-medium">
+                        <label htmlFor="contact-message" className={labelClass}>
                           Message <span className="text-accent" aria-hidden>*</span>
                         </label>
                         <textarea
@@ -379,18 +386,22 @@ export function Contact({ showHeading = true }: { showHeading?: boolean }) {
             dashboard.
 
             It is now one card with three sections divided by rules, which is
-            the same information at a third of the visual weight.
+            the same information at a third of the visual weight. The redesign
+            gives the three headings the uppercase micro-label idiom and turns
+            the process bullets into the design's coral diamonds.
           */}
           <div className="lg:col-span-5">
             <Reveal delay={0.1}>
               <Card className="p-6 md:p-7">
-                <p className="text-sm font-medium text-ink">Reach me directly</p>
+                <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-muted">
+                  Reach me directly
+                </p>
 
-                <div className="mt-4 flex flex-col gap-2.5">
+                <div className="mt-4 flex flex-col gap-1">
                   {profile.email ? (
                     <a
                       href={mailtoUrl(profile.email) ?? undefined}
-                      className="flex min-h-[44px] items-center gap-2.5 text-[15px] break-all text-muted transition-colors duration-200 hover:text-accent"
+                      className="-mx-2 flex min-h-[44px] items-center gap-2.5 rounded-control px-2 text-[15px] break-all text-muted transition-colors duration-200 hover:bg-subtle hover:text-accent"
                     >
                       <Mail size={16} aria-hidden className="shrink-0 text-accent" />
                       {profile.email}
@@ -400,7 +411,7 @@ export function Contact({ showHeading = true }: { showHeading?: boolean }) {
                   {telHref ? (
                     <a
                       href={telHref}
-                      className="flex min-h-[44px] items-center gap-2.5 text-[15px] text-muted transition-colors duration-200 hover:text-accent"
+                      className="-mx-2 flex min-h-[44px] items-center gap-2.5 rounded-control px-2 text-[15px] text-muted transition-colors duration-200 hover:bg-subtle hover:text-accent"
                       aria-label={`Call ${profile.whatsapp}`}
                     >
                       <Phone size={16} aria-hidden className="shrink-0 text-accent" />
@@ -413,7 +424,7 @@ export function Contact({ showHeading = true }: { showHeading?: boolean }) {
                       href="https://www.google.com/maps/search/?api=1&query=Kathmandu%2C%20Nepal"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex min-h-[44px] items-center gap-2.5 text-[15px] text-muted transition-colors duration-200 hover:text-accent"
+                      className="-mx-2 flex min-h-[44px] items-center gap-2.5 rounded-control px-2 text-[15px] text-muted transition-colors duration-200 hover:bg-subtle hover:text-accent"
                       aria-label={`View ${profile.location} service area on Google Maps`}
                     >
                       <MapPin size={16} aria-hidden className="shrink-0 text-accent" />
@@ -436,13 +447,15 @@ export function Contact({ showHeading = true }: { showHeading?: boolean }) {
                 ) : null}
 
                 <div className="mt-7 border-t border-line pt-6">
-                  <p className="text-sm font-medium text-ink">What happens next</p>
+                  <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-muted">
+                    What happens next
+                  </p>
                   <ol className="mt-4 space-y-3">
                     {contactProcess.map((item) => (
                       <li key={item.text} className="flex gap-3">
                         <span
                           aria-hidden
-                          className="mt-[0.55em] h-1.5 w-1.5 shrink-0 rounded-full bg-marigold"
+                          className="mt-[0.55em] h-1.5 w-1.5 shrink-0 rotate-45 bg-marigold"
                         />
                         <span className="text-[15px] leading-relaxed text-muted">
                           {item.text}
@@ -454,7 +467,9 @@ export function Contact({ showHeading = true }: { showHeading?: boolean }) {
 
                 {hasSocials ? (
                   <div className="mt-7 border-t border-line pt-6">
-                    <p className="text-sm font-medium text-ink">Elsewhere</p>
+                    <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-muted">
+                      Elsewhere
+                    </p>
                     <SocialLinks links={profile.socialLinks} className="mt-4" />
                   </div>
                 ) : null}

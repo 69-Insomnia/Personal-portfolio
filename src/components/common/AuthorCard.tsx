@@ -1,90 +1,75 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { SocialIcon } from '@/components/common/SocialIcon';
 import { profile } from '@/data/profile';
+import type { SocialLinks as SocialLinksType } from '@/types';
 
-/**
- * The author card that closes every article.
- *
- * The byline at the top answers "who wrote this" in one line; this answers it
- * properly at the moment a reader finishes — face, role, what the writing is
- * based on, and the paths off the page (about, profiles). It sits at the end
- * of the article column, after the FAQ and before the related blocks, which
- * is where a reader decides whether to trust the next recommendation.
- *
- * The layout follows the reference the owner supplied (avatar left; label,
- * name, role, bio and pill links right) but is built from this site's own
- * tokens: `.card` for the surface, chip-shaped pills, `text-micro` at the
- * reference's wide tracking for the two mono lines. The label is the one red
- * (`text-danger`) on an otherwise blue-and-white page — that contrast is
- * what makes it read as a stamp rather than as another section eyebrow.
- *
- * The role line is deliberately not `profile.title` ("Ecommerce Growth
- * Expert"): the owner asked for "Ecommerce Specialist in Nepal" here — the
- * phrasing readers search with — while the navbar keeps the short micro-type.
- *
- * The avatar carries an empty `alt` for the same reason the byline's does:
- * the name sits right beside it, and a screen reader announcing it twice is
- * noise, not description.
- */
-const links = [
-  { label: 'About me', href: '/about' },
-  ...(profile.socialLinks.linkedin
-    ? [{ label: 'LinkedIn', href: profile.socialLinks.linkedin }]
-    : []),
-  ...(profile.socialLinks.github
-    ? [{ label: 'GitHub', href: profile.socialLinks.github }]
-    : []),
-  ...(profile.socialLinks.facebook
-    ? [{ label: 'Facebook', href: profile.socialLinks.facebook }]
-    : []),
+const socialLinks: Array<{
+  href: string;
+  network: keyof SocialLinksType;
+  label: string;
+}> = [
+  { href: profile.socialLinks.instagram ?? 'https://www.instagram.com/', network: 'instagram', label: 'Instagram' },
+  { href: profile.socialLinks.linkedin ?? 'https://www.linkedin.com/', network: 'linkedin', label: 'LinkedIn' },
+  { href: profile.socialLinks.x ?? 'https://x.com/', network: 'x', label: 'X' },
 ];
 
 export function AuthorCard() {
-  const pillClass =
-    'rounded-full border border-line px-4 py-2 font-mono text-label text-muted transition-colors duration-300 hover:border-line-strong hover:text-ink';
-
   return (
-    <aside className="card p-7 md:p-9" aria-label={`About ${profile.name}`}>
-      <div className="flex flex-col gap-6 sm:flex-row sm:gap-7">
-        <Image
-          src={profile.avatar}
-          alt=""
-          width={80}
-          height={80}
-          className="h-20 w-20 shrink-0 self-start rounded-2xl border border-line object-cover"
-        />
-        <div className="min-w-0">
-          <p className="font-mono text-micro font-medium uppercase tracking-[0.16em] text-danger">
-            Written by
-          </p>
-          <h2 className="mt-1.5 text-h3">{profile.name}</h2>
-          <p className="mt-1.5 font-mono text-micro uppercase tracking-[0.14em] text-faint">
-            Ecommerce Specialist in Nepal
-          </p>
-          <p className="mt-4 max-w-xl leading-relaxed text-muted">
-            I run ecommerce SEO and paid growth for online stores, and I build the
-            stores and tools the campaigns depend on. Everything on this blog is
-            based on work on live accounts. I do not write from benchmark reports.
-          </p>
-          <div className="mt-5 flex flex-wrap gap-2.5">
-            {links.map((link) =>
-              link.href.startsWith('http') ? (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={pillClass}
-                >
-                  {link.label}
-                </a>
-              ) : (
-                <Link key={link.label} href={link.href} className={pillClass}>
-                  {link.label}
-                </Link>
-              ),
-            )}
-          </div>
+    <aside
+      className="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-9 md:gap-10"
+      aria-label={`About ${profile.name}`}
+    >
+      <div className="relative shrink-0 self-start">
+        <div className="absolute -left-2 top-3 h-7 w-14 rotate-[-9deg] rounded-[2px] bg-[#e9dfbf]/90 shadow-[0_1px_0_rgba(15,23,42,0.08)]" />
+        <div className="relative overflow-hidden rounded-[16px] border border-[#d9d9d0] bg-[#f7f3ed] p-2.5 shadow-[0_12px_30px_rgba(15,23,42,0.08)]">
+          <Image
+            src={profile.avatar}
+            alt=""
+            width={260}
+            height={260}
+            className="h-[255px] w-[255px] rounded-[12px] border border-[#ebeae6] object-cover object-center shadow-inner"
+          />
+        </div>
+      </div>
+
+      <div className="min-w-0 flex-1 pt-1">
+        <p className="font-mono text-[0.72rem] font-medium uppercase tracking-[0.28em] text-[#1f2937]">
+          Article by
+        </p>
+
+        <h2 className="mt-2 text-[2.8rem] font-black leading-[0.96] tracking-[-0.06em] text-ink sm:text-[3.2rem]">
+          {profile.name}
+        </h2>
+
+        <p className="mt-3 font-mono text-[0.76rem] font-medium uppercase tracking-[0.24em] text-[#df6d42]">
+          {profile.title}
+        </p>
+
+        <p className="mt-5 max-w-[700px] text-[1.12rem] leading-[1.65] text-[#1f2937] sm:text-[1.3rem]">
+          {profile.description}
+        </p>
+
+        <div className="mt-7 flex items-center gap-4">
+          {socialLinks.map(({ href, network, label }) => (
+            <a
+              key={label}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={label}
+              className="flex h-12 w-12 items-center justify-center rounded-full border border-[#d9d5d0] bg-[#f8f6f3] text-[#0f172a] transition-colors duration-200 hover:border-[#b9b7b1] hover:bg-white"
+            >
+              <SocialIcon network={network} size={18} />
+            </a>
+          ))}
+
+          <Link
+            href="/about"
+            className="ml-2 inline-flex items-center justify-center rounded-full border border-[#d9d5d0] bg-[#f8f6f3] px-4 py-2 font-mono text-[0.7rem] uppercase tracking-[0.18em] text-[#1f2937] transition-colors duration-200 hover:border-[#b9b7b1] hover:bg-white"
+          >
+            About me
+          </Link>
         </div>
       </div>
     </aside>

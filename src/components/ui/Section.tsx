@@ -9,16 +9,17 @@ interface SectionProps {
 }
 
 /**
- * The vertical rhythm between page bands: 80px on a phone, 96px at tablet,
- * 120px at desktop. That is the brief's 80–120px range read as three steps, and
- * the ramp matters more than the endpoints — a single 120px value at 360px wide
- * is a fifth of the viewport spent on nothing.
+ * The vertical rhythm between page bands: 96px on a phone, 128px at tablet,
+ * 160px at desktop. The previous design ran 80/96/120; the extra breathing
+ * room at each step is most of what makes a long page read as "composed"
+ * rather than "stacked" — sections that were touching now have air around
+ * their mastheads.
  */
 export function Section({ id, children, className, padded = true }: SectionProps) {
   return (
     <section
       id={id}
-      className={cn('relative', padded && 'py-20 md:py-24 lg:py-[7.5rem]', className)}
+      className={cn('relative', padded && 'py-24 md:py-32 lg:py-40', className)}
     >
       {children}
     </section>

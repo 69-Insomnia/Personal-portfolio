@@ -117,9 +117,9 @@ export function ArticleBody({ content }: { content: string[] }) {
               // `mt-4` on top of the flex gap: a heading needs more air above it
               // than the gap between two paragraphs, or it reads as belonging to
               // the paragraph before it rather than the one after.
-              <h2 className="mt-4 max-w-2xl text-h3">{segment.text}</h2>
+              <h2 className="mt-4 max-w-2xl font-display text-h3">{segment.text}</h2>
             ) : (
-              <h3 className="mt-2 max-w-2xl text-lg font-medium tracking-tight">
+              <h3 className="mt-2 max-w-2xl font-display text-lg font-semibold tracking-tight">
                 {segment.text}
               </h3>
             )
@@ -132,7 +132,7 @@ export function ArticleBody({ content }: { content: string[] }) {
               ))}
             </ul>
           ) : segment.kind === 'code' ? (
-            <pre className="mt-2 max-w-2xl overflow-x-auto rounded-xl border border-border bg-slate-950 p-4 text-sm leading-6 text-slate-100 shadow-sm">
+            <pre className="mt-2 max-w-2xl overflow-x-auto rounded-card border border-line bg-ink p-4 text-sm leading-6 text-paper shadow-sm">
               <code className="whitespace-pre-wrap break-words font-mono">{segment.text}</code>
             </pre>
           ) : (

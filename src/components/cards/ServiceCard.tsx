@@ -24,7 +24,7 @@ export function ServiceCard({ service }: { service: Service }) {
           redesign drops numbered labels site-wide. See the note in
           `src/components/ui/SectionLabel`.
         */}
-        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent-soft text-accent transition-colors duration-200 group-hover:bg-accent group-hover:text-on-accent">
+        <span className="flex h-12 w-12 items-center justify-center rounded-control border border-line bg-surface text-accent shadow-xs transition-all duration-200 group-hover:border-accent group-hover:bg-accent group-hover:text-on-accent">
           <Icon name={service.icon} size={20} />
         </span>
 

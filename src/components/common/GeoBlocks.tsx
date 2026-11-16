@@ -35,7 +35,7 @@ export function AnswerBlock({ answer }: { answer?: string }) {
   if (!answer) return null;
 
   return (
-    <div className="border-l-2 border-accent pl-6">
+    <div className="border-l-2 border-marigold pl-6">
       <p className="max-w-2xl text-lead text-ink">{answer}</p>
     </div>
   );
@@ -60,8 +60,8 @@ export function StatBlock({ stats }: { stats?: SeoStat[] }) {
   return (
     <ul className="grid gap-4 sm:grid-cols-2">
       {stats.map((stat) => (
-        <li key={`${stat.value}-${stat.label}`} className="border border-line bg-paper p-5">
-          <p className="text-h3 text-ink">{stat.value}</p>
+        <li key={`${stat.value}-${stat.label}`} className="rounded-card border border-line bg-paper p-5">
+          <p className="font-display text-h3 text-ink">{stat.value}</p>
           <p className="mt-2 text-sm leading-relaxed text-muted">{stat.label}</p>
           {stat.source ? (
             <p className="mt-3 text-xs text-faint">
@@ -114,12 +114,12 @@ export function FaqBlock({
         {faqs.map((faq) => (
           <details key={faq.question} className="group py-2">
             <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-4 text-left">
-              <h3 className="text-lg font-medium tracking-tight transition-colors duration-300 group-hover:text-accent md:text-xl">
+              <h3 className="font-display text-lg font-semibold tracking-tight transition-colors duration-300 group-hover:text-accent md:text-xl">
                 {faq.question}
               </h3>
               <span
                 aria-hidden
-                className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line text-ink transition-colors duration-300 group-open:border-accent group-open:bg-accent group-open:text-on-accent"
+                className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-control border border-line text-ink transition-colors duration-300 group-open:border-accent group-open:bg-accent group-open:text-on-accent"
               >
                 <span className="text-base leading-none group-open:hidden">+</span>
                 <span className="hidden text-base leading-none group-open:block">−</span>

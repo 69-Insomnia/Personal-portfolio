@@ -200,7 +200,7 @@ export default async function ProjectPage({ params }: PageProps) {
       />
 
       <Container className="mt-10 md:mt-14">
-        <div className="relative aspect-[16/9] overflow-hidden border border-line bg-surface">
+        <div className="relative aspect-[16/9] overflow-hidden rounded-card border border-line bg-surface shadow-sm">
           <Image
             src={project.image}
             alt={projectImageAlt(project, coverAlt)}
@@ -216,21 +216,24 @@ export default async function ProjectPage({ params }: PageProps) {
             this gap depend on which margin happened to be larger. */}
         <dl className="mt-10 grid gap-6 border-y border-line py-7 sm:grid-cols-2 md:mt-14 lg:grid-cols-4">
           <div>
-            <dt className="text-label font-medium text-muted">Year</dt>
+            <dt className="text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-muted">
+              Year
+            </dt>
             <dd className="mt-2 text-sm font-medium">{project.year ?? '—'}</dd>
           </div>
           <div>
-            <dt className="text-label font-medium text-muted">Category</dt>
+            <dt className="text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-muted">
+              Category
+            </dt>
             <dd className="mt-2 text-sm font-medium">{projectCategories(project).join(' · ')}</dd>
           </div>
           <div className="sm:col-span-2">
-            <dt className="text-label font-medium text-muted">Technology</dt>
+            <dt className="text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-muted">
+              Technology
+            </dt>
             <dd className="mt-2 flex flex-wrap gap-2">
               {project.technologies.map((technology) => (
-                <span
-                  key={technology}
-                  className="border border-line px-2.5 py-1 text-label font-medium text-muted"
-                >
+                <span key={technology} className="chip">
                   {technology}
                 </span>
               ))}
@@ -248,7 +251,7 @@ export default async function ProjectPage({ params }: PageProps) {
             {detailBlocks.map((block) => (
               <Reveal key={block.key}>
                 <section className="border-t border-line pt-6">
-                  <h2 className="text-h3">{block.label}</h2>
+                  <h2 className="font-display text-h3">{block.label}</h2>
                   <div className="mt-4 flex flex-col gap-4">
                     {parseDetailBlock(block.text).map((segment, index) => {
                       if (segment.kind === 'heading') {
@@ -259,7 +262,7 @@ export default async function ProjectPage({ params }: PageProps) {
                         return (
                           <h3
                             key={index}
-                            className="mt-2 max-w-2xl text-lg font-medium tracking-tight"
+                            className="mt-2 max-w-2xl font-display text-lg font-semibold tracking-tight"
                           >
                             {segment.text}
                           </h3>
@@ -293,11 +296,14 @@ export default async function ProjectPage({ params }: PageProps) {
             {project.results && project.results.length > 0 ? (
               <Reveal>
                 <section className="border-t border-line pt-6">
-                  <h2 className="text-h3">Results</h2>
+                  <h2 className="font-display text-h3">Results</h2>
                   <ul className="mt-5 grid gap-3 sm:grid-cols-3">
                     {project.results.map((result) => (
-                      <li key={result.label} className="border border-line bg-surface p-5">
-                        <p className="text-2xl font-medium tracking-tight text-accent">
+                      <li
+                        key={result.label}
+                        className="rounded-card border border-line bg-subtle p-5"
+                      >
+                        <p className="font-display text-2xl font-semibold tracking-tight text-accent">
                           {result.value}
                         </p>
                         <p className="mt-1.5 text-sm text-muted">{result.label}</p>
@@ -311,12 +317,12 @@ export default async function ProjectPage({ params }: PageProps) {
             {project.images && project.images.length > 0 ? (
               <Reveal>
                 <section className="border-t border-line pt-6">
-                  <h2 className="text-h3">Gallery</h2>
+                  <h2 className="font-display text-h3">Gallery</h2>
                   <div className="mt-5 grid gap-4 sm:grid-cols-2">
                     {project.images.map((image, index) => (
                       <div
                         key={image}
-                        className="relative aspect-[4/3] overflow-hidden border border-line bg-surface"
+                        className="relative aspect-[4/3] overflow-hidden rounded-card border border-line bg-surface"
                       >
                         <Image
                           src={image}
@@ -376,9 +382,11 @@ export default async function ProjectPage({ params }: PageProps) {
         </Section>
       ) : null}
 
-      <Section className="border-t border-line bg-surface">
+      <Section className="border-t border-line bg-subtle">
         <Container className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
-          <h2 className="max-w-xl text-h3">Have a project like this in mind?</h2>
+          <h2 className="max-w-xl font-display text-h3">
+            Have a project like this in mind?
+          </h2>
           <Button href="/contact" size="lg" showArrow>
             Start a Conversation
           </Button>

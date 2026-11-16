@@ -41,25 +41,30 @@ export function Technologies() {
         />
 
         {/*
-          `Reveal` renders the `<div>` that HTML5 allows as a direct child of a
-          `<dl>`, and the `dt`/`dd` pair sits directly inside it. An extra
-          wrapper div here would have made the group `dl > div > div > dt`, which
-          is outside the content model — the rule is that a div *in* a dl holds
-          the term and its description, not another container.
+          A spec-sheet, not a card grid or a two-up label grid.
+
+          Each category is one full-width record: the term pinned to a narrow
+          left column (icon + uppercase label), its tools flowing in the wide
+          right column, a hairline under the pair. The `<dl>` semantics are
+          unchanged from the previous pass — the wrapping `Reveal` div is the
+          one element HTML5 allows between `<dl>` and `<dt>`/`<dd>`, and it
+          must hold the pair, not another container.
         */}
-        <dl className="mt-14 grid gap-x-12 gap-y-9 md:grid-cols-2 lg:gap-x-20">
+        <dl className="mt-14 border-t border-line">
           {technologyCategories.map((category, index) => (
             <Reveal
               key={category.id}
               delay={index * 0.04}
-              className="border-t border-line pt-5"
+              className="grid gap-3 border-b border-line py-6 md:grid-cols-12 md:items-baseline md:gap-8 md:py-7"
             >
-              <dt className="flex items-center gap-2.5 text-sm font-medium text-ink">
+              <dt className="flex items-center gap-2.5 md:col-span-4">
                 <Icon name={category.icon} size={16} className="shrink-0 text-accent" />
-                {category.name}
+                <span className="text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-ink">
+                  {category.name}
+                </span>
               </dt>
 
-              <dd className="mt-4 flex flex-wrap gap-2">
+              <dd className="flex flex-wrap gap-2 md:col-span-8">
                 {category.items.map((item) => (
                   <ToolChip key={item} tool={toPlatformTool(item)} />
                 ))}

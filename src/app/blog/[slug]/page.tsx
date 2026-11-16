@@ -249,9 +249,11 @@ export default async function BlogPostPage({ params }: PageProps) {
         </Section>
       ) : null}
 
-      <Section className="border-t border-line bg-surface">
+      <Section className="border-t border-line bg-subtle">
         <Container className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
-          <h2 className="max-w-xl text-h3">Want to talk about a similar project?</h2>
+          <h2 className="max-w-xl font-display text-h3">
+            Want to talk about a similar project?
+          </h2>
           <Button href="/contact" size="lg" showArrow>
             Start a Conversation
           </Button>

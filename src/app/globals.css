@@ -150,19 +150,27 @@
   --color-scrim: rgba(11, 30, 69, 0.94);
 
   /* --- Elevation --------------------------------------------------------
-     ONE soft shadow, per the brief. `sm` and `md` are the same value on
-     purpose: the design has a single resting elevation, and a card that has to
-     look "more important" than its neighbour should earn that from size or
-     position, not from a deeper shadow. `lg` exists only for hover lift.
-     Cool slate rather than warm near-black, so the shadow belongs to the same
-     family as `--text`. */
-  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
-  --shadow-sm: 0 8px 30px rgba(15, 23, 42, 0.06);
-  --shadow-md: 0 8px 30px rgba(15, 23, 42, 0.06);
-  --shadow-lg: 0 12px 40px rgba(15, 23, 42, 0.1);
+     Layered cool shadows rather than one flat blur: a tight contact shadow
+     plus a wide diffuse one, so a card reads as sitting ON the page instead
+     of glowing behind it. `sm` and `md` are close on purpose — the design has
+     two resting elevations, and a card that has to look "more important" than
+     its neighbour should earn that from size or position. `lg` exists only
+     for hover lift. Cool slate rather than warm near-black, so the shadow
+     belongs to the same family as `--text`. */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-sm:
+    0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -12px rgba(15, 23, 42, 0.1);
+  --shadow-md:
+    0 2px 4px rgba(15, 23, 42, 0.04), 0 16px 40px -16px rgba(15, 23, 42, 0.14);
+  --shadow-lg:
+    0 4px 8px rgba(15, 23, 42, 0.04), 0 32px 64px -24px rgba(15, 23, 42, 0.18);
 
-  /* 16px — see the brief's 14–16px band. */
-  --radius-card: 1rem;
+  /* Two radii, and no others: `card` for surfaces (14px — crisp enough to
+     read as product UI rather than a bubble), `control` for anything a finger
+     touches (10px — buttons and inputs, deliberately NOT pills: the pill
+     button was the previous design's most recognisable shape). */
+  --radius-card: 0.875rem;
+  --radius-control: 0.625rem;
 }
 
 /* The site is light-only: `color-scheme: light` above is the whole theme
@@ -188,9 +196,10 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* Fraunces, at 600. The heading face is a token decision, not a per-component
-     one — every h1–h4 inherits it, and anything that needs the display face
-     outside a heading asks for `font-display` explicitly. */
+  /* Sora, at 600 with 700 for the display step. The heading face is a token
+     decision, not a per-component one — every h1–h4 inherits it, and anything
+     that needs the display face outside a heading asks for `font-display`
+     explicitly. */
   h1,
   h2,
   h3,
@@ -282,12 +291,22 @@
     @apply fixed left-4 top-4 z-[100] not-sr-only;
   }
 
-  /* Sentence case, not the tracked uppercase this used to be. The uppercase
-     micro-label is the reference site's idiom (numbered service cards, slashed
-     feature lists) and it is the single most recognisable thing this design
-     needed to stop doing. */
+  /* The eyebrow idiom: UPPERCASE, wide-tracked, in the interactive blue, with
+     a coral tick before it. The label text itself is unchanged — `text-transform`
+     is a presentation decision, so the DOM still carries the sentence case the
+     registry defines (and what a crawler reads). The explicit size/weight/
+     tracking override `text-label`, because both would otherwise emit a
+     `letter-spacing` utility and the winner would be file order. */
   .eyebrow {
-    @apply inline-flex items-center gap-2.5 text-sm font-medium text-accent;
+    @apply inline-flex items-center gap-3 text-[0.6875rem] font-semibold uppercase leading-none tracking-[0.18em] text-accent;
+  }
+
+  /* The rule before an eyebrow's label. Kept as a named recipe so the two
+     places that draw one (SectionLabel, the hero's inline eyebrow) cannot
+     drift apart — one is a hairline, the other used to be a different width.
+     Callers mark it `aria-hidden`; it is decoration either way. */
+  .eyebrow-tick {
+    @apply h-1.5 w-1.5 shrink-0 rotate-45 bg-marigold;
   }
 
   /* The two surface roles, as named recipes rather than repeated class
@@ -311,19 +330,21 @@
     @apply transition-all duration-200 ease-out;
   }
 
-  /* Shadow only. This used to also snap `border-ink`, which on white reads as a
-     hard black outline appearing under the cursor — far too loud for a hover,
-     and it fought the single soft shadow doing the actual lift. */
+  /* Shadow lift plus a border that firms up on hover. This used to also snap
+     `border-ink`, which on white reads as a hard black outline appearing
+     under the cursor — far too loud for a hover, and it fought the shadow
+     doing the actual lift. The border now moves only one step, from `line`
+     to `line-strong`. */
   .card-interactive:hover {
-    @apply -translate-y-1 border-line-strong shadow-lg;
+    @apply -translate-y-1 border-line-strong shadow-md;
   }
 
   /* Tag chips — the category and technology pills on cards, timeline items and
-     articles. The same string was hand-typed at five call sites, and one of
-     them had quietly grown a `font-medium` the other four did not have. One
-     recipe, one weight. */
+     articles. Now a10px control-radius rectangle rather than a pill: the pill
+     shape belonged to the previous design, and a crisp chip reads as metadata
+     rather than as a button. One recipe, one weight. */
   .chip {
-    @apply rounded-full border border-line px-3 py-1 text-label text-muted;
+    @apply rounded-control border border-line bg-subtle px-2.5 py-1 text-label font-medium text-muted;
   }
 
   /* Re-points the token variables for everything inside, so the existing

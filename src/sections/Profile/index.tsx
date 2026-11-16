@@ -70,8 +70,18 @@ export function ProfileIntro() {
   const whatsappHref = whatsappUrl(profile.whatsapp);
 
   return (
-    <Section className="border-b border-line pb-14 pt-32 md:pb-20 md:pt-40 lg:pb-24 lg:pt-44">
-      <Container>
+    <Section className="relative overflow-hidden border-b border-line bg-subtle pb-14 pt-32 md:pb-20 md:pt-40 lg:pb-24 lg:pt-44">
+      {/* Decorative, aria-hidden — the PageHeader band shape, so /about opens
+          with the same masthead language as every other inner route. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-24 top-1/2 hidden h-72 w-72 -translate-y-1/2 rotate-45 rounded-[3.5rem] border-2 border-marigold/30 xl:block"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-4 top-1/2 hidden h-24 w-24 -translate-y-1/2 rotate-45 bg-marigold/10 xl:block"
+      />
+      <Container className="relative">
         <div className="grid gap-14 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-7">
             <Breadcrumb
@@ -81,7 +91,7 @@ export function ProfileIntro() {
               ]}
             />
 
-            <h1 className="mt-7 text-h1 font-medium">
+            <h1 className="mt-7 text-h1 font-semibold">
               {HEADLINE.map((line) => (
                 <span key={line} className="-mb-[0.06em] block pb-[0.06em]">
                   {line}
@@ -110,7 +120,7 @@ export function ProfileIntro() {
                 {CAPABILITIES.map((capability) => (
                   <li
                     key={capability}
-                    className="border border-line bg-surface px-3 py-1.5 text-xs font-medium tracking-tight text-ink"
+                    className="rounded-control border border-line bg-surface px-3 py-1.5 text-xs font-medium tracking-tight text-ink transition-colors duration-200 hover:border-line-strong"
                   >
                     {capability}
                   </li>
@@ -123,7 +133,7 @@ export function ProfileIntro() {
             <div className="flex flex-col gap-4 lg:sticky lg:top-28">
               <Reveal>
                 <Card className="p-4">
-                  <div className="relative aspect-square overflow-hidden">
+                  <div className="relative aspect-square overflow-hidden rounded-control">
                     <Image
                       src="/images/dipendra-guragain.jpg"
                       alt={`Portrait of ${profile.name}`}
@@ -133,7 +143,9 @@ export function ProfileIntro() {
                     />
                   </div>
                   <div className="mt-4">
-                    <p className="text-lg font-semibold tracking-tight">{profile.name}</p>
+                    <p className="font-display text-lg font-semibold tracking-tight">
+                      {profile.name}
+                    </p>
                     <p className="mt-1 text-label font-medium text-muted">
                       {profile.title} · {profile.location}
                     </p>
@@ -146,7 +158,7 @@ export function ProfileIntro() {
                   <p className="flex items-start gap-2.5 text-label font-semibold text-ink">
                     <span
                       aria-hidden
-                      className="mt-[0.35em] h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
+                      className="mt-[0.35em] h-1.5 w-1.5 shrink-0 rotate-45 bg-accent"
                     />
                     {profile.availabilityText}
                   </p>

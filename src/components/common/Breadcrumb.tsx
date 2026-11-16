@@ -31,6 +31,9 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
 
             return (
               <li key={item.path} className="flex items-center gap-2.5">
+                {/* The "/" is live copy — the redesign keeps it verbatim and
+                    only restyles it, because it is visible text on every other
+                    deploy of this site. */}
                 {index > 0 ? (
                   <span aria-hidden className="text-line-strong">
                     /

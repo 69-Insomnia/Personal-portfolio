@@ -21,21 +21,21 @@ interface SectionHeadingProps {
 /**
  * The masthead for a section.
  *
- * ## The layout changed shape
+ * ## The layout changed shape (redesign pass)
  *
- * It used to be a 12-column split with the eyebrow and `<h2>` in columns 1–7
- * and the description floating in columns 9–12, bottom-aligned. That produced a
- * heading whose line breaks were dictated by a 7/12 column rather than by the
- * sentence — on the longer section titles the `<h2>` wrapped mid-clause while
- * a third of the grid sat empty beside it.
+ * The current composition is a hanging masthead with a side note:
  *
- * Now the eyebrow and the optional action share a top row, and the heading runs
- * the full width beneath them. The heading gets to break where the sentence
- * says, and the action lands at the top-right where it reads as belonging to
- * the section rather than to the copy.
+ * - The eyebrow and the optional action share a top row, full width.
+ * - Beneath them, a 12-column grid: the `<h2>` takes columns 1–7 and the
+ *   description sits in columns 9–12, baseline-aligned, marked with a coral
+ *   left rule so it reads as a note about the heading rather than as more
+ *   heading copy.
  *
- * The description is capped at the 68ch measure rather than at a column, for
- * the same reason.
+ * The split is safe here (where an earlier 7/12 version was not) because the
+ * heading now carries `text-wrap: balance` from the base layer and the note
+ * column is short by construction — it is the section's supporting sentence,
+ * capped at ~34ch by the column itself. On mobile everything stacks in DOM
+ * order: label, heading, note.
  *
  * The props are unchanged, so `/pricing`'s three usages and every section
  * component keep working untouched.
@@ -55,11 +55,15 @@ export function SectionHeading({
         {action}
       </div>
 
-      <RevealText as="h2" text={title} className="mt-6 max-w-4xl text-h2" />
+      <div className="mt-7 grid gap-x-10 gap-y-5 lg:grid-cols-12">
+        <RevealText as="h2" text={title} className="lg:col-span-7 text-h2" />
 
-      {description ? (
-        <p className="measure mt-5 text-lead text-muted">{description}</p>
-      ) : null}
+        {description ? (
+          <p className="measure border-l-2 border-marigold pl-5 text-[0.975rem] leading-relaxed text-muted lg:col-span-4 lg:col-start-9 lg:self-end lg:pl-6">
+            {description}
+          </p>
+        ) : null}
+      </div>
     </div>
   );
 }

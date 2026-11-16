@@ -88,10 +88,10 @@ const config: Config = {
         lg: 'var(--shadow-lg)',
       },
       fontFamily: {
-        /* Body. Plus Jakarta Sans, loaded in layout.tsx and exposed as
-           `--font-sans`, so the `font-sans` in globals.css's body rule IS this
-           face. The fallback stack is deliberately sans — a serif fallback
-           would make the font-swap flash from serif to sans. */
+        /* Body. Inter, loaded in layout.tsx and exposed as `--font-sans`, so
+           the `font-sans` in globals.css's body rule IS this face. The fallback
+           stack is deliberately sans — a serif fallback would make the
+           font-swap flash from serif to sans. */
         sans: [
           'var(--font-sans)',
           'ui-sans-serif',
@@ -100,58 +100,62 @@ const config: Config = {
           'Segoe UI',
           'sans-serif',
         ],
-        /* Headings. Fraunces, exposed as `--font-display` and applied to every
-           h1–h4 by the base layer in globals.css. The fallback is a serif so a
-           swap never changes the *shape* of a heading, only its refinement. */
+        /* Headings. Sora, exposed as `--font-display` and applied to every
+           h1–h4 by the base layer in globals.css. The fallback is a neutral
+           sans so a swap never changes the *shape* of a heading, only its
+           refinement. */
         display: [
           'var(--font-display)',
-          'ui-serif',
-          'Georgia',
-          'Cambria',
-          'Times New Roman',
-          'serif',
+          'ui-sans-serif',
+          'system-ui',
+          '-apple-system',
+          'Segoe UI',
+          'sans-serif',
         ],
       },
       fontSize: {
-        /* Leading and tracking are tuned for FRAUNCES.
+        /* Leading and tracking are tuned for SORA.
 
-           The previous scale was cut for Space Grotesk, a grotesque derived
-           from Space Mono, which carries wide geometric sidebearings and takes
-           strongly negative tracking as the size climbs (-0.028em at display).
-           Fraunces is a serif with optical sizing: it already tightens its own
-           large sizes, and stacking a grotesque's tracking on top of that reads
-           cramped and brittle. These steps run roughly half the old tracking.
+           Sora is a wide geometric sans: at display sizes its round bowls
+           need more negative tracking than a text face would (−0.03em reads
+           as tight rather than cramped at 4rem) and a shorter leading, since
+           the tall x-height already fills the line box. The old Fraunces scale
+           ran optical-size-aware near-zero tracking; these steps do that work
+           by hand.
 
-           `label` runs the other way — it is the small supporting type behind
-           badges, card captions and meta rows. Its 0.18em tracking was there to
-           open up UPPERCASE; now that the design is sentence case throughout,
-           that much air between lowercase letters just reads as broken spacing,
-           so it drops to 0.04em. */
+           The two supporting steps are documented at their definitions below. */
         display: [
-          'clamp(2.5rem, 4.6vw, 4rem)',
-          { lineHeight: '1.08', letterSpacing: '-0.016em' },
+          'clamp(2.75rem, 5vw, 4.5rem)',
+          { lineHeight: '1.02', letterSpacing: '-0.032em' },
         ],
-        h1: ['clamp(2.5rem, 6vw, 4.25rem)', { lineHeight: '1.08', letterSpacing: '-0.016em' }],
-        h2: ['clamp(1.75rem, 4vw, 2.5rem)', { lineHeight: '1.15', letterSpacing: '-0.012em' }],
-        h3: ['clamp(1.25rem, 2.2vw, 1.75rem)', { lineHeight: '1.25', letterSpacing: '-0.008em' }],
+        h1: ['clamp(2.5rem, 5.4vw, 4rem)', { lineHeight: '1.05', letterSpacing: '-0.03em' }],
+        h2: ['clamp(1.875rem, 3.6vw, 2.75rem)', { lineHeight: '1.12', letterSpacing: '-0.024em' }],
+        h3: ['clamp(1.25rem, 2vw, 1.625rem)', { lineHeight: '1.28', letterSpacing: '-0.014em' }],
         lead: ['clamp(1.0625rem, 1.1vw, 1.1875rem)', { lineHeight: '1.65' }],
         /* The two supporting steps. `micro` is the denser of the two, for
-           chrome inside a panel; `label` is the default. Both carry their
-           tracking inline, so an element that uses them never needs a
-           `tracking-[…]` escape hatch. */
-        micro: ['0.6875rem', { lineHeight: '1.5', letterSpacing: '0.02em' }],
-        label: ['0.8125rem', { lineHeight: '1.5', letterSpacing: '0.04em' }],
+           chrome inside a panel; `label` is the default for breadcrumbs, meta
+           rows and card captions — most of which are sentence case, so it
+           keeps modest tracking. The UPPERCASE idiom lives on `.eyebrow` in
+           globals.css, which carries its own wide tracking where it needs it. */
+        micro: ['0.6875rem', { lineHeight: '1.5', letterSpacing: '0.04em' }],
+        label: ['0.75rem', { lineHeight: '1.5', letterSpacing: '0.05em' }],
       },
       maxWidth: {
-        container: '86rem',
+        /*1280px — a laptop-first measure. The old 86rem (1376px) left wide
+           gutters at common desktop widths without giving the content more
+           room;1440px+ views now center a denser column, which is how the
+           agency/SaaS references this design takes its cues from behave. */
+        container: '80rem',
         /* The brief's prose measure. Mirrors the `.measure` utility in
            globals.css so either spelling works. */
         prose: '68ch',
       },
-      /* One radius for every card and nested panel, so a card containing a
-         panel still reads as a single object. Defined in globals.css. */
+      /* Two radii, mirroring globals.css: `card` for surfaces, `control` for
+         buttons, inputs and chips. One radius for every nested panel still
+         holds — a card containing a panel reads as a single object. */
       borderRadius: {
         card: 'var(--radius-card)',
+        control: 'var(--radius-control)',
       },
       transitionTimingFunction: {
         out: 'cubic-bezier(0.22, 1, 0.36, 1)',

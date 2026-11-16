@@ -14,8 +14,19 @@ import { getSeo, getSiteSettings } from '@/lib/content';
 export default function ContactPage() {
   return (
     <>
-      <Section className="border-b border-line pb-14 pt-32 md:pb-16 md:pt-40">
-        <Container>
+      {/* No bottom rule: the header and the form band below it are both on the
+          subtle surface, so the page reads as one continuous band with the
+          white form panel lifted out of it. */}
+      <Section className="relative overflow-hidden bg-subtle pb-14 pt-32 md:pb-16 md:pt-40">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-24 top-1/2 hidden h-72 w-72 -translate-y-1/2 rotate-45 rounded-[3.5rem] border-2 border-marigold/30 xl:block"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-4 top-1/2 hidden h-24 w-24 -translate-y-1/2 rotate-45 bg-marigold/10 xl:block"
+        />
+        <Container className="relative">
           {/* The shared component, not a hand-rolled `<nav>`. The local one
               looked identical but carried no `BreadcrumbList`, so this was the
               only page on the site with a visible trail and no markup to match
@@ -41,7 +52,7 @@ export default function ContactPage() {
               wherever you are.
             </p>
             <p className="mt-4 flex items-center gap-2.5 text-sm text-muted">
-              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-marigold" />
+              <span aria-hidden className="h-1.5 w-1.5 rotate-45 bg-marigold" />
               {profile.location} · {profile.availabilityText}
             </p>
           </Reveal>

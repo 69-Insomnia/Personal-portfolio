@@ -28,7 +28,8 @@ interface SectionLabelProps {
 }
 
 /**
- * The small label above a section heading.
+ * The small label above a section heading: a coral diamond tick and an
+ * UPPERCASE tracked label, in the interactive blue.
  *
  * ## What changed and why
  *
@@ -44,10 +45,11 @@ interface SectionLabelProps {
  * but it stays: the section registry it wraps is still the thing that fails a
  * build on an unknown section id.
  *
- * What is left is a marigold rule and a sentence-case label. The rule is
- * marigold (coral) rather than the interactive blue because it is pure
- * decoration — it sits against paper, carries no text, and is exactly the
- * scarce-accent role the palette reserves marigold for.
+ * The transform lives in the `.eyebrow` recipe (globals.css), so the DOM —
+ * and therefore what a crawler reads — keeps the sentence case the registry
+ * defines. The tick replaced the old hairline rule: a 1.5px square rotated
+ * 45° reads as a deliberate mark at any zoom, where a 1px hairline vanishes
+ * on low-DPI displays.
  */
 export function SectionLabel({ section, label, index, className }: SectionLabelProps) {
   const meta = section ? getSection(section) : undefined;
@@ -63,7 +65,7 @@ export function SectionLabel({ section, label, index, className }: SectionLabelP
 
   return (
     <p className={cn('eyebrow', className)}>
-      <span aria-hidden className="h-px w-7 bg-marigold" />
+      <span aria-hidden className="eyebrow-tick" />
       <span>{resolvedLabel}</span>
     </p>
   );

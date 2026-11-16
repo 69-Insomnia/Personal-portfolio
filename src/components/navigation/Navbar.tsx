@@ -40,7 +40,7 @@ export function Navbar() {
   return (
     <>
       {/*
-        Ivory and blurred at ALL times, not only once scrolled.
+        White and blurred at ALL times, not only once scrolled.
 
         The old header was transparent at the top of the page and only picked up
         its background after 24px of scroll. On a page that opens on a
@@ -52,10 +52,17 @@ export function Navbar() {
         It stays `sticky` in effect (fixed + the page's own top padding) rather
         than becoming `sticky`, because the mobile menu's focus trap relies on
         the header being a direct child of <body>.
+
+        The redesign: the navigation row is centred between the wordmark and
+        the actions, and the active item is a soft blue pill rather than an
+        underline — the layoutId spring slides it between items, which is the
+        header's one piece of motion. Links grow a `rounded-control`
+        background on hover so the row reads as controls, not as prose.
       */}
       <header
         className={cn(
           'fixed inset-x-0 top-0 z-nav border-b border-line bg-paper-blur backdrop-blur-md transition-all duration-200 ease-out',
+          scrolled && 'shadow-xs',
         )}
       >
         <Container
@@ -64,16 +71,16 @@ export function Navbar() {
             scrolled ? 'h-16' : 'h-20 md:h-24',
           )}
         >
-          <Link href="/" className="group flex items-center gap-2.5">
+          <Link href="/" className="group flex items-center gap-3">
             <Image
               src={profile.avatar}
               alt=""
               width={40}
               height={40}
-              className="h-10 w-10 shrink-0 rounded-full border border-line object-cover"
+              className="h-10 w-10 shrink-0 rounded-control border border-line object-cover transition-shadow duration-200 group-hover:shadow-sm"
             />
             <span className="flex flex-col">
-              <span className="text-[15px] font-semibold leading-tight text-ink transition-colors group-hover:text-accent">
+              <span className="text-[15px] font-semibold leading-tight tracking-[-0.01em] text-ink transition-colors group-hover:text-accent">
                 {profile.name}
               </span>
               {/*
@@ -102,27 +109,33 @@ export function Navbar() {
             what it is for. The breakpoint and the reasoning are unchanged from
             the fix that originally set it.
           */}
-          <nav aria-label="Primary" className="hidden items-center gap-1 xl:flex">
-            {mainNavigation.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-current={isActive(item.href) ? 'page' : undefined}
-                className={cn(
-                  'relative px-3 py-2 text-sm transition-colors duration-200',
-                  isActive(item.href) ? 'text-ink' : 'text-muted hover:text-ink',
-                )}
-              >
-                {item.label}
-                {isActive(item.href) ? (
-                  <motion.span
-                    layoutId="nav-active-link"
-                    className="absolute inset-x-3 -bottom-0.5 h-px bg-accent"
-                    transition={{ type: 'spring', stiffness: 420, damping: 34 }}
-                  />
-                ) : null}
-              </Link>
-            ))}
+          <nav
+            aria-label="Primary"
+            className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 xl:flex"
+          >
+            {mainNavigation.map((item) => {
+              const active = isActive(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={active ? 'page' : undefined}
+                  className={cn(
+                    'relative rounded-control px-3.5 py-2 text-sm font-medium transition-colors duration-200',
+                    active ? 'text-ink' : 'text-muted hover:bg-subtle hover:text-ink',
+                  )}
+                >
+                  {item.label}
+                  {active ? (
+                    <motion.span
+                      layoutId="nav-active-link"
+                      className="absolute inset-0 -z-10 rounded-control bg-accent-soft ring-1 ring-accent/15"
+                      transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+                    />
+                  ) : null}
+                </Link>
+              );
+            })}
           </nav>
 
           <div className="flex items-center gap-2.5">
@@ -143,7 +156,7 @@ export function Navbar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Message me on WhatsApp at ${profile.whatsapp}`}
-                  className="hidden h-11 items-center gap-2 rounded-full bg-whatsapp pl-4 pr-5 text-[15px] font-medium text-whatsapp-ink transition-colors duration-200 hover:bg-whatsapp-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink lg:inline-flex"
+                  className="hidden h-11 items-center gap-2 rounded-control bg-whatsapp pl-4 pr-5 text-[15px] font-semibold text-whatsapp-ink shadow-sm transition-all duration-200 hover:bg-whatsapp-hover hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink lg:inline-flex"
                 >
                   <WhatsAppIcon size={17} aria-hidden />
                   Message me on WhatsApp
@@ -153,7 +166,7 @@ export function Navbar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Message me on WhatsApp at ${profile.whatsapp}`}
-                  className="flex h-11 w-11 items-center justify-center rounded-full bg-whatsapp text-whatsapp-ink transition-colors duration-200 hover:bg-whatsapp-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink lg:hidden"
+                  className="flex h-11 w-11 items-center justify-center rounded-control bg-whatsapp text-whatsapp-ink transition-colors duration-200 hover:bg-whatsapp-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink lg:hidden"
                 >
                   <WhatsAppIcon size={17} aria-hidden />
                 </a>
@@ -164,7 +177,7 @@ export function Navbar() {
               onClick={() => setMenuOpen(true)}
               aria-label="Open menu"
               aria-expanded={menuOpen}
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-line-strong text-ink transition-colors duration-200 hover:border-accent hover:text-accent xl:hidden"
+              className="flex h-11 w-11 items-center justify-center rounded-control border border-line-strong text-ink transition-colors duration-200 hover:border-accent hover:text-accent xl:hidden"
             >
               <Menu size={18} aria-hidden />
             </button>

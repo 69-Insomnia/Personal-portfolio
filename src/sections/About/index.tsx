@@ -13,10 +13,15 @@ import { SectionLabel } from '@/components/ui/SectionLabel';
  * The full first-person narrative and the sidebar cards live in
  * `src/sections/Profile`, which is a different section with a different job.
  *
- * The label moved above the heading. It used to sit alone in a 4-column rail
- * with the heading and body in the 8 beside it, which made the label look like
- * the heading of its own empty column. Every other section on the page now runs
- * label-then-heading down a single left edge, and this one matches.
+ * ## The layout (redesign pass)
+ *
+ * This used to be a heading followed by a 4-up grid of bordered cards — the
+ * same card language three other sections on the page also used. It is now a
+ * split editorial layout: the heading and lead paragraph sit in a wide left
+ * column, and the four points run as a hairline-divided numbered list in a
+ * right-hand rail. No boxes, no shadows — the rhythm comes from the rules
+ * between items, so this section reads differently from every carded section
+ * around it while carrying exactly the same copy.
  */
 export function Introduction() {
   const cards = [
@@ -43,16 +48,16 @@ export function Introduction() {
   ];
 
   return (
-    <Section id="about" className="border-t border-line py-12 md:py-14">
+    <Section id="about" className="border-t border-line">
       <Container>
-        <div className="flex flex-col gap-10">
-          <div className="max-w-3xl">
+        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-5">
             <SectionLabel section="about" />
 
             <RevealText
               as="h2"
               text="An ecommerce specialist in Kathmandu who works on the whole store, not one channel."
-              className="mt-6 max-w-4xl text-h2"
+              className="mt-6 text-h2"
             />
 
             <Reveal delay={0.1}>
@@ -64,20 +69,20 @@ export function Introduction() {
             </Reveal>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+          <ol className="border-t border-line lg:col-span-6 lg:col-start-7">
             {cards.map((card, index) => (
-              <Reveal key={card.title} delay={index * 0.08}>
-                <div className="h-full rounded-[1.25rem] border border-line bg-surface p-6 shadow-sm md:p-7">
-                  <h3 className="text-[1.7rem] font-semibold leading-tight tracking-[-0.04em] text-ink">
+              <Reveal key={card.title} as="li" delay={index * 0.08} className="group border-b border-line py-7">
+                <div>
+                  <h3 className="font-display text-[1.3rem] font-semibold leading-snug tracking-[-0.015em] text-ink transition-colors duration-200 group-hover:text-accent">
                     {card.title}
                   </h3>
-                  <p className="mt-5 text-[1.02rem] leading-relaxed text-muted">
+                  <p className="mt-2.5 text-[0.975rem] leading-relaxed text-muted">
                     {card.description}
                   </p>
                 </div>
               </Reveal>
             ))}
-          </div>
+          </ol>
         </div>
       </Container>
     </Section>

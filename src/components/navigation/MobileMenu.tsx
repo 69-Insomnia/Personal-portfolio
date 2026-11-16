@@ -128,18 +128,25 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
           aria-modal="true"
           aria-label="Site menu"
         >
+          {/*
+            The redesign: a white sheet with a hairline header, oversized
+            display-face links stacked with generous leading, and the CTAs in a
+            pinned footer block rather than floating after the list. The sheet
+            itself only fades — the links stagger in with a short travel, so the
+            menu reads as one surface arriving rather than rows popping.
+          */}
           <div className="flex h-full flex-col">
-            <div className="flex h-20 shrink-0 items-center justify-between px-5 sm:px-8">
-              <span className="flex items-center gap-2.5">
+            <div className="flex h-20 shrink-0 items-center justify-between border-b border-line px-5 sm:px-8">
+              <span className="flex items-center gap-3">
                 <Image
                   src={profile.avatar}
                   alt=""
                   width={36}
                   height={36}
-                  className="h-9 w-9 shrink-0 rounded-full border border-line object-cover"
+                  className="h-9 w-9 shrink-0 rounded-control border border-line object-cover"
                 />
                 <span className="flex flex-col">
-                  <span className="text-[15px] font-semibold leading-tight tracking-tight">
+                  <span className="text-[15px] font-semibold leading-tight tracking-[-0.01em]">
                     {profile.name}
                   </span>
                   <span className="mt-0.5 text-xs font-medium text-muted">
@@ -152,31 +159,30 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                 type="button"
                 onClick={onClose}
                 aria-label="Close menu"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-line transition-colors hover:border-ink"
+                className="flex h-11 w-11 items-center justify-center rounded-control border border-line-strong transition-colors hover:border-accent hover:text-accent"
               >
                 <X size={16} aria-hidden />
               </button>
             </div>
 
-            <nav aria-label="Mobile" className="min-h-0 flex-1 overflow-y-auto px-5 pb-10 sm:px-8">
-              <ul className="border-t border-line">
+            <nav aria-label="Mobile" className="min-h-0 flex-1 overflow-y-auto px-5 pb-6 sm:px-8">
+              <ul className="pt-3">
                 {mainNavigation.map((item, index) => (
                   <motion.li
                     key={item.href}
-                    initial={{ opacity: 0, y: 18 }}
+                    initial={{ opacity: 0, y: 14 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{
                       delay: 0.06 * index + 0.05,
-                      duration: 0.45,
-                      ease: 'easeOut',
+                      duration: 0.4,
+                      ease: [0.22, 1, 0.36, 1],
                     }}
-                    className="border-b border-line"
                   >
                     <Link
                       href={item.href}
                       onClick={onClose}
                       aria-current={isActive(item.href) ? 'page' : undefined}
-                      className="group flex min-h-[44px] items-center py-5"
+                      className="group flex min-h-[56px] items-center justify-between rounded-control px-3 py-3 transition-colors hover:bg-subtle"
                     >
                       {/* The two-digit ordinal that used to sit on the right of
                           this row is gone. It numbered the menu against the
@@ -184,22 +190,29 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                           reader nothing the list order did not. */}
                       <span
                         className={cn(
-                          'font-display text-2xl font-semibold transition-colors group-hover:text-accent',
+                          'font-display text-[1.6rem] font-semibold leading-tight tracking-[-0.02em] transition-colors group-hover:text-accent',
                           isActive(item.href) ? 'text-accent' : 'text-ink',
                         )}
                       >
                         {item.label}
                       </span>
+                      <span
+                        aria-hidden
+                        className={cn(
+                          'h-1.5 w-1.5 rotate-45 transition-colors',
+                          isActive(item.href) ? 'bg-marigold' : 'bg-line group-hover:bg-marigold',
+                        )}
+                      />
                     </Link>
                   </motion.li>
                 ))}
               </ul>
 
               <motion.div
-                initial={{ opacity: 0, y: 18 }}
+                initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.45, ease: 'easeOut' }}
-                className="mt-8"
+                transition={{ delay: 0.4, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                className="mt-8 border-t border-line pt-7"
               >
                 {waHref ? (
                   <Button
@@ -216,7 +229,10 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                 <Button href="/contact" size="lg" showArrow className="mt-3 w-full">
                   Start a project
                 </Button>
-                <p className="mt-6 text-sm text-muted">{profile.availabilityText}</p>
+                <p className="mt-6 flex items-center gap-2.5 text-sm text-muted">
+                  <span aria-hidden className="h-1.5 w-1.5 shrink-0 rotate-45 bg-marigold" />
+                  {profile.availabilityText}
+                </p>
               </motion.div>
             </nav>
           </div>

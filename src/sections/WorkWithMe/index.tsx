@@ -30,7 +30,7 @@ export function WorkWithMe() {
               <li key={option.title} className="border-b border-line">
                 <Link
                   href={option.href}
-                  className="group grid items-baseline gap-2 py-6 md:grid-cols-12 md:gap-6 md:py-7"
+                  className="group -mx-3 grid items-baseline gap-2 rounded-control px-3 py-6 transition-colors duration-200 hover:bg-subtle md:grid-cols-12 md:gap-6 md:py-7"
                 >
                   {/* The "01/02/03" ordinal that used to open this row is gone
                       — see `src/components/ui/SectionLabel` for why the design

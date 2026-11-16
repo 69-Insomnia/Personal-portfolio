@@ -23,7 +23,7 @@ export function Education() {
                 <li key={index} className="border-b border-line py-7">
                   <div className="grid gap-3 md:grid-cols-12 md:items-baseline md:gap-6">
                     <div className="md:col-span-5">
-                      <h3 className="text-xl font-medium tracking-tight md:text-2xl">
+                      <h3 className="font-display text-xl font-semibold tracking-tight md:text-2xl">
                         {item.degree}
                       </h3>
                       <p className="mt-1 text-sm text-muted">{item.field}</p>

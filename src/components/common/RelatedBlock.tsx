@@ -34,9 +34,9 @@ export function RelatedBlock(props: RelatedBlockProps) {
 
   const gridClass =
     props.kind === 'posts'
-      ? // Article cards carry a 16:10 image and a byline, so the row gap the
-        // project grid uses would run two of them together.
-        'grid gap-x-4 gap-y-10 md:grid-cols-2'
+      // BlogCards are horizontal records, so they stack in two columns with a
+      // tighter gutter than the project grid's image tiles need.
+      ? 'grid gap-4 md:grid-cols-2'
       : props.kind === 'projects' && columns === 4
         ? 'grid gap-4 md:grid-cols-2 lg:grid-cols-4'
         : 'grid gap-4 md:grid-cols-2 lg:grid-cols-3';

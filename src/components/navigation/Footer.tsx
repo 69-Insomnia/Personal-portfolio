@@ -72,11 +72,25 @@ export function Footer({ services }: FooterProps) {
         below need no special-casing: inside the band `primary` is coral on
         deep navy (6.4:1) and `whatsapp` keeps its fixed brand colours.
 
+        The redesign: the band gains a large watermark diamond (decorative,
+        aria-hidden) anchored to its right edge and a hairline top rule, so the
+        closing call to action has a shape of its own instead of being a plain
+        colour block.
+
         It sits inside <footer> rather than above it so the page has one
         closing landmark, not two.
       */}
-      <section className="section-inverse">
-        <Container className="py-20 md:py-24">
+      <section className="relative overflow-hidden section-inverse">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-24 top-1/2 hidden h-72 w-72 -translate-y-1/2 rotate-45 rounded-[3rem] border border-inverse-line lg:block"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-6 top-1/2 hidden h-32 w-32 -translate-y-1/2 rotate-45 lg:block"
+          style={{ backgroundColor: 'rgba(255, 122, 92, 0.1)' }}
+        />
+        <Container className="relative py-24 md:py-28">
           <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
             <div className="lg:col-span-7">
               <h2 className="max-w-2xl text-h2">
@@ -118,7 +132,7 @@ export function Footer({ services }: FooterProps) {
                   alt=""
                   width={56}
                   height={56}
-                  className="h-14 w-14 shrink-0 rounded-full border border-line object-cover"
+                  className="h-14 w-14 shrink-0 rounded-control border border-line object-cover"
                 />
                 <div>
                   <Link
@@ -149,7 +163,7 @@ export function Footer({ services }: FooterProps) {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={socialLabels[key]}
-                        className="flex h-11 w-11 items-center justify-center rounded-full border border-line-strong text-muted transition-colors duration-200 hover:border-accent hover:text-accent"
+                        className="flex h-11 w-11 items-center justify-center rounded-control border border-line-strong text-muted transition-all duration-200 hover:border-accent hover:bg-accent-soft hover:text-accent"
                       >
                         <SocialIcon network={key} />
                       </a>
@@ -160,13 +174,13 @@ export function Footer({ services }: FooterProps) {
             </div>
 
             <nav aria-label="Site">
-              <p className="text-sm font-medium text-ink">Site</p>
+              <p className="text-micro font-semibold uppercase tracking-[0.14em] text-faint">Site</p>
               <ul className="mt-4 flex flex-col">
                 {footerNavigation.map((item) => (
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      className="block py-1.5 text-[15px] text-muted transition-colors duration-200 hover:text-accent"
+                      className="-mx-2 block rounded-control px-2 py-1.5 text-[15px] text-muted transition-colors duration-200 hover:bg-subtle hover:text-accent"
                     >
                       {item.label}
                     </Link>
@@ -176,14 +190,14 @@ export function Footer({ services }: FooterProps) {
             </nav>
 
             <nav aria-label="Services">
-              <p className="text-sm font-medium text-ink">Services</p>
+              <p className="text-micro font-semibold uppercase tracking-[0.14em] text-faint">Services</p>
               {services.length > 0 ? (
                 <ul className="mt-4 flex flex-col">
                   {services.map((service) => (
                     <li key={service.slug}>
                       <Link
                         href={`/services/${service.slug}`}
-                        className="block py-1.5 text-[15px] text-muted transition-colors duration-200 hover:text-accent"
+                        className="-mx-2 block rounded-control px-2 py-1.5 text-[15px] text-muted transition-colors duration-200 hover:bg-subtle hover:text-accent"
                       >
                         {service.shortName ?? listServiceName(service.title)}
                       </Link>
@@ -194,12 +208,12 @@ export function Footer({ services }: FooterProps) {
             </nav>
 
             <div>
-              <p className="text-sm font-medium text-ink">Get in touch</p>
+              <p className="text-micro font-semibold uppercase tracking-[0.14em] text-faint">Get in touch</p>
               <div className="mt-4 flex flex-col gap-1">
                 {telHref ? (
                   <a
                     href={telHref}
-                    className="block py-1.5 text-[15px] font-medium text-ink transition-colors duration-200 hover:text-accent"
+                    className="-mx-2 block rounded-control px-2 py-1.5 text-[15px] font-medium text-ink transition-colors duration-200 hover:bg-subtle hover:text-accent"
                   >
                     {profile.whatsapp}
                   </a>
@@ -209,7 +223,7 @@ export function Footer({ services }: FooterProps) {
                     href={waHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block py-1.5 text-[15px] text-muted transition-colors duration-200 hover:text-accent"
+                    className="-mx-2 block rounded-control px-2 py-1.5 text-[15px] text-muted transition-colors duration-200 hover:bg-subtle hover:text-accent"
                   >
                     WhatsApp
                   </a>
@@ -217,7 +231,7 @@ export function Footer({ services }: FooterProps) {
                 {profile.email ? (
                   <a
                     href={mailtoUrl(profile.email) ?? undefined}
-                    className="block py-1.5 break-words text-[15px] text-muted transition-colors duration-200 hover:text-accent"
+                    className="-mx-2 block rounded-control px-2 py-1.5 break-words text-[15px] text-muted transition-colors duration-200 hover:bg-subtle hover:text-accent"
                   >
                     {profile.email}
                   </a>
@@ -226,7 +240,7 @@ export function Footer({ services }: FooterProps) {
                   href="https://www.google.com/maps/search/?api=1&query=Kathmandu%2C%20Nepal"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block py-1.5 text-[15px] text-muted transition-colors duration-200 hover:text-accent"
+                  className="-mx-2 block rounded-control px-2 py-1.5 text-[15px] text-muted transition-colors duration-200 hover:bg-subtle hover:text-accent"
                   aria-label={`View ${profile.location} service area on Google Maps`}
                 >
                   {profile.location}
@@ -243,7 +257,10 @@ export function Footer({ services }: FooterProps) {
                 `identity.role` (title case) and not paired with the location.
                 Kathmandu still appears in the contact column above, so the
                 local signal is not lost by dropping it from this line. */}
-            <p className="text-sm text-muted">Ecommerce growth expert in Nepal</p>
+            <p className="flex items-center gap-2.5 text-sm text-muted">
+              <span aria-hidden className="h-1.5 w-1.5 shrink-0 rotate-45 bg-marigold" />
+              Ecommerce growth expert in Nepal
+            </p>
           </div>
         </Container>
       </div>

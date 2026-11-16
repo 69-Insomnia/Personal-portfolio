@@ -27,7 +27,7 @@ const variantClasses: Record<CardVariant, string> = {
      classes here — the recipe is the single source of truth for what a card
      looks like, and this component is its API. */
   surface: 'card',
-  outline: 'rounded-card border border-line',
+  outline: 'rounded-card border border-line bg-subtle/50',
   plain: 'rounded-card',
 };
 

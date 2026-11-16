@@ -32,10 +32,14 @@ interface ButtonProps {
  * blue border, for the lower-priority half of a pair (the brief's "one primary
  * button and one text link" is the `primary` + `ghost` case; a genuinely
  * two-button row is `primary` + `secondary`).
+ *
+ * The redesign drops the pill: every control now carries `rounded-control`
+ * (10px), so buttons, inputs and chips share one geometry and the button no
+ * longer reads as a different species from the form fields beside it.
  */
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-accent text-on-accent hover:bg-accent-strong focus-visible:outline-ink',
+    'bg-accent text-on-accent shadow-sm hover:bg-accent-strong hover:shadow-md focus-visible:outline-ink',
   inverse: 'bg-ink text-paper hover:opacity-85 focus-visible:outline-accent',
   secondary:
     'border border-accent bg-surface text-accent hover:bg-accent-soft focus-visible:outline-accent',
@@ -44,7 +48,7 @@ const variantClasses: Record<ButtonVariant, string> = {
   ghost:
     'px-0 text-accent underline-offset-4 hover:underline hover:text-accent-strong focus-visible:outline-accent',
   whatsapp:
-    'bg-whatsapp text-whatsapp-ink hover:bg-whatsapp-hover focus-visible:outline-ink',
+    'bg-whatsapp text-whatsapp-ink shadow-sm hover:bg-whatsapp-hover focus-visible:outline-ink',
 };
 
 /**
@@ -82,7 +86,7 @@ export function Button({
   external,
 }: ButtonProps) {
   const classes = cn(
-    'group inline-flex items-center justify-center rounded-full font-medium transition-all duration-200 ease-out active:scale-[0.98]',
+    'group inline-flex items-center justify-center rounded-control font-semibold tracking-[-0.01em] transition-all duration-200 ease-out active:scale-[0.98]',
     'focus-visible:outline-2 focus-visible:outline-offset-2',
     'disabled:pointer-events-none disabled:opacity-60',
     variantClasses[variant],

@@ -210,7 +210,7 @@ export default async function HomePage() {
           the FAQ questions below use `<details>` rather than the accordion —
           see `GeoBlocks.tsx`. */}
       {answerBlock || (SHOW_QUICK_ANSWERS && quickAnswers.length) ? (
-        <section className="border-t border-line py-12 md:py-14">
+        <section className="border-t border-line bg-subtle py-14 md:py-16">
           <Container>
             <div className="flex flex-col gap-10">
               {answerBlock ? (
@@ -229,27 +229,39 @@ export default async function HomePage() {
         </section>
       ) : null}
 
-      <section className="border-t border-line bg-paper py-12 md:py-14">
+      {/*
+        The numbers band. The redesign turns the five cards into one editorial
+        strip: an oversized statement line on the left, the figures in a
+        hairline-divided row beneath it, and the summary paragraph set as a
+        lead with the coral rule — no boxes at all. The band's `bg-paper`
+        against the subtle answer block above is what separates the two.
+      */}
+      <section className="border-t border-line bg-paper py-16 md:py-20">
         <Container>
-          <div className="flex flex-col gap-7">
-            <p className="text-balance text-[clamp(2.1rem,4vw,4.25rem)] font-semibold leading-[0.95] tracking-[-0.06em] text-ink">
+          <div className="flex flex-col gap-10">
+            <p className="max-w-4xl text-balance font-display text-[clamp(2rem,3.8vw,3.5rem)] font-semibold leading-[1.06] tracking-[-0.03em] text-ink">
               Ecommerce growth specialist in Nepal, by the numbers.
             </p>
 
-            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-5">
+            <ul className="grid grid-cols-2 border-t border-line md:grid-cols-3 xl:grid-cols-5">
               {numbers.map((item) => (
-                <div key={item.label} className="rounded-[1.4rem] border border-line bg-surface p-5 text-left shadow-sm">
-                  <div className="text-[clamp(2.1rem,3vw,4rem)] font-bold leading-none tracking-[-0.06em] text-accent">
+                <li
+                  key={item.label}
+                  className="border-b border-line px-1 py-6 xl:border-b-0 xl:border-r xl:border-line xl:px-6 xl:py-2 xl:last:border-r-0 xl:first:pl-0"
+                >
+                  <div className="font-display text-[clamp(2.25rem,3.4vw,3.75rem)] font-semibold leading-none tracking-[-0.03em] text-accent">
                     {item.value}
                   </div>
-                  <div className="mt-4 text-[0.76rem] uppercase tracking-[0.16em] text-muted">
+                  <div className="mt-3 max-w-[20ch] text-[0.78rem] font-medium uppercase leading-snug tracking-[0.1em] text-muted">
                     {item.label}
                   </div>
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
 
-            <p className="max-w-4xl text-lead text-ink">{growthSummary}</p>
+            <p className="max-w-4xl border-l-2 border-marigold pl-5 text-lead text-ink md:pl-6">
+              {growthSummary}
+            </p>
           </div>
         </Container>
       </section>

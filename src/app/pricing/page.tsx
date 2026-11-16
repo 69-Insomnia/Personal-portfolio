@@ -45,24 +45,94 @@ import { buildMetadata } from '@/utils/metadata';
  * which flat pricing tables do not.
  */
 
-function TierCard({ tier }: { tier: PricingTier }) {
+/**
+ * One pricing tier.
+ *
+ * `variant="card"` is the grid treatment (one-off project work); `variant="row"`
+ * is the full-width record used for the retainers, where a card grid directly
+ * below another card grid would make the two halves of the page
+ * indistinguishable. Same copy, same beats — name, summary, price, inclusions,
+ * timeline, link — re-housed for the composition each section needs.
+ */
+function TierCard({ tier, variant = 'card' }: { tier: PricingTier; variant?: 'card' | 'row' }) {
   const price = formatNpr(tier.fromNpr);
+
+  const priceBlock = price ? (
+    <p className="flex flex-wrap items-baseline gap-x-2">
+      <span className="text-label font-semibold text-muted">from</span>
+      <span className="font-display text-2xl font-semibold tracking-tight">{price}</span>
+      <span className="text-label text-muted">{tier.unit}</span>
+    </p>
+  ) : (
+    <p className="text-lead font-medium">Contact for a quote</p>
+  );
+
+  const includes = (
+    <ul className="grid gap-2.5 text-sm leading-relaxed text-muted">
+      {tier.includes.map((item) => (
+        <li key={item} className="flex gap-2.5">
+          <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rotate-45 bg-accent" />
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
+  );
+
+  const link = tier.serviceSlug ? (
+    <Link
+      href={`/services/${tier.serviceSlug}`}
+      className="group inline-flex items-center gap-1.5 text-sm font-medium text-ink transition-colors hover:text-accent"
+    >
+      How this service works
+      <ArrowUpRight
+        size={15}
+        aria-hidden
+        className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+      />
+    </Link>
+  ) : null;
+
+  if (variant === 'row') {
+    /**
+     * Same DOM order as the card — name, summary, price, inclusions, timeline,
+     * link — re-housed into three columns. The content-identity QA compares
+     * visible text order-sensitively, and moving the price under the title read
+     * as reordered copy even though every word was present.
+     */
+    return (
+      <li className="border-b border-line">
+        <div className="grid gap-5 py-8 md:grid-cols-12 md:gap-8">
+          <div className="md:col-span-3">
+            <h3 className="font-display text-h3">{tier.name}</h3>
+          </div>
+
+          <div className="md:col-span-5">
+            <p className="text-sm leading-relaxed text-muted">{tier.summary}</p>
+            <div className="mt-4">{priceBlock}</div>
+            {tier.excludesSpend ? (
+              <p className="mt-2 text-xs leading-relaxed text-muted">
+                Excludes ad spend, which is paid to Google or Meta directly.
+              </p>
+            ) : null}
+            <div className="mt-4">{includes}</div>
+          </div>
+
+          <div className="md:col-span-4">
+            {tier.timeline ? <p className="text-xs text-muted">{tier.timeline}</p> : null}
+            {link ? <div className="mt-4">{link}</div> : null}
+          </div>
+        </div>
+      </li>
+    );
+  }
 
   return (
     <Card as="li" className="flex flex-col p-6 md:p-7">
-      <h3 className="text-h3">{tier.name}</h3>
+      <h3 className="font-display text-h3">{tier.name}</h3>
       <p className="mt-3 text-sm leading-relaxed text-muted">{tier.summary}</p>
 
       <div className="mt-6 border-t border-line pt-5">
-        {price ? (
-          <p className="flex flex-wrap items-baseline gap-x-2">
-            <span className="text-label font-semibold text-muted">from</span>
-            <span className="text-2xl font-semibold tracking-tight">{price}</span>
-            <span className="text-label text-muted">{tier.unit}</span>
-          </p>
-        ) : (
-          <p className="text-lead font-medium">Contact for a quote</p>
-        )}
+        {priceBlock}
 
         {tier.excludesSpend ? (
           <p className="mt-2 text-xs leading-relaxed text-muted">
@@ -71,32 +141,13 @@ function TierCard({ tier }: { tier: PricingTier }) {
         ) : null}
       </div>
 
-      <ul className="mt-5 grid gap-2.5 text-sm leading-relaxed text-muted">
-        {tier.includes.map((item) => (
-          <li key={item} className="flex gap-2.5">
-            <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent" />
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
+      <div className="mt-5">{includes}</div>
 
       <div className="mt-auto pt-6">
         {tier.timeline ? (
           <p className="mb-4 text-xs text-muted">{tier.timeline}</p>
         ) : null}
-        {tier.serviceSlug ? (
-          <Link
-            href={`/services/${tier.serviceSlug}`}
-            className="group inline-flex items-center gap-1.5 text-sm font-medium text-ink transition-colors hover:text-accent"
-          >
-            How this service works
-            <ArrowUpRight
-              size={15}
-              aria-hidden
-              className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-            />
-          </Link>
-        ) : null}
+        {link}
       </div>
     </Card>
   );
@@ -162,7 +213,7 @@ export default async function PricingPage() {
         </Container>
       </Section>
 
-      <Section className="border-t border-line">
+      <Section className="border-t border-line bg-subtle">
         <Container>
           <SectionHeading
             label="Ongoing"
@@ -170,9 +221,12 @@ export default async function PricingPage() {
             description="Work with no end date, reported against the numbers that matter to the business."
           />
           <Reveal delay={0.05}>
-            <ul className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {/* Rows rather than a second card grid — the section above already
+                is one, and two identical grids in a row would make the page's
+                two halves read as one long list of boxes. */}
+            <ul className="mt-12 border-t border-line">
               {monthlyTiers.map((tier) => (
-                <TierCard key={tier.id} tier={tier} />
+                <TierCard key={tier.id} tier={tier} variant="row" />
               ))}
             </ul>
           </Reveal>
@@ -189,8 +243,10 @@ export default async function PricingPage() {
           <div className="mt-12 grid gap-10 lg:grid-cols-2 lg:gap-x-16">
             {pricingFactors.map((factor, index) => (
               <Reveal key={factor.question} delay={0.05 + index * 0.03}>
-                <h3 className="text-h3">{factor.question}</h3>
-                <p className="mt-4 text-sm leading-relaxed text-muted">{factor.answer}</p>
+                <div className="border-t border-line pt-6">
+                  <h3 className="font-display text-h3">{factor.question}</h3>
+                  <p className="mt-4 text-sm leading-relaxed text-muted">{factor.answer}</p>
+                </div>
               </Reveal>
             ))}
           </div>

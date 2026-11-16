@@ -6,10 +6,8 @@ import { Container } from '@/components/ui/Container';
 import { Reveal } from '@/components/ui/Reveal';
 import { Section } from '@/components/ui/Section';
 import { SectionHeading } from '@/components/ui/SectionHeading';
-import { ScrollRow, scrollRowItemClassName } from '@/components/ui/ScrollRow';
 import { blogPosts } from '@/data/blog';
 import type { BlogPost } from '@/types';
-import { cn } from '@/utils/cn';
 
 export function Blog({ data }: { data?: BlogPost[] }) {
   const items = data ?? blogPosts;
@@ -27,17 +25,24 @@ export function Blog({ data }: { data?: BlogPost[] }) {
           }
         />
 
-        <ScrollRow columns={3} className="mt-12 md:gap-x-4 md:gap-y-10">
+        {/*
+          A stack of full-width rows, not a scroll row of cards.
+
+          This band used to swipe three cards horizontally on every viewport —
+          the same shape the project grid had a section earlier. The articles
+          are now a plain vertical list of the horizontal BlogCard, full width,
+          which reads as a contents page rather than a gallery and gives the
+          homepage one more distinct section composition. On mobile the rows
+          simply stack, so the swipe affordance (and its hidden-scrollbar
+          styling) is no longer needed here at all.
+        */}
+        <ul className="mt-12 flex flex-col gap-4">
           {items.map((post, index) => (
-            <Reveal
-              key={post.slug}
-              delay={index * 0.07}
-              className={cn('h-full', scrollRowItemClassName)}
-            >
+            <Reveal key={post.slug} as="li" delay={index * 0.06}>
               <BlogCard post={post} />
             </Reveal>
           ))}
-        </ScrollRow>
+        </ul>
       </Container>
     </Section>
   );

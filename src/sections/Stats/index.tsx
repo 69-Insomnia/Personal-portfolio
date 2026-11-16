@@ -97,22 +97,28 @@ export function Stats({ serviceCount }: { serviceCount: number }) {
           or hiding a duplicate `<dt>` and having a screen reader hear every
           label twice. Neither is worth it: there is no term being defined, just
           four figures and what they count, which is a list.
+
+          The redesign: the strip is now a single hairline-bordered band with
+          the figures in display face and each label preceded by a coral
+          diamond — no cards, no per-cell backgrounds. The dividers only appear
+          from `lg`, where the four cells share one row.
         */}
-        <ul className="grid grid-cols-2 gap-y-10 py-14 md:py-16 lg:grid-cols-4 lg:gap-y-0">
+        <ul className="grid grid-cols-2 gap-x-6 gap-y-10 border-y border-line py-14 md:py-16 lg:grid-cols-4 lg:gap-y-0">
           {stats.map((stat, index) => (
             <Reveal
               key={stat.label}
               as="li"
               delay={index * 0.06}
-              className="border-line px-1 lg:border-l lg:px-8 lg:first:border-l-0 lg:first:pl-0"
+              className="border-line lg:border-l lg:pl-8 lg:first:border-l-0 lg:first:pl-0"
             >
-              {/* `font-display` and no tracking override — Fraunces at 600 is
-                  the only place on this page a number is the loudest thing, and
-                  optical sizing handles the pairing with the label. */}
-              <span className="block font-display text-5xl font-semibold leading-none text-ink md:text-6xl">
+              <span className="block font-display text-5xl font-semibold leading-none tracking-[-0.03em] text-ink md:text-6xl">
                 {stat.value}
               </span>
-              <span className="mt-3 block max-w-[22ch] text-sm leading-relaxed text-muted">
+              <span className="mt-4 flex max-w-[22ch] items-start gap-2.5 text-sm leading-relaxed text-muted">
+                <span
+                  aria-hidden
+                  className="mt-[0.45em] h-1.5 w-1.5 shrink-0 rotate-45 bg-marigold"
+                />
                 {stat.label}
               </span>
             </Reveal>

@@ -1,6 +1,5 @@
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { Card } from '@/components/ui/Card';
 import { Container } from '@/components/ui/Container';
 import { Icon } from '@/components/common/Icon';
 import { Reveal } from '@/components/ui/Reveal';
@@ -65,52 +64,61 @@ export function Services({ data }: { data: Service[] }) {
           }
         />
 
-        <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {/*
+          An index of full-width rows, not three cards.
+
+          The band used to be a 3-up grid of icon-tile cards — the same card
+          language Projects, Blog and the About beat all spoke. Each service is
+          now one horizontal record: icon tile and title on the left, the
+          description and three capability chips in the middle, the link at the
+          far right, hairlines between. Hovering a row warms it and fills the
+          icon tile, which is the whole interaction — no lift, because a row
+          that jumps off a list reads as a card pretending.
+        */}
+        <ul className="mt-14 border-t border-line">
           {featured.map((service, index) => (
-            <Reveal key={service.slug} delay={index * 0.08} className="h-full">
-              <Card as="article" interactive className="group h-full">
-                <Link
-                  href={`/services/${service.slug}`}
-                  className="flex h-full flex-col p-7 md:p-8"
-                >
-                  <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent-soft text-accent transition-colors duration-200 group-hover:bg-accent group-hover:text-on-accent">
+            <Reveal key={service.slug} as="li" delay={index * 0.07} className="border-b border-line">
+              <Link
+                href={`/services/${service.slug}`}
+                className="group grid gap-4 rounded-card px-2 py-7 transition-colors duration-200 ease-out hover:bg-subtle md:grid-cols-12 md:items-center md:gap-8 md:px-4 md:py-9"
+              >
+                <div className="flex items-center gap-4 md:col-span-4">
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-control border border-line bg-surface text-accent shadow-xs transition-all duration-200 ease-out group-hover:border-accent group-hover:bg-accent group-hover:text-on-accent">
                     <Icon name={service.icon} size={20} />
                   </span>
+                  <h3 className="font-display text-h3 transition-colors duration-200 group-hover:text-accent">
+                    {service.title}
+                  </h3>
+                </div>
 
-                  <h3 className="mt-6 font-display text-h3">{service.title}</h3>
+                <div className="md:col-span-6">
+                  <p className="leading-relaxed text-muted">{service.shortDescription}</p>
 
-                  <p className="mt-3 flex-1 leading-relaxed text-muted">
-                    {service.shortDescription}
-                  </p>
-
-                  {/* Three tags, not the full capability list. The card's job is
+                  {/* Three tags, not the full capability list. The row's job is
                       to place the service, not to enumerate it — the previous
                       version printed four capabilities plus a "+N more" counter,
                       which turned the card into a table of contents. */}
-                  <ul className="mt-6 flex flex-wrap gap-2">
+                  <ul className="mt-4 flex flex-wrap gap-2">
                     {service.capabilities.slice(0, 3).map((capability) => (
-                      <li
-                        key={capability}
-                        className="chip"
-                      >
+                      <li key={capability} className="chip">
                         {capability}
                       </li>
                     ))}
                   </ul>
+                </div>
 
-                  <span className="mt-6 inline-flex items-center gap-1.5 text-[15px] font-medium text-accent">
-                    Learn more
-                    <ArrowRight
-                      size={15}
-                      aria-hidden
-                      className="transition-transform duration-200 ease-out group-hover:translate-x-1"
-                    />
-                  </span>
-                </Link>
-              </Card>
+                <span className="inline-flex items-center gap-1.5 text-[15px] font-semibold text-accent md:col-span-2 md:justify-end">
+                  Learn more
+                  <ArrowRight
+                    size={15}
+                    aria-hidden
+                    className="transition-transform duration-200 ease-out group-hover:translate-x-1"
+                  />
+                </span>
+              </Link>
             </Reveal>
           ))}
-        </div>
+        </ul>
       </Container>
     </Section>
   );

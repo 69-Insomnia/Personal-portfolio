@@ -40,7 +40,34 @@ export function Hero() {
   const whatsappHref = whatsappUrl(profile.whatsapp);
 
   return (
-    <section className="relative overflow-hidden pb-20 pt-32 md:pb-28 md:pt-40 lg:pt-44">
+    <section className="relative overflow-hidden pb-24 pt-32 md:pb-32 md:pt-40 lg:pt-44">
+      {/*
+        The decorative layer: one oversized coral diamond bleeding off the
+        top-right and a blueprint dot-grid wash behind the copy. Both are
+        `aria-hidden` and `pointer-events-none`; the grid is painted with a
+        radial-gradient background-image (no extra request), and it fades out
+        toward the bottom so it never competes with the paragraph.
+      */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 opacity-[0.5]"
+        style={{
+          backgroundImage:
+            'radial-gradient(circle at center, rgba(30, 64, 175, 0.14) 1px, transparent 1px)',
+          backgroundSize: '26px 26px',
+          maskImage: 'linear-gradient(to bottom, black 0%, transparent 72%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 72%)',
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-28 top-24 -z-10 hidden h-80 w-80 rotate-45 rounded-[4rem] border-2 border-marigold/40 lg:block"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-10 top-52 -z-10 hidden h-40 w-40 rotate-45 bg-marigold/10 lg:block"
+      />
+
       <Container>
         <div className="grid items-center gap-16 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-7">
@@ -51,7 +78,7 @@ export function Hero() {
                 transition={{ duration: 0.5, ease: 'easeOut' }}
                 className="eyebrow"
               >
-                <span aria-hidden className="h-px w-7 bg-marigold" />
+                <span aria-hidden className="eyebrow-tick" />
                 <span>{H1_KEYWORD}</span>
               </motion.span>
 
@@ -65,7 +92,7 @@ export function Hero() {
                   would put it in the `<h1>`'s text content twice, and the
                   `<h1>` is the one element on the page where duplicated text is
                   worth avoiding. So it is published exactly once. */}
-              <span className="mt-6 block text-display text-ink">
+              <span className="mt-7 block text-display text-ink">
                 {DISPLAY_LINES.map((line, index) => (
                   <span key={line} className="-mb-[0.08em] block overflow-hidden pb-[0.08em]">
                     <motion.span
@@ -89,7 +116,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.48, duration: 0.6, ease: 'easeOut' }}
-              className="measure mt-8 text-lead text-muted"
+              className="measure mt-8 border-l-2 border-marigold pl-5 text-lead text-muted md:pl-6"
             >
               I&apos;m Dipendra Guragain, an ecommerce growth specialist in Kathmandu,
               Nepal. I help online stores get found on Google, convert more visitors,
@@ -126,18 +153,21 @@ export function Hero() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.7, duration: 0.6, ease: 'easeOut' }}
-                className="mt-8 text-sm text-muted"
+                className="mt-8 flex items-center gap-2.5 text-sm text-muted"
               >
-                Prefer to talk it through?{' '}
-                <a
-                  href={whatsappHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-medium text-accent underline-offset-4 hover:underline"
-                >
-                  Message me on WhatsApp
-                </a>
-                .
+                <span aria-hidden className="h-1.5 w-1.5 shrink-0 rotate-45 bg-marigold" />
+                <span>
+                  Prefer to talk it through?{' '}
+                  <a
+                    href={whatsappHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-accent underline-offset-4 hover:underline"
+                  >
+                    Message me on WhatsApp
+                  </a>
+                  .
+                </span>
               </motion.p>
             ) : null}
           </div>
@@ -191,9 +221,18 @@ export function Hero() {
 function Portrait() {
   return (
     <div className="relative mx-auto w-full max-w-sm lg:max-w-none">
-      <div className="relative aspect-[4/5] overflow-hidden rounded-card border border-line bg-subtle shadow-sm">
+      {/*
+        The offset coral diamond behind the frame — the hero's one loud shape.
+        It peeks out from the top-left corner of the card, `aria-hidden`, and
+        the card's own stacking keeps it behind the portrait.
+      */}
+      <div
+        aria-hidden
+        className="absolute -left-5 -top-5 h-24 w-24 rotate-45 border-2 border-marigold/60 bg-marigold/10"
+      />
+      <div className="relative aspect-[4/5] overflow-hidden rounded-card border border-line bg-subtle shadow-md">
         {/* The cut-out portrait, flush to the bottom so the figure rests on the
-            marigold bar. Cream shows through wherever the PNG is transparent. */}
+            marigold bar. White shows through wherever the PNG is transparent. */}
         <Image
           src={profile.profileImageCutout ?? profile.profileImage}
           alt={`Portrait of ${profile.name}, ecommerce specialist in Nepal`}
@@ -210,17 +249,17 @@ function Portrait() {
         <div aria-hidden className="absolute inset-x-0 bottom-0 h-3 bg-marigold" />
       </div>
 
-      {/* Straddling the bottom edge of the card, toward the right. The dot is
-          the same marigold as the bar it sits on; the label is ink, because
+      {/* Straddling the bottom edge of the card, toward the right. The marker is
+          the same coral diamond the eyebrows use; the label is ink, because
           marigold text would be unreadable and `marigold-ink` is not this
           design's voice. */}
       <motion.p
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.75, duration: 0.5, ease: 'easeOut' }}
-        className="absolute -bottom-4 right-4 flex items-center gap-2 whitespace-nowrap rounded-full border border-line bg-surface px-4 py-2.5 text-sm font-medium text-ink shadow-sm"
+        className="absolute -bottom-4 right-4 flex items-center gap-2.5 whitespace-nowrap rounded-control border border-line bg-surface px-4 py-2.5 text-sm font-medium text-ink shadow-md"
       >
-        <span aria-hidden className="h-2 w-2 shrink-0 rounded-full bg-marigold" />
+        <span aria-hidden className="h-1.5 w-1.5 shrink-0 rotate-45 bg-marigold" />
         Available for projects
       </motion.p>
     </div>

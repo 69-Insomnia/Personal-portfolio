@@ -2,7 +2,7 @@ import { ToolMark } from '@/components/common/ToolMark';
 import type { PlatformTool } from '@/types';
 
 /**
- * A tool's mark and name in a pill.
+ * A tool's mark and name in a chip.
  *
  * Shared by the Stack section's category rows, which is why it takes a
  * resolved `PlatformTool` rather than a name — the rows draw from the same
@@ -16,10 +16,14 @@ import type { PlatformTool } from '@/types';
  * that was a hairline; under this one `shadow-sm` is the design's single soft
  * shadow — 30px of blur — which on a 32px pill reads as a smudge rather than
  * elevation. Chips sit flush on the page now, separated by a hairline only.
+ *
+ * The redesign also drops the pill: the chip is now a `rounded-control`
+ * rectangle, matching the `.chip` recipe so technology tags share one shape
+ * everywhere they appear.
  */
 export function ToolChip({ tool }: { tool: PlatformTool }) {
   return (
-    <span className="inline-flex max-w-full items-center gap-2 rounded-full border border-line bg-surface py-1.5 pl-2.5 pr-3.5">
+    <span className="inline-flex max-w-full items-center gap-2 rounded-control border border-line bg-surface py-1.5 pl-2.5 pr-3.5 transition-colors duration-200 hover:border-line-strong">
       <ToolMark tool={tool} />
       <span className="truncate text-sm text-ink">{tool.name}</span>
     </span>

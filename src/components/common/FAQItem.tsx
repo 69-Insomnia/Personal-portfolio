@@ -46,7 +46,7 @@ export function FAQItem({ question, answer, index, isOpen, onToggle }: FAQItemPr
   const buttonId = `faq-button-${index}`;
 
   return (
-    <li className="border-b border-line">
+    <li className="border-b border-line last:border-b-0">
       <h3>
         <button
           type="button"
@@ -54,7 +54,7 @@ export function FAQItem({ question, answer, index, isOpen, onToggle }: FAQItemPr
           aria-expanded={isOpen}
           aria-controls={panelId}
           onClick={onToggle}
-          className="group flex min-h-[44px] w-full items-start justify-between gap-6 py-6 text-left md:py-7"
+          className="group flex min-h-[44px] w-full items-start justify-between gap-6 px-5 py-6 text-left transition-colors duration-200 hover:bg-subtle/70 md:px-7 md:py-7"
         >
           <span className="font-display text-h3 text-ink transition-colors duration-200 group-hover:text-accent">
             {question}
@@ -62,7 +62,7 @@ export function FAQItem({ question, answer, index, isOpen, onToggle }: FAQItemPr
 
           <span
             aria-hidden
-            className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-colors duration-200 ${
+            className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-control border transition-colors duration-200 ${
               isOpen
                 ? 'border-accent bg-accent text-on-accent'
                 : 'border-line-strong text-ink group-hover:border-accent group-hover:text-accent'
@@ -83,7 +83,7 @@ export function FAQItem({ question, answer, index, isOpen, onToggle }: FAQItemPr
         transition={{ duration: 0.25, ease: 'easeOut' }}
         className="overflow-hidden"
       >
-        <p className="measure pb-7 text-muted">{answer}</p>
+        <p className="measure px-5 pb-7 text-muted md:px-7">{answer}</p>
       </motion.div>
     </li>
   );

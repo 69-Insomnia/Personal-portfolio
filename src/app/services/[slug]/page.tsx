@@ -140,7 +140,7 @@ function QuickFacts({ service }: { service: Service }) {
                 key={column.label}
                 scope="col"
                 className={[
-                  'text-label px-5 py-4 font-medium text-muted',
+                  'px-5 py-4 text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-muted',
                   index > 0 ? 'border-l border-line' : '',
                 ].join(' ')}
               >
@@ -366,7 +366,9 @@ export default async function ServicePage({ params }: PageProps) {
                   ships `opacity:0` in the raw HTML. */}
               {service.deliverables?.length ? (
                 <Card className="mt-10 p-6">
-                  <p className="text-label font-medium text-muted">Deliverables</p>
+                  <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-muted">
+                    Deliverables
+                  </p>
                   <ul className="mt-4 flex flex-col gap-3">
                     {service.deliverables.map((item) => (
                       <li
@@ -375,7 +377,7 @@ export default async function ServicePage({ params }: PageProps) {
                       >
                         <span
                           aria-hidden
-                          className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
+                          className="mt-1.5 h-1.5 w-1.5 shrink-0 rotate-45 bg-accent"
                         />
                         {item}
                       </li>
@@ -455,7 +457,7 @@ export default async function ServicePage({ params }: PageProps) {
                 {body.map((section, index) => (
                   <Reveal key={section.heading} delay={index * 0.05}>
                     <section>
-                      <h2 className="max-w-2xl text-h3">{section.heading}</h2>
+                      <h2 className="max-w-2xl font-display text-h3">{section.heading}</h2>
                       <div className="mt-5 flex flex-col gap-5">
                         {section.paragraphs.map((paragraph) => (
                           <p
@@ -504,7 +506,7 @@ export default async function ServicePage({ params }: PageProps) {
                     alt={profile.name}
                     width={56}
                     height={56}
-                    className="h-14 w-14 shrink-0 rounded-full border border-line object-cover"
+                    className="h-14 w-14 shrink-0 rounded-control border border-line object-cover"
                   />
                   <div className="min-w-0">
                     <Link

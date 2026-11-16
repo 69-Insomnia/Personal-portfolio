@@ -54,7 +54,7 @@ const steps: Array<{
 
 export function Approach() {
   return (
-    <Section id="approach" className="border-t border-line">
+    <Section id="approach" className="border-t border-line bg-subtle">
       <Container>
         <SectionHeading
           section="approach"
@@ -62,36 +62,41 @@ export function Approach() {
           description="Same order every time. It isn't clever, but it stops us polishing a page nobody can find."
         />
 
-        <div className="relative mt-16">
-          {/*
-            The connecting line.
+        {/*
+          A band of three divided columns, not a connector line.
 
-            `md:block` only — below that the steps stack and a horizontal rule
-            through three rows would connect nothing. It sits at 24px from the
-            top, which is the vertical centre of the 48px step marker, and
-            behind it (`-z-0` via DOM order) so the markers punch through rather
-            than sitting on top of a visible seam.
-          */}
-          <div
-            aria-hidden
-            className="absolute left-0 right-0 top-6 hidden h-px bg-line md:block"
-          />
+          The old composition drew one horizontal hairline through three
+          circular icon markers — a stepper idiom, which reads as software
+          chrome on a page that otherwise has no circles left. The redesign
+          sits the steps on the section's subtle band and separates them with
+          vertical rules instead: on desktop the three share one row divided
+          by hairlines, on mobile they stack with a horizontal rule between.
+          The marker is a white icon tile so each step has a physical anchor
+          without a ring around it.
+        */}
+        <ol className="mt-14 grid gap-8 md:grid-cols-3 md:gap-0">
+          {steps.map((step, index) => (
+            <Reveal
+              key={step.title}
+              as="li"
+              delay={index * 0.1}
+              className={
+                index === 0
+                  ? 'md:pr-8'
+                  : 'border-t border-line pt-8 md:border-l md:border-t-0 md:px-8 md:pt-0'
+              }
+            >
+              <span className="flex h-14 w-14 items-center justify-center rounded-card border border-line bg-surface text-accent shadow-xs">
+                <Icon name={step.icon} size={22} />
+              </span>
 
-          <ol className="relative grid gap-12 md:grid-cols-3 md:gap-8">
-            {steps.map((step, index) => (
-              <Reveal key={step.title} as="li" delay={index * 0.1}>
-                <span className="flex h-12 w-12 items-center justify-center rounded-full border border-line bg-surface text-accent shadow-sm">
-                  <Icon name={step.icon} size={20} />
-                </span>
-
-                <h3 className="mt-6 font-display text-h3">{step.title}</h3>
-                <p className="mt-3 max-w-sm leading-relaxed text-muted">
-                  {step.description}
-                </p>
-              </Reveal>
-            ))}
-          </ol>
-        </div>
+              <h3 className="mt-6 font-display text-h3">{step.title}</h3>
+              <p className="mt-3 max-w-sm leading-relaxed text-muted">
+                {step.description}
+              </p>
+            </Reveal>
+          ))}
+        </ol>
       </Container>
     </Section>
   );

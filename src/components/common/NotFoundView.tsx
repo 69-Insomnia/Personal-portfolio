@@ -9,13 +9,29 @@ import { Button } from '@/components/ui/Button';
  */
 export function NotFoundView() {
   return (
-    <section className="flex min-h-[70vh] items-center border-b border-line pt-32">
-      <Container>
-        <p className="text-label font-semibold text-accent">Error 404</p>
-        <h1 className="mt-6 max-w-2xl text-display font-medium">
+    <section className="relative flex min-h-[70vh] items-center overflow-hidden border-b border-line bg-subtle pt-32">
+      {/*
+        Decorative, aria-hidden: the same outline diamond + solid companion the
+        PageHeader band uses, so the error page opens with the site's standard
+        inner-page shape rather than a plain white void.
+      */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-24 top-1/2 hidden h-80 w-80 -translate-y-1/2 rotate-45 rounded-[4rem] border-2 border-marigold/30 xl:block"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-6 top-1/2 hidden h-28 w-28 -translate-y-1/2 rotate-45 bg-marigold/10 xl:block"
+      />
+      <Container className="relative">
+        <p className="eyebrow">
+          <span aria-hidden className="eyebrow-tick" />
+          <span>Error 404</span>
+        </p>
+        <h1 className="mt-6 max-w-2xl text-display font-semibold">
           This page doesn&apos;t exist.
         </h1>
-        <p className="mt-6 max-w-lg text-lead text-muted">
+        <p className="measure mt-6 max-w-lg border-l-2 border-marigold pl-5 text-lead text-muted">
           The link may be outdated, or the page may have moved. Try one of the routes below
           instead.
         </p>

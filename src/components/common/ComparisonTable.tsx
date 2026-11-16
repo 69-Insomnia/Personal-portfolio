@@ -79,7 +79,7 @@ export function ServiceComparisonTable({
 
   return (
     <div className={className}>
-      <div className="min-w-0 overflow-x-auto border border-line bg-paper">
+      <div className="min-w-0 overflow-x-auto rounded-card border border-line bg-paper">
         <table className="w-full min-w-[52rem] border-collapse text-left align-top">
           <caption className="sr-only">
             What each service includes, how long it typically takes, what it
@@ -87,12 +87,12 @@ export function ServiceComparisonTable({
           </caption>
 
           <thead>
-            <tr className="border-b border-line">
+            <tr className="border-b border-line bg-subtle">
               {COLUMNS.map((column) => (
                 <th
                   key={column}
                   scope="col"
-                  className="text-label px-4 py-3.5 font-medium text-muted"
+                  className="px-4 py-3.5 text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-muted"
                 >
                   {column}
                 </th>
@@ -108,13 +108,13 @@ export function ServiceComparisonTable({
               return (
                 <tr
                   key={service.slug}
-                  className="border-b border-line align-top last:border-b-0"
+                  className="border-b border-line align-top transition-colors duration-200 last:border-b-0 hover:bg-subtle/60"
                 >
                   {/* The row header is the service, and it links to the page.
                       The audit named internal linking as this cluster's weakest
                       part, and a table of seven services is seven contextual
                       links that did not exist before. */}
-                  <th scope="row" className="px-4 py-4 text-sm font-medium text-ink">
+                  <th scope="row" className="px-4 py-4 text-sm font-semibold text-ink">
                     <Link
                       href={`/services/${service.slug}`}
                       className="transition-colors hover:text-accent"
