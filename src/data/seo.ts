@@ -234,17 +234,20 @@ export const defaultSEO: SEOData = {
 /**
  * The homepage.
  *
- * Title and description are identical to `defaultSEO` on purpose rather than by
- * accident: this is the page that owns the target query, and the site-wide
- * default exists so that any page without its own metadata still says the right
- * thing. They are separate constants because they are separate decisions —
- * changing what the site says by default should not silently rewrite the
- * homepage, and the reverse.
+ * Title and description mirror the values `generateMetadata` enforces on this
+ * route, so the admin panel's "static page SEO" preview shows what actually
+ * ships rather than a different sentence the page then overrides. They are
+ * still separate constants from `defaultSEO`: changing what the site says by
+ * default should not silently rewrite the homepage, and the reverse.
+ *
+ * The homepage is re-targeted at "Ecommerce Specialist in Nepal" and
+ * "Ecommerce Expert in Nepal" as the primary pair; `defaultSEO` keeps the
+ * broader growth phrasing it uses as the site-wide fallback.
  */
 export const homeSEO: SEOData = {
-  title: 'Ecommerce Growth Expert in Nepal | SEO, Shopify & CRO Specialist',
+  title: 'Ecommerce Specialist in Nepal | Ecommerce Expert in Nepal',
   description:
-    'Dipendra Guragain is an ecommerce growth specialist in Kathmandu, Nepal helping online stores get found on Google, convert more visitors, and grow revenue through ecommerce SEO, Shopify SEO, WooCommerce optimisation, CRO, and Google and Meta Ads.',
+    'Dipendra Guragain is an ecommerce specialist in Nepal and an e-commerce expert in Kathmandu helping online stores grow with SEO, Google Ads, Meta Ads and CRO.',
   canonical: `${site.url}/`,
 };
 

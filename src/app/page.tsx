@@ -17,6 +17,7 @@ import { Contact } from '@/sections/Contact';
 import { faqs } from '@/data/faqs';
 import { site } from '@/data/seo';
 import {
+  customJsonLdNodes,
   definedTermNodes,
   definedTermSetNode,
   faqPageNode,
@@ -75,7 +76,7 @@ const HOME_KEYWORD_FAQS = [
 ];
 
 const HOME_AI_ANSWER =
-  'Dipendra Guragain is an ecommerce growth specialist in Kathmandu, Nepal. He helps online stores get found on Google, convert more visitors, and grow revenue through SEO, Shopify and WooCommerce optimisation, conversion rate optimisation, and Google and Meta Ads, managed as one funnel with one accountable partner.';
+  'Dipendra Guragain is an ecommerce specialist in Nepal and an ecommerce growth expert in Kathmandu. He helps online stores get found on Google, convert more visitors, and grow revenue through SEO, Shopify and WooCommerce optimisation, conversion rate optimisation, and Google and Meta Ads, managed as one funnel with one accountable partner.';
 
 function mergeFaqs(base: Array<{ question: string; answer: string }>, extras: Array<{ question: string; answer: string }>) {
   const seen = new Set<string>();
@@ -148,22 +149,29 @@ export default async function HomePage() {
   const faqNode = faqPageNode(SHOW_QUICK_ANSWERS ? [...faqs, ...quickAnswers] : faqs, site.url);
 
   /**
-   * The `WebPage` node, carrying the two properties only a page has: an
+   * The `ProfilePage` node, carrying the properties only a page has: an
    * `abstract` (the admin's `ai_answer`, which is the paragraph answer engines
    * quote when asked who Dipendra is) and `about`/`mainEntity`, which tie the
    * page to `#person` and to the knows-about terms in `entity_signals`.
    *
+   * `ProfilePage` rather than a bare `WebPage`: this route is the person's
+   * main landing — name, work, experience, contact — and its main entity is
+   * `#person`, which is the shape `ProfilePage` exists to describe. It stays a
+   * `WebPage` in every other respect (same `@id` family, same properties), so
+   * nothing is lost for consumers that only look for `WebPage`.
+   *
    * The home route never published one before, so its most quotable content
    * existed only as prose. Returns `undefined` with no row and no database,
-   * and the caller spreads it conditionally — a `WebPage` restating the URL
+   * and the caller spreads it conditionally — a page node restating the URL
    * and nothing else is markup that asserts nothing.
    */
   const pageNode = webPageNode({
     url: `${site.url}/`,
-    name: 'Ecommerce Growth Expert in Nepal',
+    name: 'Ecommerce Specialist in Nepal',
     mainEntityId: personId,
     signals: seoMeta?.entitySignals,
     aiAnswer: answerBlock,
+    type: 'ProfilePage',
   });
 
   /** Glossary terms from `entity_signals` — see `definedTermNodes`. */
@@ -176,6 +184,15 @@ export default async function HomePage() {
     // them something to belong to.
     ...(terms?.length ? [definedTermSetNode()] : []),
     ...(faqNode ? [faqNode] : []),
+    /**
+     * The admin's per-page custom nodes. Every other content route merges
+     * these (`blog/[slug]`, `services/[slug]`, `work/[slug]`) — the home route
+     * was the one that never did, so its `custom_json_ld` (the `serviceType`
+     * list on the `ProfessionalService`) was saved, editable, and emitted to
+     * nobody. Merged here with the site-wide `#service` node's `@id`, so the
+     * two union into one entity instead of reading as two businesses.
+     */
+    ...customJsonLdNodes(seoMeta?.customJsonLd),
   ];
 
   return (
@@ -263,12 +280,15 @@ export async function generateMetadata(): Promise<Metadata> {
     ...homeSEO,
     /**
      * Enforced over the database row below — the admin panel cannot out-edit
-     * these two. The title carries the exact Nepal + Kathmandu intent while
-     * staying readable in Google search results.
+     * these two. The title carries the two primary target queries verbatim
+     * ("Ecommerce Specialist in Nepal", "Ecommerce Expert in Nepal") in the
+     * order a searcher reads them, and stays inside the 72-character display
+     * limit; the description answers with the role, the place (Nepal and
+     * Kathmandu), and what the work actually is.
      */
-    title: 'Ecommerce Growth Expert in Nepal | Ecommerce Growth Specialist in Kathmandu',
+    title: 'Ecommerce Specialist in Nepal | Ecommerce Expert in Nepal',
     description:
-      'Ecommerce growth expert in Nepal and ecommerce growth specialist in Kathmandu helping online stores improve SEO, conversion rate, Shopify growth and paid acquisition.',
+      'Dipendra Guragain is an ecommerce specialist in Nepal and an e-commerce expert in Kathmandu helping online stores grow with SEO, Google Ads, Meta Ads and CRO.',
   };
   const merged = withSeoMeta(fallbackHomeMeta, meta);
   const enforced = {

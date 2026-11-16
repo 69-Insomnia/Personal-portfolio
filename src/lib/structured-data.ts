@@ -395,6 +395,7 @@ export function webPageNode({
   mainEntityId,
   signals,
   aiAnswer,
+  type = 'WebPage',
 }: {
   url: string;
   name: string;
@@ -402,6 +403,13 @@ export function webPageNode({
   mainEntityId?: string;
   signals?: EntitySignals;
   aiAnswer?: string;
+  /**
+   * `ProfilePage` for a page whose main entity is a person's profile — the
+   * home route. `ProfilePage` is a `WebPage` subtype, so consumers that look
+   * for `WebPage` still resolve it; only the more specific type changes, and
+   * with it the fragment of the `@id` so the two cannot collide.
+   */
+  type?: 'WebPage' | 'ProfilePage';
 }): Node | undefined {
   const knowsAbout = signals?.knowsAbout ?? [];
   if (knowsAbout.length === 0 && !aiAnswer) return undefined;
@@ -412,8 +420,8 @@ export function webPageNode({
   ];
 
   return {
-    '@type': 'WebPage',
-    '@id': `${url}#webpage`,
+    '@type': type,
+    '@id': type === 'ProfilePage' ? `${url}#profilepage` : `${url}#webpage`,
     url,
     name,
     isPartOf: { '@id': websiteId },

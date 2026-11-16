@@ -51,7 +51,7 @@ export function Introduction() {
 
             <RevealText
               as="h2"
-              text="An ecommerce growth expert who works on the whole store, not one channel."
+              text="An ecommerce specialist in Kathmandu who works on the whole store, not one channel."
               className="mt-6 max-w-4xl text-h2"
             />
 

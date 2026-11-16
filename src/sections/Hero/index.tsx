@@ -13,10 +13,13 @@ import { whatsappUrl } from '@/utils/links';
  * The page's one `<h1>`, and the reason the display line sits inside it.
  *
  * Two sentences share one heading element here. The first is the exact target
- * query — "Ecommerce growth expert in Nepal" — because a heading that
+ * query — "Ecommerce Specialist in Nepal" — because a heading that
  * matches the query verbatim is the strongest thing this page can say about
  * what it is for, and it names the role and the place that the Person entity at
- * `#person` publishes.
+ * `#person` publishes. (The phrase was "Ecommerce growth expert in
+ * Kathmandu, Nepal" until the homepage was re-targeted at the specialist /
+ * expert queries; Kathmandu and the growth positioning still carry the page
+ * through the paragraph below, the answer block and the structured data.)
  *
  * The second is the line a human actually reads. It used to live outside the
  * heading as a `<p>`, which meant the largest, most opinionated sentence on the
@@ -28,7 +31,7 @@ import { whatsappUrl } from '@/utils/links';
  * identical to the heading immediately above it reads as a copy-paste error.
  * The link keeps a keyword-bearing anchor; it just no longer duplicates the H1.
  */
-const H1_KEYWORD = 'Ecommerce growth expert in Kathmandu, Nepal';
+const H1_KEYWORD = 'Ecommerce specialist in Nepal';
 
 /** Split by hand — the breaks are a typographic decision, not the measure's. */
 const DISPLAY_LINES = ['Stores that rank,', 'convert, and grow.'];
@@ -193,7 +196,7 @@ function Portrait() {
             marigold bar. Cream shows through wherever the PNG is transparent. */}
         <Image
           src={profile.profileImageCutout ?? profile.profileImage}
-          alt={`Portrait of ${profile.name}, ${profile.title}`}
+          alt={`Portrait of ${profile.name}, ecommerce specialist in Nepal`}
           width={800}
           height={1000}
           priority
