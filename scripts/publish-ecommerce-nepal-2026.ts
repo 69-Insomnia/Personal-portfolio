@@ -30,6 +30,22 @@ import { blogPosts } from '../src/data/blog';
 
 const SLUG = 'how-to-grow-ecommerce-in-nepal-2026';
 
+/**
+ * Key-order-insensitive JSON compare.
+ *
+ * `jsonb` reorders object keys on storage (by length, then bytewise), so
+ * `JSON.stringify(row) === JSON.stringify(target)` is false forever for any
+ * object with more than one key — the FAQ guard would report a change on
+ * every run. Arrays keep their order in `jsonb`, which is what we want:
+ * question order is content, key order is not.
+ */
+const canonical = (value: unknown): string =>
+  JSON.stringify(value, (_key, entry) =>
+    entry && typeof entry === 'object' && !Array.isArray(entry)
+      ? Object.fromEntries(Object.entries(entry).sort(([a], [b]) => a.localeCompare(b)))
+      : entry,
+  );
+
 const META_TITLE = 'How to Grow Ecommerce in Nepal in 2026 | Ecommerce Expert';
 const META_DESCRIPTION =
   'How to grow ecommerce in Nepal in 2026: legal setup, eSewa and Khalti, delivery, SEO, AI search and ads, from an ecommerce expert in Nepal.';
@@ -146,7 +162,7 @@ async function main() {
       ai_answer: AI_ANSWER,
     };
     const changed = Object.keys(target).filter(
-      (column) => JSON.stringify(seoRow[column] ?? null) !== JSON.stringify(target[column]),
+      (column) => canonical(seoRow[column] ?? null) !== canonical(target[column]),
     );
 
     if (changed.length === 0) {

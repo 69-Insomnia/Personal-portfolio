@@ -205,8 +205,6 @@ export const blogPosts: BlogPost[] = [
       '## Final Thoughts: How to Grow Ecommerce in Nepal in 2026',
       'Growing ecommerce in Nepal in 2026 means building one connected system: a registered business, a fast mobile store, trusted local payments, reliable delivery, honest social content, SEO, AI search visibility and weekly measurement. Start with trust and the buying experience, then scale traffic.',
       'Do not chase new customers only. Improve delivery, support and repeat purchases, because that is where Nepali ecommerce profit is built. If you want a specialist to review your store, SEO or ads, an ecommerce expert in Nepal can audit the whole funnel and show you where orders are being lost.',
-      '## About the Author',
-      'Dipendra Guragain is an ecommerce expert in Nepal and ecommerce growth strategist. He works across ecommerce growth, SEO, AI search optimization, website development and digital marketing, helping businesses strengthen their online presence, attract qualified customers and build sustainable growth through search, paid advertising and better digital experiences.',
       '## Sources',
       '• Kathmandu Post: Fast delivery changes the game for Nepal\'s online sellers (Aug 27, 2026)',
       '• Kathmandu Post: A cashless shift in Nepal brings new ease and new risks (Jun 17, 2026)',

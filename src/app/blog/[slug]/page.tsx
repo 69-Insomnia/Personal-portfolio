@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from 'next/navigation';
 import { Clock } from 'lucide-react';
 import { ArticleBody } from '@/components/common/ArticleBody';
 import { AuthorByline } from '@/components/common/AuthorByline';
+import { AuthorCard } from '@/components/common/AuthorCard';
 import { BlogCard } from '@/components/cards/BlogCard';
 import { ImageLightbox } from '@/components/common/ImageLightbox';
 import { JsonLd } from '@/components/common/JsonLd';
@@ -207,6 +208,12 @@ export default async function BlogPostPage({ params }: PageProps) {
                 <FaqBlock faqs={articleFaqs} title="Questions about this article" />
               </div>
             ) : null}
+
+            {/* The author card closes the article — face, role and links at
+                the moment a reader finishes, before the related blocks ask
+                them to go somewhere else. Same raw-HTML treatment as the FAQ
+                above: no `Reveal`, so a crawler sees it without scripts. */}
+            <AuthorCard />
           </div>
         </div>
       </Container>
