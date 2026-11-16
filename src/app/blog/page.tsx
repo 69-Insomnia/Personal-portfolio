@@ -17,7 +17,7 @@ export default async function BlogPage() {
         label="Insights"
         breadcrumb={[
           { name: 'Home', path: '/' },
-          { name: 'Insights', path: '/blog' },
+          { name: 'Blogs', path: '/blog' },
         ]}
         title="Things I'm Learning, Building & Sharing"
         description="Notes on web development, search, advertising and ecommerce, written from real project work."

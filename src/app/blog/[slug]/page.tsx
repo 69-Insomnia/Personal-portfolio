@@ -133,7 +133,7 @@ export default async function BlogPostPage({ params }: PageProps) {
         badge={post.isPlaceholder ? <PlaceholderBadge /> : null}
         breadcrumb={[
           { name: 'Home', path: '/' },
-          { name: 'Insights', path: '/blog' },
+          { name: 'Blogs', path: '/blog' },
           { name: post.title, path: `/blog/${post.slug}` },
         ]}
         title={post.title}
