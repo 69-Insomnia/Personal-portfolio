@@ -45,51 +45,53 @@ export type UnnumberedService = Omit<Service, 'index'>;
 const serviceOrder: UnnumberedService[] = [
   {
     slug: 'web-development',
-    title: 'Web Development Services',
+    title: 'Web Developer in Nepal',
+    seoTitle: 'Web Developer in Nepal | Website Design & Development Services',
     shortDescription:
-      'Website design and development in Nepal: custom websites, web applications and online stores built with React, Next.js, WordPress and Shopify.',
+      'Website developer in Kathmandu, Nepal building business websites, ecommerce stores and custom web apps with React, Next.js, WordPress and Shopify.',
     description:
-      "I am a web developer in Kathmandu, building marketing websites, web applications and online stores. The stack follows the job rather than a preference: React and Next.js where the project needs to be fast and custom, WordPress or Shopify where someone other than me has to edit it after launch. Every build starts with what the site has to do for the business, because a good-looking site that takes four seconds to load on a phone has already failed at the only thing it was for. What that means in practice is a fast, accessible, maintainable build that someone else can pick up later without a rewrite. I work across the front end and the back end, wire the analytics up properly, and stay involved after launch long enough to see how people actually use it.",
+      "I am a web developer in Nepal helping businesses, startups and ecommerce brands build websites that are easy to trust, quick to load, and designed to turn visitors into enquiries or sales. Based in Kathmandu, I design and build responsive business websites, ecommerce websites and custom web applications with a clear focus on performance, usability, SEO readiness and long-term maintainability. My process covers planning, UX and structure, front-end development, backend integration, analytics setup and launch support. Whether you need a custom website for your business, a React or Next.js landing page, a Shopify storefront, or a WordPress site that your team can manage after launch, I build with the right technology for the job and the future needs of the business.",
     body: [
       {
-        heading: 'What does website design and development include?',
+        heading: 'What does a web developer in Nepal do for a business?',
         paragraphs: [
-          'Most of the work is one of three things: a marketing site that has to explain a business and collect enquiries, a web application that does something specific, or an online store. They have different constraints and I build them differently.',
-          'A marketing site is a persuasion problem. The pages have to load fast, read clearly and lead somewhere. An application is a state problem: what happens when two people edit the same record, what happens when the network drops. A store is a trust problem, and everything from the product page to the checkout either builds trust or spends it.',
+          'A professional web developer helps turn business goals into a useful website. That usually means clarifying what the site has to achieve, structuring the pages around real customer journeys, and building a website that loads quickly on mobile and feels trustworthy across the entire buying process.',
+          'For many businesses in Kathmandu and across Nepal, that means one of three things: a strong service website, a lead-generation landing page, or an ecommerce website with product pages, conversion flow and checkout support. I build each one around the business goal rather than forcing the same template onto every project.',
         ],
       },
       {
-        heading: 'How do you choose between Next.js, WordPress and Shopify?',
+        heading: 'Do you build ecommerce websites and custom web apps in Kathmandu?',
         paragraphs: [
-          'The honest answer is that it depends on who edits the site after I hand it over. If the owner wants to publish blog posts and change copy without calling anyone, WordPress or Shopify will do that better than a custom build, and I will say so even when a custom build would be more interesting work.',
-          'React and Next.js make sense when the site has to do something the platforms cannot, when performance is the constraint, or when the design is specific enough that fighting a theme costs more than building it. The stack is a decision about maintenance, not about quality.',
+          'Yes. I build ecommerce websites for brands that need product pages, trust signals, clean product information and a better buying experience. I also build custom web applications when a business needs more than a static site, such as booking tools, enquiry systems, dashboards or internal workflows.',
+          'For ecommerce projects, the focus is not just on design but on how the site works for product discovery, trust, speed and conversions. The same attention to structure and performance applies whether the project is a store, a company website or a product-led service website.',
         ],
       },
       {
-        heading: 'Do you build the design as well as the code?',
+        heading: 'How do you choose between React, Next.js, WordPress and Shopify?',
         paragraphs: [
-          'Yes. On most projects the same person handles the layout, the type, the responsive behaviour and the front-end build, which removes the handover where a design gets reinterpreted into something slightly worse. Where a designer is already involved I build to their files instead.',
-          'Accessibility and Core Web Vitals are part of the build rather than a later pass: real heading structure, focus states that work with a keyboard, images sized and lazy-loaded correctly, and no layout shift when a font or a script arrives late.',
+          'The right stack depends on how the site will be managed after launch and how custom the experience needs to be. React and Next.js are a strong fit for high-performance brands, custom interfaces and content-heavy marketing websites. WordPress and Shopify are better when a client needs an easier content or product management workflow without a high technical burden.',
+          'The decision is about maintainability, conversion and business needs, not personal preference. A website that is easy to edit and fast to load is more valuable than a technically impressive build that a business cannot manage after launch.',
         ],
       },
       {
-        heading: 'What happens after launch?',
+        heading: 'Why does website speed and SEO matter for a new build?',
         paragraphs: [
-          'A launch is the point where you start finding out what is wrong, not the point where the work stops. I watch what real visitors do for the first few weeks: which pages they leave from, where the forms get abandoned, what the field data says about speed on the phones people actually use.',
-          'That is also when the technical SEO is worth checking, because a site that cannot be crawled or that renders slowly on mobile will not rank no matter how good the copy is. Fixing it at launch is far cheaper than fixing it a year later.',
+          'A website that loads slowly or has weak technical structure will lose visitors before it ever has a chance to convert them. That is why I build with responsive layouts, clean information architecture, semantic HTML, fast performance and SEO-friendly foundations from the start instead of treating these as a final checklist.',
+          'This is especially important for businesses in Nepal and Kathmandu that want better local visibility, stronger brand trust and more enquiries from search. A website built for both speed and search crawlers gives the business a better foundation for growth from day one.',
         ],
       },
     ],
     capabilities: webDevelopmentCapabilities,
     deliverables: [
-      'Custom marketing site or web application',
-      'Responsive layouts tested on a mid-range Android phone',
-      'On-page SEO built in rather than added later',
-      'Analytics and conversion tracking wired up and verified',
-      'Handover notes and a walkthrough of how to edit it yourself',
+      'Custom business website or web application',
+      'Responsive website design for desktop, tablet and mobile',
+      'SEO-friendly structure and speed optimisation',
+      'Analytics, conversion tracking and launch support',
+      'Documentation and guidance for ongoing maintenance',
     ],
     timeline: '3–8 weeks',
-    bestFor: 'A business that needs the site built properly the first time',
+    bestFor:
+      'Businesses in Nepal and Kathmandu that need a professional website developer for a business website, ecommerce website or custom web platform.',
     // Published starting price. The UI renders this value in the service card and comparison table.
     fromNpr: 45000,
     icon: 'code',

@@ -149,14 +149,17 @@ export const technologyCategories: TechnologyCategory[] = [
  */
 export const webDevelopmentCapabilities: string[] = [
   'Custom Websites',
-  'Web Applications',
+  'Business Website Development',
   'Ecommerce Stores',
-  'Landing Pages',
+  'Responsive Design',
+  'SEO-Friendly Websites',
+  'React & Next.js',
   'WordPress',
   'Shopify',
-  'Headless CMS',
   'API Integration',
-  'Site Speed',
+  'Performance Optimization',
+  'Secure & Scalable Builds',
+  'Website Maintenance',
 ];
 
 export const seoCapabilities: string[] = [

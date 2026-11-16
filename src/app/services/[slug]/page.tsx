@@ -40,6 +40,26 @@ const WEB_DEVELOPMENT_FAQ_BOOSTERS = [
       'I provide website development services from Kathmandu for businesses across Nepal, handling strategy, design, development and launch support as one workflow.',
   },
   {
+    question: 'Where can I find a website developer in Kathmandu?',
+    answer:
+      'I work with businesses in Kathmandu and across Nepal, building business websites, custom web apps and ecommerce websites that are responsive, SEO-friendly and built to convert.',
+  },
+  {
+    question: 'Who provides ecommerce website development in Nepal?',
+    answer:
+      'I develop ecommerce websites in Nepal for product-driven businesses that need a faster, cleaner shopping experience, clearer product pages and a more reliable online sales flow.',
+  },
+  {
+    question: 'Which web developer specializes in React and Next.js in Nepal?',
+    answer:
+      'I build custom React and Next.js websites for businesses that need performance, flexibility and a tailored build rather than a template-driven setup.',
+  },
+  {
+    question: 'Who can build an SEO-friendly ecommerce website in Nepal?',
+    answer:
+      'I build ecommerce and business websites with clean information architecture, technical SEO foundations, fast loading pages and conversion-focused design that helps the site perform well in search.',
+  },
+  {
     question: 'Can I hire a freelance web developer in Nepal for a full project?',
     answer:
       'Yes. Most projects run end-to-end: discovery, UX and UI design, frontend and backend implementation, SEO-ready structure, analytics setup, launch and post-launch fixes.',
@@ -231,6 +251,11 @@ export default async function ServicePage({ params }: PageProps) {
     projects: allProjects,
     posts: allPosts,
   });
+  const pageTitle = service.slug === 'web-development' ? 'Web Development' : service.title;
+  const pageDescription =
+    service.slug === 'web-development'
+      ? 'Website developer in Kathmandu, Nepal building business websites, ecommerce stores, custom web apps and responsive web solutions with React, Next.js, WordPress and Shopify.'
+      : service.shortDescription;
   const body = service.body ?? [];
 
   /**
@@ -275,8 +300,12 @@ export default async function ServicePage({ params }: PageProps) {
     : serviceFaqs;
   const answerBlock = seoMeta?.aiAnswer ??
     (service.slug === 'web-development'
-      ? 'Dipendra Guragain is a professional website developer in Nepal and a freelance full stack developer based in Kathmandu, building custom websites, web applications, landing pages and online stores. The process covers planning, web design, development, SEO-ready architecture and analytics setup so the site is fast, measurable and easy to manage after launch. Projects are built with React and Next.js for custom requirements, or WordPress and Shopify when teams need simple day-to-day editing. The work includes both frontend and backend implementation, API integrations, performance optimization and post-launch support, making this service suitable for businesses that want one accountable web developer in Nepal from strategy to go-live.'
+      ? 'Dipendra Guragain is a web developer in Nepal and a website developer in Kathmandu building responsive business websites, ecommerce websites and custom web applications for businesses that need a faster, better-converting online presence. The work covers planning, UX and layout, frontend development, backend integration, ecommerce setup, analytics tracking and launch support. For projects that need more flexibility, I build with React and Next.js. For businesses that need simpler day-to-day editing, I can build on WordPress or Shopify. The goal is always a secure, SEO-friendly, performance-focused website that is easy to maintain and ready to support real business growth in Nepal.'
       : undefined);
+  const serviceAuthorSummary =
+    service.slug === 'web-development'
+      ? 'I help businesses in Kathmandu and across Nepal build modern, high-performing websites that combine clean design, seamless functionality, and SEO-friendly development to turn visitors into customers.'
+      : `I help businesses in Kathmandu and across Nepal with ${service.title.toLowerCase()} that is practical, well-structured and built around the goals of the business rather than a generic template.`;
 
   /**
    * The page's Q&A as structured data, from the same array `FaqBlock` renders
@@ -309,10 +338,10 @@ export default async function ServicePage({ params }: PageProps) {
         breadcrumb={[
           { name: 'Home', path: '/' },
           { name: 'Services', path: '/services' },
-          { name: service.title, path: `/services/${service.slug}` },
+          { name: pageTitle, path: `/services/${service.slug}` },
         ]}
-        title={service.title}
-        description={service.shortDescription}
+        title={pageTitle}
+        description={pageDescription}
       />
 
       <Section>
@@ -487,26 +516,22 @@ export default async function ServicePage({ params }: PageProps) {
             </div>
           ) : null}
 
-          {/* The person behind the work. Every fact on this page is a claim
-              by one named human, so the page ends by saying who — same name,
-              role and positioning the `Person` node in the JSON-LD above
-              publishes, so the visible page and the structured data agree.
-              The avatar is the same file the `Person` node's `image` points
-              at; the name links to `/about` with `rel="author"`, matching the
-              byline every article uses. */}
+          {/* The person behind the work. This section is written as an expert
+              overview rather than a detached profile card, so it feels like the
+              article is concluding with a clear service-specific introduction. */}
           <div className="mt-14 grid gap-10 border-t border-line pt-14 lg:grid-cols-12">
             <div className="lg:col-span-3">
-              <SectionLabel label="Who You Work With" />
+              <SectionLabel label="About the Expert" />
             </div>
             <div className="lg:col-span-8 lg:col-start-5">
               <Reveal>
-                <Card className="flex max-w-2xl items-start gap-5 p-6">
+                <Card className="flex max-w-2xl flex-col gap-5 p-6 sm:flex-row sm:items-start">
                   <Image
                     src={profile.avatar}
                     alt={profile.name}
-                    width={56}
-                    height={56}
-                    className="h-14 w-14 shrink-0 rounded-control border border-line object-cover"
+                    width={72}
+                    height={72}
+                    className="h-18 w-18 shrink-0 rounded-control border border-line object-cover"
                   />
                   <div className="min-w-0">
                     <Link
@@ -516,8 +541,30 @@ export default async function ServicePage({ params }: PageProps) {
                     >
                       {profile.name}
                     </Link>
-                    <p className="mt-1 text-sm font-medium text-accent">{identity.role}</p>
-                    <p className="mt-3 leading-relaxed text-muted">{profile.headline}</p>
+                    <p className="mt-1 text-sm font-medium text-accent">
+                      Web Development Expert in Kathmandu, Nepal
+                    </p>
+                    <p className="mt-3 leading-relaxed text-muted">{serviceAuthorSummary}</p>
+                    <p className="mt-3 leading-relaxed text-muted">
+                      From business websites to custom eCommerce platforms, I focus on creating digital experiences that strengthen your online presence, generate quality leads, and support long-term business growth.
+                    </p>
+                    <p className="mt-3 leading-relaxed text-muted">
+                      My approach goes beyond just building websites. I focus on performance, user experience, mobile responsiveness, search visibility, and conversion-focused design to ensure every website delivers real value to your business.
+                    </p>
+                    <div className="mt-4 flex flex-wrap gap-3">
+                      <Link
+                        href="/about"
+                        className="inline-flex items-center text-sm font-medium text-ink transition-colors duration-200 hover:text-accent"
+                      >
+                        About the work
+                      </Link>
+                      <Link
+                        href="/contact"
+                        className="inline-flex items-center text-sm font-medium text-ink transition-colors duration-200 hover:text-accent"
+                      >
+                        Discuss a project
+                      </Link>
+                    </div>
                   </div>
                 </Card>
               </Reveal>

@@ -439,11 +439,18 @@ export function projectSEO(project: Project, meta?: SeoMeta): SEOData {
  */
 export function serviceSEO(service: Service, meta?: SeoMeta): SEOData {
   const base = service.title.replace(/\s+(Services|Specialist)$/i, '');
-  let description = service.description.replace(/\s+/g, ' ').trim();
+  const isWebDevelopment = service.slug === 'web-development';
+  const seoTitle = isWebDevelopment
+    ? 'Web Developer in Nepal | Website Design & Development Services'
+    : service.seoTitle ?? `${service.title} in Kathmandu, Nepal | ${profile.name}`;
+  const seoDescription = isWebDevelopment
+    ? 'Professional web developer in Nepal and Kathmandu building business websites, ecommerce websites, responsive landing pages and custom web applications with React, Next.js, WordPress and Shopify.'
+    : service.description.replace(/\s+/g, ' ').trim();
+  let description = seoDescription;
 
   // A few CMS descriptions are a little short for a complete search snippet.
   // Extend them with the true service area, not generic promotional wording.
-  if (description.length < 140) {
+  if (!isWebDevelopment && description.length < 140) {
     if (/kathmandu/i.test(description) && !/nepal/i.test(description)) {
       description = `${description.replace(/[.!?]+$/, '')}, serving Nepal.`;
     } else if (/nepal/i.test(description) && !/kathmandu/i.test(description)) {
@@ -457,14 +464,27 @@ export function serviceSEO(service: Service, meta?: SeoMeta): SEOData {
     {
       // `seoTitle` first: one service targets a city-level query that the
       // generic pattern cannot express. See the field's note in `types`.
-      title: service.seoTitle ?? `${service.title} in Kathmandu, Nepal | ${profile.name}`,
+      title: seoTitle,
       description,
-      keywords: [
-        `${service.title} Nepal`,
-        `${service.title} Kathmandu`,
-        `${base} Nepal`,
-        `${base} Kathmandu`,
-      ],
+      keywords: isWebDevelopment
+        ? [
+            'Web Developer in Nepal',
+            'Web Development Specialist in Nepal',
+            'Web Developer in Kathmandu',
+            'Website Developer in Kathmandu',
+            'Ecommerce Web Developer in Nepal',
+            'Ecommerce Website Development in Nepal',
+            'Professional Website Developer in Nepal',
+            'Next.js Developer in Nepal',
+            'React Developer in Nepal',
+            'Custom Website Development in Nepal',
+          ]
+        : [
+            `${service.title} Nepal`,
+            `${service.title} Kathmandu`,
+            `${base} Nepal`,
+            `${base} Kathmandu`,
+          ],
       canonical: `${site.url}/services/${service.slug}`,
     },
     meta,
