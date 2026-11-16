@@ -51,9 +51,9 @@ export const profile: Profile = {
   profileImage: '/images/profile.png',
   /**
    * The hero portrait. Background-removed to transparent (rembg) so the figure
-   * sits flush on the cream card and rests on the marigold base bar. Re-run the
-   * cutout if `profile.png` changes; the hero falls back to `profileImage` if
-   * this is ever unset.
+   * sits flush on the white card and rests on the marigold (coral) base bar.
+   * Re-run the cutout if `profile.png` changes; the hero falls back to
+   * `profileImage` if this is ever unset.
    */
   profileImageCutout: '/images/profile-cutout.png',
 

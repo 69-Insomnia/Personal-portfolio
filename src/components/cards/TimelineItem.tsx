@@ -7,11 +7,11 @@ import type { ExperienceItem } from '@/types';
 /**
  * One role on the vertical timeline.
  *
- * The dot is `bg-accent`, which is the primary green — the timeline is the one
- * place on the page where a repeated green marker does structural work, so it
- * is green and not marigold. Marigold is reserved for the hero's offset shape
- * and the section rules; using it here as well would spend the accent's
- * scarcity on a decorative dot.
+ * The dot is `bg-accent`, which is the primary blue — the timeline is the one
+ * place on the page where a repeated marker does structural work, so it is the
+ * interactive blue and not marigold. Marigold (coral) is reserved for the
+ * hero's offset shape and the section rules; using it here as well would spend
+ * the accent's scarcity on a decorative dot.
  *
  * The marker sits at `-left-[calc(2rem+4.5px)]`, which places its centre on the
  * `<ol>`'s left border at the mobile padding. It carries a ring of the page

@@ -30,10 +30,10 @@ const config: Config = {
         },
         /* Focus treatment, so `ring-focus` / `outline-focus` stay one decision. */
         focus: 'var(--color-ring)',
-        /* `accent` is the INTERACTIVE colour: green. Every button, link, focus
-           ring and active state. It kept its name through the redesign — only
-           the value moved — which is why the whole site re-themed without a
-           per-component edit. */
+        /* `accent` is the INTERACTIVE colour: deep blue. Every button, link,
+           focus ring and active state. It kept its name through two hue
+           changes — only the value moved — which is why the whole site
+           re-themed without a per-component edit. */
         accent: {
           DEFAULT: 'var(--color-accent)',
           strong: 'var(--color-accent-strong)',
@@ -50,10 +50,11 @@ const config: Config = {
           900: 'var(--color-accent-900)',
           950: 'var(--color-accent-950)',
         },
-        /* Marigold. DECORATIVE ONLY — 2.0:1 on paper, so it is the offset shape
-           behind the portrait, timeline dots, short rules and icon fills. Never
-           body text or a link. `marigold-ink` is the text-safe read of the same
-           hue (6.4:1) for the rare place it must carry meaning. */
+        /* Coral (still named `marigold`). DECORATIVE ONLY — 2.8:1 on white, so
+           it is the offset shape behind the portrait, timeline dots, short
+           rules and icon fills. Never body text or a link. `marigold-ink` is
+           the text-safe read of the same hue (6.4:1) for the rare place it
+           must carry meaning. */
         marigold: {
           DEFAULT: 'var(--color-marigold)',
           soft: 'var(--color-marigold-soft)',

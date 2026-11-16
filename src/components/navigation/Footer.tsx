@@ -68,9 +68,9 @@ export function Footer({ services }: FooterProps) {
 
         `.section-inverse` re-points every semantic token for its subtree, so
         the band is written with ordinary utilities — `text-muted` resolves to
-        the band's own muted, `bg-accent` to marigold. That is why the buttons
-        below need no special-casing: inside the band `primary` is marigold on
-        deep green (6.8:1) and `whatsapp` keeps its fixed brand colours.
+        the band's own muted, `bg-accent` to coral. That is why the buttons
+        below need no special-casing: inside the band `primary` is coral on
+        deep navy (6.4:1) and `whatsapp` keeps its fixed brand colours.
 
         It sits inside <footer> rather than above it so the page has one
         closing landmark, not two.

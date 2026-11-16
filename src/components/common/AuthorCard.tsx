@@ -15,7 +15,7 @@ import { profile } from '@/data/profile';
  * name, role, bio and pill links right) but is built from this site's own
  * tokens: `.card` for the surface, chip-shaped pills, `text-micro` at the
  * reference's wide tracking for the two mono lines. The label is the one red
- * (`text-danger`) on an otherwise green-and-cream page — that contrast is
+ * (`text-danger`) on an otherwise blue-and-white page — that contrast is
  * what makes it read as a stamp rather than as another section eyebrow.
  *
  * The role line is deliberately not `profile.title` ("Ecommerce Growth

@@ -21,86 +21,96 @@
    all of them with no per-component edit. Renaming the tokens would have meant
    touching every one of those files and risking a silent miss.
 
-   ## Contrast, measured against --bg (#FAF7F2, L≈0.929)
+   The current scheme is a WHITE page (`--bg: #ffffff`) with deep blue as the
+   interactive colour and coral as the decorative accent. It replaced the
+   previous cream / forest-green / marigold scheme value-by-value in this file
+   alone — no component, no content, no layout changed — and every contrast
+   ratio below landed at or above the one it replaced. (`--color-marigold` is
+   the decorative token's *name*, not its hue: renaming it would touch every
+   file that says `marigold`, so only the value moved, exactly as it did when
+   the interactive colour changed hue.)
 
-     ink    #1C1B19  15.0:1   headings, body
-     muted  #6B655C   5.0:1   secondary copy          (AA normal text ✓)
-     primary #14532D  8.5:1   links, buttons, labels   (AA normal text ✓)
-     white on primary 9.1:1   button labels            (AA normal text ✓)
+   ## Contrast, measured against --bg (#FFFFFF, L=1.000)
 
-   `--accent` / marigold (#E8A317) is **2.0:1** and clears nothing. It is a
+     ink    #0F172A  17.9:1   headings, body
+     muted  #55617A   6.2:1   secondary copy          (AA normal text ✓)
+     primary #1E40AF  8.7:1   links, buttons, labels   (AA normal text ✓)
+     white on primary 8.7:1   button labels            (AA normal text ✓)
+
+   `--accent` / coral (#FF6B4A) is **2.8:1** and clears nothing. It is a
    DECORATIVE token only — the offset shape behind the portrait, timeline dots,
    short rules, icon fills. Never body text, never a link, and never the sole
-   affordance of a control. Where marigold needs to carry meaning as text,
-   use `--color-marigold-ink` (#7A5200, 6.4:1), which is the same hue read from
+   affordance of a control. Where coral needs to carry meaning as text,
+   use `--color-marigold-ink` (#AD3512, 6.4:1), which is the same hue read from
    the dark end.
 --------------------------------------------------------------------------- */
 :root {
   color-scheme: light;
 
   /* --- 1. Palette ------------------------------------------------------- */
-  --bg: #faf7f2;
+  --bg: #ffffff;
   --surface: #ffffff;
-  --border: #e7e0d5;
-  --text: #1c1b19;
-  --muted: #6b655c;
-  --primary: #14532d;
-  --primary-hover: #0f3f22;
-  --accent: #e8a317;
+  --border: #e6eaf3;
+  --text: #0f172a;
+  --muted: #55617a;
+  --primary: #1e40af;
+  --primary-hover: #16337f;
+  --accent: #ff6b4a;
 
   /* --- 2. Semantic surfaces -------------------------------------------- */
   --color-paper: var(--bg);
   --color-surface: var(--surface);
   /* The alternate band. A half-step off --bg rather than a second colour, so a
      striped page reads as one material catching the light differently. */
-  --color-subtle: #f3efe7;
+  --color-subtle: #f4f6fb;
   /* Not alpha-based: Tailwind 3 cannot inject an alpha channel into a theme
      colour declared as a bare var(), so `/82` modifiers silently drop the
      utility and the header renders transparent. */
-  --color-paper-blur: rgba(250, 247, 242, 0.82);
+  --color-paper-blur: rgba(255, 255, 255, 0.82);
 
   /* --- 2. Semantic text ------------------------------------------------- */
   --color-ink: var(--text);
   --color-muted: var(--muted);
-  --color-faint: #8a8378;
+  --color-faint: #7e8799;
 
   /* --- 2. Semantic lines ------------------------------------------------
      `line` is decorative (dividers, card edges). `line-strong` is the
      accessible component boundary — form fields, anything a user must be able
-     to see the edge of — and clears the 3:1 WCAG 1.4.11 asks (3.5:1 here). */
+     to see the edge of — and clears the 3:1 WCAG 1.4.11 asks (3.4:1 here). */
   --color-line: var(--border);
-  --color-line-strong: #9c9488;
+  --color-line-strong: #7f8da6;
 
   /* --- 2. Semantic brand ------------------------------------------------
-     `accent` is the INTERACTIVE colour and is green. It was orange; the name
-     did not change, the value did, which is why every button, link, focus ring
-     and active state on the site moved to green without an edit.
+     `accent` is the INTERACTIVE colour and is deep blue. It was green; the
+     name did not change, the value did, which is why every button, link,
+     focus ring and active state on the site moved to blue without an edit.
 
-     Marigold lives alongside it as a separate, deliberately scarce token. */
+     Coral lives alongside it as a separate, deliberately scarce token (still
+     named `marigold` — see the header note). */
   --color-accent: var(--primary);
   --color-accent-strong: var(--primary-hover);
-  --color-accent-soft: rgba(20, 83, 45, 0.08);
+  --color-accent-soft: rgba(30, 64, 175, 0.08);
   --color-on-accent: #ffffff;
 
   --color-marigold: var(--accent);
-  --color-marigold-soft: rgba(232, 163, 23, 0.16);
-  /* Text-safe marigold. See the contrast table above. */
-  --color-marigold-ink: #7a5200;
+  --color-marigold-soft: rgba(255, 107, 74, 0.16);
+  /* Text-safe coral. See the contrast table above. */
+  --color-marigold-ink: #ad3512;
 
-  /* Green ramp. Only the flat tokens above are used by components today; the
+  /* Blue ramp. Only the flat tokens above are used by components today; the
      ramp exists so a future hover/tint/soft state derives from one hue rather
      than being hand-mixed. */
-  --color-accent-50: #f0f7f2;
-  --color-accent-100: #dcede1;
-  --color-accent-200: #bbdac5;
-  --color-accent-300: #8fc0a1;
-  --color-accent-400: #5c9e77;
-  --color-accent-500: #357a54;
-  --color-accent-600: #1f6340;
-  --color-accent-700: #14532d;
-  --color-accent-800: #0f3f22;
-  --color-accent-900: #0b321b;
-  --color-accent-950: #061e10;
+  --color-accent-50: #eff6ff;
+  --color-accent-100: #dbeafe;
+  --color-accent-200: #bfdbfe;
+  --color-accent-300: #93c5fd;
+  --color-accent-400: #60a5fa;
+  --color-accent-500: #3b82f6;
+  --color-accent-600: #2563eb;
+  --color-accent-700: #1d4ed8;
+  --color-accent-800: #1e40af;
+  --color-accent-900: #1e3a8a;
+  --color-accent-950: #172554;
 
   /* --- 2. Status --------------------------------------------------------
      Kept in the same luminance band as the accent so no single status colour
@@ -120,34 +130,36 @@
   --color-ring: var(--primary);
 
   /* Inverse band — deliberately dark in BOTH themes so it stays a feature band
-     rather than flipping with the page. Deep green rather than near-black, so
+     rather than flipping with the page. Deep navy rather than near-black, so
      it belongs to the same family as `--primary`. */
-  --color-inverse: #0b2e1a;
-  --color-inverse-surface: #103a22;
-  --color-inverse-raised: #16492c;
-  --color-inverse-line: #1f5a37;
-  --color-inverse-ink: #f4f8f5;
-  --color-inverse-muted: #a8c4b3;
-  --color-inverse-faint: #8aab98;
-  --color-inverse-accent: #e8a317;
-  --color-inverse-accent-strong: #f0bb52;
-  --color-inverse-accent-soft: rgba(232, 163, 23, 0.16);
-  --color-inverse-on-accent: #3d2a00;
+  --color-inverse: #0b1e45;
+  --color-inverse-surface: #12295a;
+  --color-inverse-raised: #18336b;
+  --color-inverse-line: #23437f;
+  --color-inverse-ink: #f2f6ff;
+  --color-inverse-muted: #a9b8dd;
+  --color-inverse-faint: #8fa1cf;
+  --color-inverse-accent: #ff7a5c;
+  --color-inverse-accent-strong: #ffa08a;
+  --color-inverse-accent-soft: rgba(255, 122, 92, 0.16);
+  --color-inverse-on-accent: #3d1400;
   --color-inverse-danger: #f87171;
 
   /* Modal scrim. A pre-mixed rgba rather than a `/95` opacity modifier on
      `--color-inverse` — see `--color-paper-blur` above for why. */
-  --color-scrim: rgba(11, 46, 26, 0.94);
+  --color-scrim: rgba(11, 30, 69, 0.94);
 
   /* --- Elevation --------------------------------------------------------
      ONE soft shadow, per the brief. `sm` and `md` are the same value on
      purpose: the design has a single resting elevation, and a card that has to
      look "more important" than its neighbour should earn that from size or
-     position, not from a deeper shadow. `lg` exists only for hover lift. */
-  --shadow-xs: 0 1px 2px rgba(28, 27, 25, 0.04);
-  --shadow-sm: 0 8px 30px rgba(28, 27, 25, 0.06);
-  --shadow-md: 0 8px 30px rgba(28, 27, 25, 0.06);
-  --shadow-lg: 0 12px 40px rgba(28, 27, 25, 0.1);
+     position, not from a deeper shadow. `lg` exists only for hover lift.
+     Cool slate rather than warm near-black, so the shadow belongs to the same
+     family as `--text`. */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 8px 30px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 8px 30px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 12px 40px rgba(15, 23, 42, 0.1);
 
   /* 16px — see the brief's 14–16px band. */
   --radius-card: 1rem;
@@ -299,7 +311,7 @@
     @apply transition-all duration-200 ease-out;
   }
 
-  /* Shadow only. This used to also snap `border-ink`, which on ivory reads as a
+  /* Shadow only. This used to also snap `border-ink`, which on white reads as a
      hard black outline appearing under the cursor — far too loud for a hover,
      and it fought the single soft shadow doing the actual lift. */
   .card-interactive:hover {

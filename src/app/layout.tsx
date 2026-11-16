@@ -161,8 +161,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export const viewport: Viewport = {
   // Must be literal — this is read before any CSS exists. Mirrors --color-paper
-  // (#FAF7F2); the site is light-only (no theme toggle), so one entry.
-  themeColor: '#FAF7F2',
+  // (#FFFFFF); the site is light-only (no theme toggle), so one entry.
+  themeColor: '#FFFFFF',
 };
 
 /**

@@ -27,9 +27,9 @@ interface ButtonProps {
  * would depend on Tailwind's internal ordering rather than the order they
  * appear in the class string.
  *
- * `primary` is the green, and it is the only variant that should ever appear
+ * `primary` is the deep blue, and it is the only variant that should ever appear
  * twice in one viewport. `secondary` is its outlined twin — a white fill with a
- * green border, for the lower-priority half of a pair (the brief's "one primary
+ * blue border, for the lower-priority half of a pair (the brief's "one primary
  * button and one text link" is the `primary` + `ghost` case; a genuinely
  * two-button row is `primary` + `secondary`).
  */

@@ -161,19 +161,19 @@ export function Hero() {
  *
  * ## Why the marigold sits as a base bar, not an offset sheet
  *
- * The card is a cream field with the cut-out portrait resting flush against its
- * bottom edge, and the marigold closes that edge as a solid bar. It used to be
- * a block pushed out behind the card (a second sheet of paper sliding out from
- * under the first). The bar reads the same way — as the one place the design
- * gets to be loud — but it anchors the figure instead of floating behind it, so
- * the subject looks seated on the colour rather than pasted over it. Marigold is
- * 2.0:1 on paper, so it can never carry text; as a flat shape it costs the
- * layout nothing.
+ * The card is a white field with the cut-out portrait resting flush against its
+ * bottom edge, and the marigold (coral) closes that edge as a solid bar. It used
+ * to be a block pushed out behind the card (a second sheet of paper sliding out
+ * from under the first). The bar reads the same way — as the one place the
+ * design gets to be loud — but it anchors the figure instead of floating behind
+ * it, so the subject looks seated on the colour rather than pasted over it.
+ * Marigold is 2.8:1 on white, so it can never carry text; as a flat shape it
+ * costs the layout nothing.
  *
  * ## Why the cut-out rather than a framed photo
  *
  * `profile.profileImage` ships with its own background (greenery and brick). A
- * `bg-cutout` variant has that background removed to transparent, so the cream
+ * `bg-cutout` variant has that background removed to transparent, so the white
  * card shows around the head and shoulders. That is what lets the figure sit on
  * the colour field cleanly; a photo boxed inside a white frame cannot. If the
  * cut-out is missing the component falls back to the original file.
@@ -183,7 +183,7 @@ export function Hero() {
  * `width`/`height` are set to the 4:5 the frame actually renders at, and the
  * frame carries the same ratio. The intrinsic file may be a different shape;
  * `object-contain` anchored to the bottom handles that — the whole cut-out stays
- * visible and sits on the base bar, with cream filling the headroom above. The
+ * visible and sits on the base bar, with white filling the headroom above. The
  * box reserves its space from the ratio, so there is no layout shift whether or
  * not the file has loaded. `priority` because this image is above the fold on
  * every viewport and is the LCP candidate on desktop.

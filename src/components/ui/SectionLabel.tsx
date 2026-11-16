@@ -45,9 +45,9 @@ interface SectionLabelProps {
  * build on an unknown section id.
  *
  * What is left is a marigold rule and a sentence-case label. The rule is
- * marigold rather than green because it is pure decoration — it sits against
- * paper, carries no text, and is exactly the scarce-accent role the palette
- * reserves marigold for.
+ * marigold (coral) rather than the interactive blue because it is pure
+ * decoration — it sits against paper, carries no text, and is exactly the
+ * scarce-accent role the palette reserves marigold for.
  */
 export function SectionLabel({ section, label, index, className }: SectionLabelProps) {
   const meta = section ? getSection(section) : undefined;
