@@ -97,6 +97,12 @@ export function Navbar() {
               <span className="mt-0.5 hidden text-xs font-medium text-muted sm:block">
                 {identity.role}
               </span>
+              {/* The second line, and only here and in the footer — see
+                  `roleSecondary`. Same classes as the line above, so it reads
+                  as one byline rather than as a second piece of navigation. */}
+              <span className="hidden text-xs font-medium text-muted sm:block">
+                {identity.roleSecondary}
+              </span>
             </span>
           </Link>
 

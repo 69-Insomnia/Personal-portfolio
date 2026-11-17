@@ -142,6 +142,9 @@ export function Footer({ services }: FooterProps) {
                     {profile.name}
                   </Link>
                   <p className="mt-1 text-sm text-muted">{identity.role}</p>
+                  {/* The second line of the byline, navbar and footer only —
+                      see `roleSecondary` in `src/data/seo.ts`. */}
+                  <p className="text-sm text-muted">{identity.roleSecondary}</p>
                 </div>
               </div>
 

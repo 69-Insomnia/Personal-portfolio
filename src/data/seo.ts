@@ -187,7 +187,21 @@ export const identity = {
    * micro-type, which has to stay short enough to sit under a name). This is
    * the version that goes into a heading, a `jobTitle` and a meta description.
    */
- role: 'Ecommerce Growth Expert in Kathmandu, Nepal', location: profile.location,
+ role: 'Ecommerce Growth Expert in Kathmandu, Nepal',
+  /**
+   * The second line under the name, in the navbar and the footer only.
+   *
+   * `role` stays the single value the Person node publishes as `jobTitle`, so
+   * the schema carries one job title rather than two — and the mobile menu
+   * keeps the one line, because a menu item has no room for a byline. The
+   * navbar and the footer are where a visitor decides what this site is, and
+   * the build work is half of that answer.
+   *
+   * Shorter than `role` on purpose: the brand column is sized by its longest
+   * line, and this one has to sit inside it without pushing the centred nav.
+   */
+  roleSecondary: 'Web Developer in Kathmandu, Nepal',
+  location: profile.location,
  email: profile.email,
  telephone: profile.whatsapp,
 } as const;
