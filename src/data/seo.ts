@@ -187,7 +187,7 @@ export const identity = {
    * micro-type, which has to stay short enough to sit under a name). This is
    * the version that goes into a heading, a `jobTitle` and a meta description.
    */
- role: 'Ecommerce Growth Expert in Kathmandu, Nepal',
+ role: 'Ecommerce Specialists in Kathmandu, Nepal',
   /**
    * The second line under the name, in the navbar and the footer only.
    *
