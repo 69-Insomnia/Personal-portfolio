@@ -79,6 +79,11 @@ const WEB_DEVELOPMENT_FAQ_BOOSTERS = [
     answer:
       'Yes. I am based in Kathmandu and work with local and remote clients across Nepal, with project communication through WhatsApp, email and scheduled calls.',
   },
+  {
+    question: 'Which payment methods do you support for an ecommerce website in Nepal?',
+    answer:
+      'Checkout can be set up with eSewa and Khalti wallets, Fonepay, cards, bank transfer and cash on delivery. Which of those a store can actually use depends on the platform: WooCommerce and custom builds integrate the gateways directly, while a Shopify store uses the payment apps available to it.',
+  },
 ];
 
 function mergeFaqs(base: Array<{ question: string; answer: string }>, extras: Array<{ question: string; answer: string }>) {
@@ -251,10 +256,19 @@ export default async function ServicePage({ params }: PageProps) {
     projects: allProjects,
     posts: allPosts,
   });
-  const pageTitle = service.slug === 'web-development' ? 'Web Development' : service.title;
+  /**
+   * The H1 carries the location as well as the service. "Web Development" on
+   * its own told a crawler what the page is about but not where it sells, and
+   * the title tag already leads with the longer commercial query — so the H1
+   * answers the shorter half of the same target rather than repeating the tag
+   * word for word. The breadcrumb trail reads from the same string, which is
+   * why the last crumb is the full heading and not an abbreviation.
+   */
+  const pageTitle =
+    service.slug === 'web-development' ? 'Web Development Services in Nepal' : service.title;
   const pageDescription =
     service.slug === 'web-development'
-      ? 'Website developer in Kathmandu, Nepal building business websites, ecommerce stores, custom web apps and responsive web solutions with React, Next.js, WordPress and Shopify.'
+      ? 'Website and ecommerce developer in Kathmandu, Nepal building business websites, online stores and web apps with Shopify, WooCommerce, React and Next.js.'
       : service.shortDescription;
   const body = service.body ?? [];
 

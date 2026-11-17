@@ -440,11 +440,15 @@ export function projectSEO(project: Project, meta?: SeoMeta): SEOData {
 export function serviceSEO(service: Service, meta?: SeoMeta): SEOData {
   const base = service.title.replace(/\s+(Services|Specialist)$/i, '');
   const isWebDevelopment = service.slug === 'web-development';
+  // Two targets, one string: "Ecommerce Website Developer in Nepal" is the
+  // longer commercial query and contains "Website Developer in Nepal" intact,
+  // so the single title covers both without the keyword-stuffed feel of
+  // chaining them with a separator.
   const seoTitle = isWebDevelopment
-    ? 'Web Developer in Nepal | Website Design & Development Services'
+    ? 'Ecommerce Website Developer in Nepal | Web Development Services'
     : service.seoTitle ?? `${service.title} in Kathmandu, Nepal | ${profile.name}`;
   const seoDescription = isWebDevelopment
-    ? 'Professional web developer in Nepal and Kathmandu building business websites, ecommerce websites, responsive landing pages and custom web applications with React, Next.js, WordPress and Shopify.'
+    ? 'Ecommerce website developer in Nepal building online stores, business websites and web apps in Kathmandu with Shopify, WooCommerce, React and Next.js.'
     : service.description.replace(/\s+/g, ' ').trim();
   let description = seoDescription;
 

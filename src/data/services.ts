@@ -50,7 +50,7 @@ const serviceOrder: UnnumberedService[] = [
     shortDescription:
       'Website developer in Kathmandu, Nepal building business websites, ecommerce stores and custom web apps with React, Next.js, WordPress and Shopify.',
     description:
-      "I am a web developer in Nepal helping businesses, startups and ecommerce brands build websites that are easy to trust, quick to load, and designed to turn visitors into enquiries or sales. Based in Kathmandu, I design and build responsive business websites, ecommerce websites and custom web applications with a clear focus on performance, usability, SEO readiness and long-term maintainability. My process covers planning, UX and structure, front-end development, backend integration, analytics setup and launch support. Whether you need a custom website for your business, a React or Next.js landing page, a Shopify storefront, or a WordPress site that your team can manage after launch, I build with the right technology for the job and the future needs of the business.",
+      "I am Dipendra Guragain, an ecommerce website developer in Nepal working from Kathmandu. I help businesses, startups and online brands build websites that are easy to trust, quick to load, and designed to turn visitors into enquiries or sales. My work covers responsive business websites, online stores and custom web applications, with a clear focus on performance, usability, SEO readiness and long-term maintainability. The process runs from planning, UX and structure through front-end development, backend integration, payment setup, analytics and launch support. Whether you need a business website, a React or Next.js landing page, a Shopify or WooCommerce store set up for local payments such as eSewa and Khalti, or a WordPress site your team can manage after launch, I build with the right technology for the job and for what the business needs next.",
     body: [
       {
         heading: 'What does a web developer in Nepal do for a business?',
@@ -60,10 +60,19 @@ const serviceOrder: UnnumberedService[] = [
         ],
       },
       {
-        heading: 'Do you build ecommerce websites and custom web apps in Kathmandu?',
+        heading: 'What does a website development project include?',
         paragraphs: [
-          'Yes. I build ecommerce websites for brands that need product pages, trust signals, clean product information and a better buying experience. I also build custom web applications when a business needs more than a static site, such as booking tools, enquiry systems, dashboards or internal workflows.',
-          'For ecommerce projects, the focus is not just on design but on how the site works for product discovery, trust, speed and conversions. The same attention to structure and performance applies whether the project is a store, a company website or a product-led service website.',
+          'The work covers business websites and landing pages, ecommerce stores, custom web applications, and the maintenance that keeps a launched site healthy. A typical project includes information architecture, page design, frontend and backend development, CMS or store setup, API and payment integration, analytics tracking and launch support.',
+          'Most builds use React and Next.js when the site has to be fast and bespoke, WordPress when a team needs to publish content without calling a developer, and Shopify or WooCommerce when the product catalogue is the centre of the business. Speed work, SEO-friendly structure and post-launch fixes sit inside the same engagement rather than being a separate service ordered later.',
+        ],
+      },
+      {
+        heading:
+          'Do you build ecommerce websites with Shopify, WooCommerce and local payments?',
+        paragraphs: [
+          'Yes. I build ecommerce websites for brands that need product pages, clean product information, trust signals and a checkout that works on a phone. Shopify is the fastest route to a store a non-technical team can run; WooCommerce fits a business that already works in WordPress and wants the catalogue inside the same dashboard. Either way the store is judged on product discovery, speed, and how many visitors actually complete a purchase. I also build custom web applications when a business needs more than a static site, such as booking tools, enquiry systems, dashboards or internal workflows.',
+          'Checkout is where a store in Nepal loses the most sales, so the payment options are planned early: eSewa and Khalti wallets, Fonepay, cards and bank transfer, and cash on delivery where the business needs it. WooCommerce and custom builds integrate the gateways directly, while a Shopify store uses the payment apps available to it. The setup is part of the build rather than an afterthought.',
+          'The store is also given an SEO-friendly structure from the start: clean category and product URLs, product and review schema, internal links between categories, and images and pages that load quickly on a mobile connection. That structure, not the theme, is what lets a new store get found on Google and in AI search results.',
         ],
       },
       {
@@ -78,6 +87,27 @@ const serviceOrder: UnnumberedService[] = [
         paragraphs: [
           'A website that loads slowly or has weak technical structure will lose visitors before it ever has a chance to convert them. That is why I build with responsive layouts, clean information architecture, semantic HTML, fast performance and SEO-friendly foundations from the start instead of treating these as a final checklist.',
           'This is especially important for businesses in Nepal and Kathmandu that want better local visibility, stronger brand trust and more enquiries from search. A website built for both speed and search crawlers gives the business a better foundation for growth from day one.',
+        ],
+      },
+      {
+        heading: 'What makes your approach to web development different?',
+        paragraphs: [
+          'One person owns the project from the first conversation to the launch checklist. The same person who scopes the work writes the code and answers the messages, so nothing is lost in a handoff between a designer, a developer and an account manager. I work from Kathmandu with clients across Nepal, in person when it helps and over WhatsApp, email and calls when it does not.',
+          'The build is measured against what the business needs rather than what looks impressive in a portfolio: pages that load quickly on a mobile connection, structure that search engines can read, forms that reach the right inbox, and a layout a visitor can act on. The case studies in Related Work below are real projects, and the scope, timeline and starting price for this service are stated at the top of the page.',
+        ],
+      },
+      {
+        heading: 'How does a website project run from brief to launch?',
+        paragraphs: [
+          'It starts with a short conversation about what the site has to do and who it is for, followed by a written scope, a timeline and a fixed quote. Then comes structure and layout, the build, content and product data, and a round of testing on real devices before the site goes live.',
+          'You get something to react to at each stage instead of one reveal at the end. After launch the site is handed over with the access it needs, analytics already recording, and a window for the fixes and adjustments that only appear once real visitors arrive.',
+        ],
+      },
+      {
+        heading: 'How is a website project priced?',
+        paragraphs: [
+          'Web development starts from NPR 45,000 for a focused business site. The final figure follows the number of pages, how custom the design and features are, and whether the project includes an online store or a custom application. Ecommerce and web application work is quoted per project once the catalogue size and any data migration are known.',
+          'Every quote states what is included, how payment is scheduled and what support follows launch, so the number agreed is the number to plan around. The pricing page sets out the starting figure for each service.',
         ],
       },
     ],
