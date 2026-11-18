@@ -34,7 +34,7 @@ export const faqs: FAQ[] = [
   {
     question: 'What services do you provide?',
     answer:
-      'Ecommerce growth work: store audits, ecommerce SEO, Meta and Google Ads, conversion optimisation and email marketing. Most engagements use three or four of those together, because they only pay off when they are planned as one funnel rather than four separate projects.',
+      'Ecommerce growth work: store audits, ecommerce SEO, Meta and Google Ads, conversion optimisation. Most engagements use three or four of those together, because they only pay off when they are planned as one funnel rather than four separate projects.',
   },
   {
     question: 'Do you build custom websites, or work with WordPress and Shopify?',

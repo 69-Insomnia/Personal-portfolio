@@ -26,24 +26,24 @@ import { SectionLabel } from '@/components/ui/SectionLabel';
 export function Introduction() {
   const cards = [
     {
-      title: 'Built for how Nepal buys',
+      title: 'Ecommerce Development',
       description:
-        'eSewa, Khalti, cards, and cash on delivery at checkout, wired into dispatch, so orders flow from payment to delivery without manual work.',
+        'Building user-friendly online stores with smooth shopping experiences, local payment options, and efficient order management for the Nepali market.',
     },
     {
-      title: 'Found on Google',
+      title: 'SEO & Organic Growth',
       description:
-        '3+ years of SEO: technical store audits, product and category pages that rank, and content that answers what buyers search for, including AI search.',
+        '3+ years of SEO experience, improving Google visibility through technical SEO, product optimization, category pages, and content strategy.',
     },
     {
-      title: 'Ads judged by orders',
+      title: 'Paid Advertising',
       description:
-        'Meta and Google Ads with creative testing and monthly budget moves, measured by ROAS and cost per acquisition, not likes or reach.',
+        'Managing Meta Ads and Google Ads to reach potential customers, generate sales, and improve return on ad spend through continuous optimization.',
     },
     {
-      title: 'In-house experience',
+      title: 'In-House Ecommerce Experience',
       description:
-        'As Ecommerce Lead at Nano Store, a Nepali retailer of iPhones, Android phones, laptops, DJI cameras, Insta360 products, and prescription frames, I owned SEO, paid media, CRO, and email from inside the business. Working in-house meant I managed the full funnel, from product discovery on Google to checkout and repeat purchases, instead of handing off between agencies.',
+        'Currently working as Ecommerce Lead at Nano Store, managing SEO, paid advertising, and CRO. I work across the entire customer journey, from product discovery to checkout and repeat purchases.',
     },
   ];
 
@@ -56,15 +56,16 @@ export function Introduction() {
 
             <RevealText
               as="h2"
-              text="An ecommerce specialist in Kathmandu who works on the whole store, not one channel."
+              text="Helping ecommerce businesses in Nepal grow online and sell more."
               className="mt-6 text-h2"
             />
 
             <Reveal delay={0.1}>
               <p className="mt-6 max-w-2xl text-lead text-ink">
-                Most stores in Nepal hire one person for the website, another for Facebook
-                ads, and nobody for search or email. Sales stall in the gaps between them. I
-                work across all of it, so every rupee of spend can be traced to orders.
+                With 3+ years of experience in ecommerce, SEO, and digital marketing, I help
+                businesses build better online stores, attract customers, and increase sales.
+                I focus on the complete growth process, from website experience and search
+                visibility to advertising and customer retention.
               </p>
             </Reveal>
           </div>
