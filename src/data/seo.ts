@@ -259,9 +259,44 @@ export const defaultSEO: SEOData = {
  * broader growth phrasing it uses as the site-wide fallback.
  */
 export const homeSEO: SEOData = {
-  title: 'Ecommerce Specialist in Nepal | Ecommerce Expert in Nepal',
+  title: 'Ecommerce Expert in Nepal | Ecommerce Specialist in Kathmandu',
   description:
-    'Dipendra Guragain is an ecommerce specialist in Nepal and an e-commerce expert in Kathmandu helping online stores grow with SEO, Google Ads, Meta Ads and CRO.',
+    'Dipendra Guragain is an ecommerce specialist in Nepal and an ecommerce expert in Kathmandu helping online stores grow with SEO, Google Ads, Meta Ads and CRO.',
+  /**
+   * The full target list for this route — the ten primary expert/specialist
+   * × Nepal/Kathmandu × growth combinations plus the secondary SEO/consultant
+   * cluster. Emitted explicitly by `generateMetadata` (buildMetadata does not
+   * emit `keywords`), and mirrored in the `seo_meta` row, which is the value
+   * that actually ships when the database is reachable.
+   */
+  keywords: [
+    'ecommerce expert in Nepal',
+    'ecommerce specialist in Nepal',
+    'ecommerce experts in Nepal',
+    'ecommerce specialists in Nepal',
+    'ecommerce expert in Kathmandu',
+    'ecommerce specialist in Kathmandu',
+    'ecommerce growth expert in Nepal',
+    'ecommerce growth specialist in Nepal',
+    'ecommerce growth experts in Kathmandu',
+    'ecommerce growth specialists in Kathmandu',
+    'ecommerce SEO expert in Nepal',
+    'ecommerce SEO specialist in Nepal',
+    'ecommerce SEO expert in Kathmandu',
+    'SEO specialist in Nepal',
+    'SEO specialist in Kathmandu',
+    'SEO expert in Nepal',
+    'SEO expert in Kathmandu',
+    'ecommerce growth consultant in Nepal',
+    'ecommerce consultant in Kathmandu',
+    'ecommerce marketing expert in Nepal',
+    'ecommerce marketing specialist in Nepal',
+    'online store growth expert in Nepal',
+    'ecommerce digital marketing expert in Nepal',
+    'ecommerce optimization expert in Nepal',
+    'ecommerce conversion rate optimization expert in Nepal',
+    'ecommerce CRO specialist in Nepal',
+  ],
   canonical: `${site.url}/`,
 };
 

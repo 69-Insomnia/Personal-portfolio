@@ -15,18 +15,65 @@ import { Blog } from '@/sections/Blog';
 import { FAQ } from '@/sections/FAQ';
 import { Contact } from '@/sections/Contact';
 import { faqs } from '@/data/faqs';
-import { site } from '@/data/seo';
+import { DEFAULT_OG_IMAGE, homeSEO, site, withSeoMeta } from '@/data/seo';
+import { profile } from '@/data/profile';
 import {
   customJsonLdNodes,
   definedTermNodes,
   definedTermSetNode,
   faqPageNode,
   personId,
+  personNode,
   webPageNode,
 } from '@/lib/structured-data';
-import { buildMetadata } from '@/utils/metadata';
-import { homeSEO, withSeoMeta } from '@/data/seo';
+import { buildMetadata, normalizeMetadataImage } from '@/utils/metadata';
 import { getExperience, getPosts, getProjects, getSeo, getServices, getSiteSettings } from '@/lib/content';
+
+/**
+ * The homepage's enforced title and description — see `generateMetadata`.
+ *
+ * Title leads with the #1 target query ("Ecommerce Expert in Nepal") and puts
+ * the Kathmandu half of the target pair after the pipe, so both geos are
+ * present verbatim in the one line a searcher reads. The description answers
+ * with the other two singular combinations ("Ecommerce Specialist in Nepal",
+ * "Ecommerce Expert in Kathmandu"), which means all four base
+ * expert/specialist × Nepal/Kathmandu combinations appear exactly once across
+ * title + description. The six growth/plural variants are carried by the
+ * `keywords` meta tag, the JSON-LD entities and the page's existing copy.
+ *
+ * Both are mirrored in `homeSEO` so the admin panel's preview shows what
+ * actually ships, and both survive `clampTitle`/`clampDescription` unchanged
+ * (61 and 157 characters — outside the auto-rewrite windows of <50 and <140).
+ */
+const HOME_TITLE = 'Ecommerce Expert in Nepal | Ecommerce Specialist in Kathmandu';
+const HOME_DESCRIPTION =
+  'Dipendra Guragain is an ecommerce specialist in Nepal and an ecommerce expert in Kathmandu helping online stores grow with SEO, Google Ads, Meta Ads and CRO.';
+
+/** Social preview alt — name first, then the two target geos. */
+const OG_IMAGE_ALT = `${profile.name} — ecommerce expert in Nepal, Kathmandu`;
+
+/**
+ * The two affiliations the site-wide `Person` node does not carry — the same
+ * facts `/about` asserts, duplicated rather than imported because the about
+ * route is out of scope for homepage work. They are static facts (an employer
+ * and a campus), not configuration, so the copies cannot drift the way a
+ * setting would.
+ */
+const NANO_STORE = {
+  '@type': 'Organization',
+  name: 'Nano Store',
+  url: 'https://nanostore.com.np/',
+} as const;
+
+const CAMPUS = {
+  '@type': 'EducationalOrganization',
+  name: 'Ratna Rajyalaxmi Campus',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Kathmandu',
+    addressCountry: 'NP',
+  },
+} as const;
 
 const HOME_KEYWORD_FAQS = [
   {
@@ -104,12 +151,13 @@ function mergeFaqs(base: Array<{ question: string; answer: string }>, extras: Ar
  * `src/data/sections.ts` for the registry that mirrors this order.
  */
 export default async function HomePage() {
-  const [projects, posts, experience, services, seoMeta] = await Promise.all([
+  const [projects, posts, experience, services, seoMeta, settings] = await Promise.all([
     getProjects(),
     getPosts(),
     getExperience(),
     getServices(),
     getSeo('page', 'home'),
+    getSiteSettings(),
   ]);
   const answerBlock = seoMeta?.aiAnswer ?? HOME_AI_ANSWER;
   const quickAnswers = mergeFaqs(seoMeta?.faqs ?? [], HOME_KEYWORD_FAQS);
@@ -167,18 +215,47 @@ export default async function HomePage() {
    */
   const pageNode = webPageNode({
     url: `${site.url}/`,
-    name: 'Ecommerce Specialist in Nepal',
+    name: HOME_TITLE,
     mainEntityId: personId,
     signals: seoMeta?.entitySignals,
     aiAnswer: answerBlock,
     type: 'ProfilePage',
   });
 
+  /**
+   * The `Person` node for this page's graph.
+   *
+   * Built exactly the way the site-wide node is built — same admin `jobTitle`
+   * and `knowsAbout`, same sorted `sameAs` — so every shared property is
+   * byte-identical and the two resolve to one entity without a single
+   * conflicting value. The only additions are `worksFor` and `alumniOf`: the
+   * employer and campus this page's own visible copy names, absent from the
+   * site-wide node, so the homepage's graph now carries the employment and
+   * education signals `/about` carries instead of only that page having them.
+   *
+   * No `aggregateRating` and no dates: there are no collected reviews behind
+   * one, and "1 year" in the copy is not a month-precision `startDate`.
+   */
+  const socials = Object.entries(settings.socialLinks)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([, href]) => href);
+
+  const person = {
+    ...personNode({
+      socials,
+      jobTitle: settings.personJobTitle,
+      knowsAbout: settings.personKnowsAbout,
+    }),
+    worksFor: NANO_STORE,
+    alumniOf: CAMPUS,
+  };
+
   /** Glossary terms from `entity_signals` — see `definedTermNodes`. */
   const terms = seoMeta?.entitySignals?.definedTerms;
 
   const graph = [
     ...(pageNode ? [pageNode] : []),
+    person,
     ...definedTermNodes(terms),
     // The set is emitted only alongside terms, since it exists to give
     // them something to belong to.
@@ -292,21 +369,95 @@ export async function generateMetadata(): Promise<Metadata> {
     ...homeSEO,
     /**
      * Enforced over the database row below — the admin panel cannot out-edit
-     * these two. The title carries the two primary target queries verbatim
-     * ("Ecommerce Specialist in Nepal", "Ecommerce Expert in Nepal") in the
-     * order a searcher reads them, and stays inside the 72-character display
-     * limit; the description answers with the role, the place (Nepal and
-     * Kathmandu), and what the work actually is.
+     * these two. `HOME_TITLE` leads with the primary target query verbatim and
+     * carries the Kathmandu half of the target pair after the pipe;
+     * `HOME_DESCRIPTION` answers with the other two singular combinations, the
+     * role, the place and what the work actually is. See the constants at the
+     * top of this file for the coverage arithmetic.
      */
-    title: 'Ecommerce Specialist in Nepal | Ecommerce Expert in Nepal',
-    description:
-      'Dipendra Guragain is an ecommerce specialist in Nepal and an e-commerce expert in Kathmandu helping online stores grow with SEO, Google Ads, Meta Ads and CRO.',
+    title: HOME_TITLE,
+    description: HOME_DESCRIPTION,
   };
   const merged = withSeoMeta(fallbackHomeMeta, meta);
   const enforced = {
     ...merged,
-    title: fallbackHomeMeta.title,
-    description: fallbackHomeMeta.description,
+    title: HOME_TITLE,
+    description: HOME_DESCRIPTION,
   };
-  return buildMetadata(enforced, await getSiteSettings());
+
+  const settings = await getSiteSettings();
+  const base = buildMetadata(enforced, settings);
+
+  /**
+   * `buildMetadata` always returns an object-shaped `openGraph` and a
+   * `twitter` object, but both types are unions that include a bare string —
+   * hence the narrowing before the spread below.
+   */
+  const openGraph =
+    typeof base.openGraph === 'object' && base.openGraph !== null ? base.openGraph : {};
+
+  /**
+   * The image, resolved through the same fallback chain `buildMetadata` uses
+   * (page → admin's site default → repo constant), rebuilt here rather than
+   * mapped over: the image entry type is `string | URL | descriptor` and only
+   * the descriptor carries `alt`, so an explicit literal is both simpler and
+   * the one place the alt text can be set to something other than the title.
+   */
+  const ogImage = normalizeMetadataImage(
+    enforced.ogImage ?? settings.defaultOgImage ?? DEFAULT_OG_IMAGE,
+  );
+
+  /**
+   * `index`/`follow` come from the resolved `SEOData` rather than being
+   * hardcoded, so an admin `noindex` on this row still wins; the explicit
+   * directives only make the site-wide default visible on the page instead of
+   * inherited. `max-image-preview: large` is added to the generic tag because
+   * the layout puts it on `googlebot` only, and the full-size preview card is
+   * the thing it controls.
+   */
+  const robots =
+    typeof enforced.robots === 'object' && enforced.robots !== null ? enforced.robots : {};
+  const index = robots.index ?? true;
+  const follow = robots.follow ?? true;
+
+  return {
+    ...base,
+    // Emitted here because `buildMetadata` deliberately does not publish
+    // `keywords` — this route opts in, using the resolved list (the admin row
+    // when one exists, the repo's target list otherwise).
+    keywords: merged.keywords,
+    robots: {
+      index,
+      follow,
+      'max-image-preview': 'large',
+      googleBot: {
+        index,
+        follow,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+        'max-video-preview': -1,
+      },
+    },
+    alternates: {
+      canonical: enforced.canonical,
+      // The site serves one language at one URL, so both hreflang entries
+      // point at the same page — an honest declaration of "this is the
+      // English page, and it is the Nepali-market English page", rather than
+      // a locale path that does not exist.
+      languages: { 'en-NP': '/', en: '/' },
+    },
+    other: {
+      'geo.region': 'NP-BA',
+      'geo.placename': 'Kathmandu',
+    },
+    openGraph: {
+      ...openGraph,
+      locale: 'en_NP',
+      images: [{ url: ogImage, width: 1200, height: 630, alt: OG_IMAGE_ALT }],
+    },
+    twitter: {
+      ...base.twitter,
+      images: [{ url: ogImage, alt: OG_IMAGE_ALT }],
+    },
+  };
 }
