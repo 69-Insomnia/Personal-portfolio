@@ -183,6 +183,7 @@ export function Footer({ services }: FooterProps) {
                   <li key={item.href}>
                     <Link
                       href={item.href}
+                      title={item.title}
                       className="-mx-2 block rounded-control px-2 py-1.5 text-[15px] text-muted transition-colors duration-200 hover:bg-subtle hover:text-accent"
                     >
                       {item.label}
@@ -200,6 +201,7 @@ export function Footer({ services }: FooterProps) {
                     <li key={service.slug}>
                       <Link
                         href={`/services/${service.slug}`}
+                        title={`${service.title} in ${profile.location}`}
                         className="-mx-2 block rounded-control px-2 py-1.5 text-[15px] text-muted transition-colors duration-200 hover:bg-subtle hover:text-accent"
                       >
                         {service.shortName ?? listServiceName(service.title)}
@@ -226,6 +228,7 @@ export function Footer({ services }: FooterProps) {
                     href={waHref}
                     target="_blank"
                     rel="noopener noreferrer"
+                    title={`Message ${profile.name} on WhatsApp`}
                     className="-mx-2 block rounded-control px-2 py-1.5 text-[15px] text-muted transition-colors duration-200 hover:bg-subtle hover:text-accent"
                   >
                     WhatsApp

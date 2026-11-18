@@ -5,11 +5,27 @@ import type { NavigationItem } from '@/types';
  *
  * The header takes this list with two entries filtered out (`mainNavigation`
  * below); the footer takes it as-is.
+ *
+ * `title` is the link's `title` attribute — invisible copy that describes the
+ * destination for a tooltip, a text-only browser and a crawler reading anchor
+ * context. It never renders as text, so the labels below are untouched.
  */
 const siteLinks: NavigationItem[] = [
-  { label: 'About', href: '/about' },
-  { label: 'Work', href: '/work' },
-  { label: 'Services', href: '/services' },
+  {
+    label: 'About',
+    href: '/about',
+    title: 'About Dipendra Guragain, ecommerce growth expert in Kathmandu',
+  },
+  {
+    label: 'Work',
+    href: '/work',
+    title: 'Ecommerce growth, SEO and web development projects in Nepal',
+  },
+  {
+    label: 'Services',
+    href: '/services',
+    title: 'Web development, SEO, ecommerce growth and ads services in Nepal',
+  },
   /**
    * The money page, given its own slot rather than left as the fifth card
    * under Services.
@@ -22,14 +38,30 @@ const siteLinks: NavigationItem[] = [
    * Hidden from the header at the owner's request (2026-11-16); the footer
    * link below is what carries that signal now.
    */
-  { label: 'Ecommerce Growth', href: '/services/ecommerce-growth' },
+  {
+    label: 'Ecommerce Growth',
+    href: '/services/ecommerce-growth',
+    title: 'Ecommerce growth services in Kathmandu, Nepal',
+  },
   // Placed after the money page, not before: it is the page a visitor reaches
   // for immediately after deciding the service is relevant, and the one the
   // commercial query cluster ("SEO cost in Nepal") lands on. Also hidden from
   // the header at the owner's request (2026-11-16), kept in the footer.
-  { label: 'Pricing', href: '/pricing' },
-  { label: 'Blogs', href: '/blog' },
-  { label: 'Contact', href: '/contact' },
+  {
+    label: 'Pricing',
+    href: '/pricing',
+    title: 'Pricing for SEO, Google Ads, Meta Ads and web development in Nepal',
+  },
+  {
+    label: 'Blogs',
+    href: '/blog',
+    title: 'Articles on SEO, ecommerce growth and web development',
+  },
+  {
+    label: 'Contact',
+    href: '/contact',
+    title: 'Contact Dipendra Guragain in Kathmandu, Nepal',
+  },
 ];
 
 /**

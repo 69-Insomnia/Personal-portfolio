@@ -182,6 +182,7 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                       href={item.href}
                       onClick={onClose}
                       aria-current={isActive(item.href) ? 'page' : undefined}
+                      title={item.title}
                       className="group flex min-h-[56px] items-center justify-between rounded-control px-3 py-3 transition-colors hover:bg-subtle"
                     >
                       {/* The two-digit ordinal that used to sit on the right of

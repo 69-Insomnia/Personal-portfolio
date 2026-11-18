@@ -265,11 +265,32 @@ export const homeSEO: SEOData = {
   canonical: `${site.url}/`,
 };
 
+/**
+ * The `/about` page.
+ *
+ * Retargeted at "Ecommerce Expert in Nepal" — the query this page is meant to
+ * rank for — with the city kept in both the title and the description because
+ * the second half of the target pair is "ecommerce expert in Kathmandu". The
+ * title leads with the query rather than the name for the same reason the rest
+ * of the site does: a portfolio for an entity nobody has searched for yet gains
+ * nothing from brand-first titles.
+ *
+ * The database row (`seo_meta`, `entity_type = 'page'`, `entity_slug =
+ * 'about'`) overrides title and description, so both were updated together —
+ * this object is the fallback for an unreachable database, not the live value.
+ */
 export const aboutSEO: SEOData = {
-  title: 'About Dipendra Guragain | Ecommerce Growth Expert in Kathmandu, Nepal',
+  title: 'Ecommerce Expert in Nepal & Kathmandu | Dipendra Guragain',
   description:
-    'Learn how Dipendra Guragain helps ecommerce brands in Nepal and Kathmandu grow with SEO, Shopify optimisation, conversion rate optimisation, and Google and Meta Ads.',
-  keywords: ['ecommerce growth expert Kathmandu', 'ecommerce growth specialist in Kathmandu', 'SEO consultant Nepal'],
+    'Dipendra Guragain, your ecommerce expert in Nepal, works from Kathmandu on SEO, Shopify and Google and Meta Ads. Send your store on WhatsApp.',
+  keywords: [
+    'ecommerce expert in Nepal',
+    'ecommerce expert in Kathmandu',
+    'ecommerce growth specialist in Nepal',
+    'ecommerce SEO Nepal',
+    'Shopify expert Nepal',
+    'Google Ads and Meta Ads for ecommerce Nepal',
+  ],
   canonical: `${site.url}/about`,
 };
 

@@ -126,6 +126,7 @@ export function Navbar() {
                   key={item.href}
                   href={item.href}
                   aria-current={active ? 'page' : undefined}
+                  title={item.title}
                   className={cn(
                     'relative rounded-control px-3.5 py-2 text-sm font-medium transition-colors duration-200',
                     active ? 'text-ink' : 'text-muted hover:bg-subtle hover:text-ink',

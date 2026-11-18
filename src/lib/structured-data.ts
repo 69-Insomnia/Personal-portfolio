@@ -146,21 +146,39 @@ export function personNode(overrides: PersonOverrides = {}): Node {
 /**
  * The `/about` page, declared as being about the Person above.
  *
- * `ProfilePage` is the type Google documents for exactly this shape, and
- * `mainEntity` is what ties the page to `#person` rather than leaving a search
- * engine to infer from prose that the page and the entity are the same thing.
- * It is emitted on /about only — a ProfilePage node on every route would claim
- * the whole site is a profile.
+ * `AboutPage` rather than the `ProfilePage` this route used to emit: the type
+ * now names what the URL is. Both are `WebPage` subtypes, so a consumer that
+ * only looks for `WebPage` resolves either one, and `mainEntity`/`about` still
+ * tie the page to `#person` — which is the part that does the entity work.
+ * `ProfilePage` is not lost from the site: the home route still publishes it
+ * through `webPageNode`, so there is exactly one profile declaration rather
+ * than two that would have to agree.
+ *
+ * `name` and `description` are parameters rather than constants because they
+ * come from the page's resolved `SEOData` — the database row when one exists.
+ * Restating the title here would mean the structured data and the `<title>`
+ * could drift apart the moment the row is edited in the admin panel.
  */
-export function profilePageNode(): Node {
+export function aboutPageNode({
+  name,
+  description,
+  aiAnswer,
+}: {
+  name: string;
+  description?: string;
+  /** The admin's `ai_answer` for this page — the same passage `webPageNode` publishes as `abstract`. */
+  aiAnswer?: string;
+}): Node {
   return {
-    '@type': 'ProfilePage',
-    '@id': `${site.url}/about#profilepage`,
+    '@type': 'AboutPage',
+    '@id': `${site.url}/about#aboutpage`,
     url: `${site.url}/about`,
-    name: `About ${identity.name} — ${identity.role}`,
+    name,
+    ...(description ? { description } : {}),
     isPartOf: { '@id': websiteId },
     mainEntity: { '@id': personId },
-    about: { '@id': personId },
+    about: [{ '@id': personId }],
+    ...(aiAnswer ? { abstract: aiAnswer } : {}),
     inLanguage: 'en',
   };
 }

@@ -131,10 +131,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticRoutes = staticPages.filter(
     ({ path, slug }) => !excluded('page', slug, `${site.url}${path}`),
-  ).map(({ path, priority }) => ({
+  ).map(({ path, slug, priority }) => ({
     url: `${site.url}${path}`,
-    // No date: these are code-managed, so the honest answer is that the data
-    // does not record one.
+    /**
+     * The row's own `updated_at` — a real edit date maintained by the
+     * `touch_seo_meta` trigger, so it changes when the page's metadata
+     * actually changes rather than on every build. Only pages that have a
+     * `seo_meta` row carry it, which is the same honesty rule the rest of
+     * this file follows: no date, no `lastmod`.
+     */
+    ...stamped(seo.get(seoKey('page', slug))?.updatedAt),
     changeFrequency: 'monthly' as const,
     priority,
   }));

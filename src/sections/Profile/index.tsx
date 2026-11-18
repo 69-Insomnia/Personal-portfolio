@@ -136,7 +136,7 @@ export function ProfileIntro() {
                   <div className="relative aspect-square overflow-hidden rounded-control">
                     <Image
                       src="/images/dipendra-guragain.jpg"
-                      alt={`Portrait of ${profile.name}`}
+                      alt={`Portrait of ${profile.name}, ecommerce expert in ${profile.location}`}
                       fill
                       sizes="(max-width: 1024px) 100vw, 380px"
                       className="object-cover"

@@ -33,6 +33,17 @@ export interface NavigationItem {
   label: string;
   href: string;
   description?: string;
+  /**
+   * The link's `title` attribute — the tooltip and the text-only fallback for
+   * a link whose label is three words long.
+   *
+   * Kept separate from `label` on purpose: `label` is the visible anchor text
+   * and is what a screen reader announces, so it stays exactly as it reads
+   * today. This string never renders as content, which is why the two can
+   * carry different wording — the label names the destination, the title
+   * describes what is on the other side of it.
+   */
+  title?: string;
 }
 
 export interface SEOData {
