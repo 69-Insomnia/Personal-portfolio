@@ -21,6 +21,126 @@ import type { BlogPost } from '@/types';
  */
 export const blogPosts: BlogPost[] = [
   {
+    slug: 'digital-marketing-expert-nepal',
+    title:
+      'Digital Marketing Expert in Nepal: How to Find and Hire the Right Digital Marketing Specialist in Kathmandu (2026 Guide)',
+    excerpt:
+      'How to find and hire a digital marketing expert in Nepal in 2026: what they do, what it costs (NPR 15,000/month), 8 questions to ask and red flags to avoid.',
+    category: 'Digital Marketing',
+    date: '19 November 2026',
+    readingTime: '6 min read',
+    image: '/images/blog-digital-marketing-expert-nepal.png',
+    tags: [
+      'Digital Marketing',
+      'Nepal',
+      'Kathmandu',
+      'Google Ads',
+      'Meta Ads',
+      'SEO',
+      'Digital Marketing Expert in Nepal',
+    ],
+    content: [
+      'To hire the right digital marketing expert in Nepal, shortlist three specialists, ask each for a 2-3 week audit plan and a fixed monthly price, and check they can show real Nepali results before signing anything long. In Kathmandu I run this as one package at NPR 15,000 per month, with ad budget paid direct to Google and Meta.',
+      'I\'m Dipendra Guragain, a digital marketing expert in Kathmandu. This guide is the hiring checklist I wish clients came to me with: what the job actually involves, what the Nepali market looks like in 2026, what it should cost, and the eight questions that separate someone who runs ads from someone who can grow a business.',
+      '## What a Digital Marketing Expert in Nepal Actually Does',
+      'Too many Nepali businesses hire four suppliers — one for SEO, one for Google Ads, one for Meta Ads, one for content — and none of them owns the number that matters. An expert works differently: one strategy, one tracking setup, one monthly report, and one person accountable for enquiries and sales.',
+      '• Strategy first — deciding which channels your business actually needs, instead of selling all of them to you.',
+      '• Search — SEO and [AI search optimisation](/services/ai-search) so customers find you on Google and inside AI answers, not just on Facebook.',
+      '• Paid ads — [Google Ads](/services/google-ads) and [Meta Ads](/services/meta-ads) run against a target cost per enquiry rather than impressions.',
+      '• Content and landing pages — what turns a click into a WhatsApp chat or a filled-in form.',
+      '• Tracking and reporting — one dashboard, one monthly report, and numbers you can check yourself.',
+      '## Why Nepal\'s Digital Market Is Worth Attention in 2026',
+      '### What the numbers say',
+      'Nepal is a small market, but it is not an offline one. Four figures frame why hiring well matters here:',
+      '• 16.6 million internet users — 56.0% of the population — and 14.8 million social media user identities as of October 2025 (DataReportal, Digital 2026: Nepal).',
+      '• Instagram reaches 4.35 million users, up 7.4% year on year, and Messenger reaches around 11 million (DataReportal, Digital 2026: Nepal).',
+      '• Google holds 96.33% of search referrals in Nepal, and mobile carries 57.13% of web traffic (StatCounter).',
+      '• Nepal had 26.76 million digital wallet users by Falgun 2081, which is why "see the product, pay on WhatsApp" is a normal buying path (Nepal Rastra Bank).',
+      '### What the 2025 social media ban showed',
+      'One more thing worth knowing before you bet everything on a single channel: Nepal blocked Facebook, Instagram, TikTok, YouTube and X in early September 2025 when 26 platforms failed to register, and restored them on 9 September after protests (Reuters). A business reachable only through one social platform was unreachable for the better part of a week. That is the argument for owning your own website, your own search presence and your own list.',
+      '## Expert, Agency or Freelancer: Which One Do You Need?',
+      '• A digital marketing agency in Kathmandu — a team with several account managers and wider capability. Good for large budgets, but the person who sold you the work is rarely the person doing it, and you pay for the overhead.',
+      '• A freelancer — cheaper and flexible, but usually strong in one channel only. You end up coordinating the strategy yourself, which is the job you were trying to buy.',
+      '• A digital marketing expert working directly with you — one senior person across strategy, ads, SEO, content and reporting. Usually the right call for a small or mid-sized Nepali business, where the budget needs to buy results rather than account management.',
+      '## 8 Questions to Ask Before You Hire',
+      '• What will you audit first, and how long will it take? The honest answer is 2-3 weeks, and anyone who says they can skip it is guessing.',
+      '• Which channels do you think I actually need — and which would you tell me to drop?',
+      '• Is the ad budget separate, and does it go to Google and Meta directly? It should.',
+      '• What exactly does the first month include?',
+      '• Who writes the ad creative and the landing pages?',
+      '• What do I own at the end — the ad accounts, the tracking, the content, the domain?',
+      '• What report do I get, and what single number am I judged on?',
+      '• What happens if the first 90 days do not work?',
+      '## How Much Does Digital Marketing Cost in Nepal?',
+      'Pricing in Kathmandu runs from a few thousand rupees a month for a single channel to six figures for a full agency retainer. What you should be able to get, in writing, before you commit:',
+      '• An audit first — 2-3 weeks of looking at your data, your competitors and your tracking before any ongoing work is agreed.',
+      '• NPR 15,000 per month for the ongoing work — strategy, Google Ads, Meta Ads, SEO, content and the monthly report, from one person.',
+      '• Ad budget separate, and paid directly to Google and Meta. It never passes through me, so you always know what you spent.',
+      '• No long lock-in. Month to month, and the audit is the point at which you decide whether to continue.',
+      'The audit is the part most people skip, and it is the part that decides everything after it. A strategy built on your real numbers is worth more than any amount of enthusiasm.',
+      '## How to Hire a Digital Marketing Expert in Nepal in 5 Steps',
+      '• Shortlist three — search for [digital marketing services](/services/digital-marketing) and [SEO services](/services/seo-services), or take a referral from someone in your industry.',
+      '• Ask for the audit plan in writing, with a price and a date.',
+      '• Run the 2-3 week audit first. It is the cheapest way to find out how someone actually thinks.',
+      '• Agree the one number you will be judged on — cost per enquiry, qualified leads, or revenue.',
+      '• Start monthly and review monthly. If the report cannot be checked against your own records, that is a problem.',
+      '## Red Flags to Avoid',
+      '• Anyone who promises a #1 ranking on Google. Nobody can promise that.',
+      '• An agency that will not give you access to your own ad accounts.',
+      '• A monthly price with no audit — you are buying a template, not a strategy.',
+      '• Four suppliers, four reports, and nobody accountable for the result.',
+      '• A twelve-month contract signed before a single result exists.',
+      '• Reporting that shows impressions and likes but never enquiries or sales.',
+      '## My Results',
+      'The [DrillThru case study](/work/drillthru) is this approach applied end to end on a real project — what was changed, in what order, and what happened next. [ADD REAL RESULT HERE]',
+      'If you would rather start with the audit than the pitch, send me a short brief on the [contact page](/contact) or message me on WhatsApp at [+977-9840814142](tel:+9779840814142). I reply with what I would look at first, then a 2-3 week audit so the plan is based on your data rather than a template.',
+      '## Sources',
+      'DataReportal, Digital 2026: Nepal (internet and social media figures, October 2025). StatCounter, search and traffic share for Nepal. Nepal Rastra Bank, payment systems indicators (digital wallet users, Falgun 2081). Reuters, "Nepal blocks some social media including Facebook", 4 September 2025.',
+    ],
+    faqs: [
+      {
+        question: 'What does a digital marketing expert in Nepal do?',
+        answer:
+          'A digital marketing expert in Nepal plans and runs your Google Ads, Meta Ads, SEO, content and landing pages under one strategy, with one tracking setup and one monthly report. One person is accountable for enquiries and sales instead of four suppliers each owning a slice.',
+      },
+      {
+        question: 'How much does digital marketing cost in Kathmandu?',
+        answer:
+          'In Kathmandu, ongoing digital marketing runs at NPR 15,000 per month with me, covering strategy, Google Ads, Meta Ads, SEO, content and reporting. The 2-3 week audit comes first, and your ad budget is separate and paid directly to Google and Meta.',
+      },
+      {
+        question: 'How do I find the best digital marketing expert in Nepal?',
+        answer:
+          'Shortlist three, ask each for a 2-3 week audit plan with a fixed price, check they can show real Nepali results, and confirm you own the ad accounts. Start with the audit — it is the cheapest way to see how someone thinks before a retainer begins.',
+      },
+      {
+        question: 'Should I hire an agency or a digital marketing expert in Kathmandu?',
+        answer:
+          'Hire an agency when you need a large team and have the budget for account management. Hire a digital marketing expert in Kathmandu when you want one senior person across strategy, ads, SEO and reporting — usually the better value for small and mid-sized businesses.',
+      },
+      {
+        question: 'How long should a digital marketing audit take in Nepal?',
+        answer:
+          'A proper digital marketing audit in Nepal takes 2-3 weeks. It should cover your analytics and tracking, your competitors, your current channel performance and your conversion path, ending in a written strategy with a fixed price for the ongoing work.',
+      },
+      {
+        question: 'Is the ad budget included in the monthly fee?',
+        answer:
+          'No. The ad budget is separate and paid directly to Google and Meta from your own account, so you always see exactly what you spent. The NPR 15,000 monthly fee covers the work of planning, running and reporting the campaigns, not the media spend.',
+      },
+      {
+        question: 'What should a digital marketing report in Nepal include?',
+        answer:
+          'A useful report shows spend, cost per enquiry, qualified leads and sales against the one number you agreed to be judged on. Impressions and likes belong at the bottom. You should be able to check every figure against your own records.',
+      },
+      {
+        question: 'How do I start with Dipendra Guragain?',
+        answer:
+          'Send a short brief through the contact page or WhatsApp +977-9840814142. I reply with what I would look at first, then run a 2-3 week audit so the strategy is based on your real data, before any monthly work at NPR 15,000 begins.',
+      },
+    ],
+  },
+  {
     slug: 'how-to-grow-ecommerce-in-nepal-2026',
     title:
       'How to Grow Ecommerce in Nepal in 2026: The Complete Step-by-Step Guide from an Ecommerce Expert in Nepal',

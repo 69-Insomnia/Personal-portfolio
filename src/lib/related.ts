@@ -79,7 +79,9 @@ const SERVICE_RELATIONS: Record<string, Relations> = {
   'digital-marketing': {
     ...EMPTY,
     projects: ['drillthru'],
-    posts: ['ecommerce-one-system'],
+    // The hiring guide argues for this service directly and links into it from
+    // its own closing section, so the edge runs both ways.
+    posts: ['ecommerce-one-system', 'digital-marketing-expert-nepal'],
   },
 };
 
@@ -159,6 +161,14 @@ const POST_RELATIONS: Record<string, Relations> = {
     ...EMPTY,
     services: ['ecommerce-growth', 'digital-marketing'],
     projects: [],
+  },
+  'digital-marketing-expert-nepal': {
+    ...EMPTY,
+    // The service this guide argues for first, then the two channels it tells
+    // readers to ask about most. DrillThru is the case study the "My results"
+    // section points at, so that edge is written into the prose itself.
+    services: ['digital-marketing', 'seo-services', 'google-ads'],
+    projects: ['drillthru'],
   },
 };
 

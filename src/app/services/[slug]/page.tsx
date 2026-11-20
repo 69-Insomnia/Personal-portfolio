@@ -15,6 +15,21 @@ import { Section } from '@/components/ui/Section';
 import { SectionLabel } from '@/components/ui/SectionLabel';
 import { formatNpr, serviceStartingPrice } from '@/data/pricing';
 import { profile } from '@/data/profile';
+import {
+  DM_ABOUT_LINE,
+  DM_AUTHOR_SUMMARY,
+  DM_BREADCRUMB,
+  DM_DESCRIPTION,
+  DM_H1,
+  DM_IMAGE_ALT,
+  DM_JOB_TITLE,
+  DM_KEYWORDS,
+  DM_KNOWS_ABOUT,
+  DM_SERVICE_TYPE,
+  DM_SIDE_NOTE,
+  DM_SLUG,
+  DM_TITLE,
+} from '@/data/digital-marketing';
 import { getPosts, getProjects, getRedirect, getSeo, getService, getServices, getSiteSettings } from '@/lib/content';
 import { relatedToService } from '@/lib/related';
 import {
@@ -22,12 +37,14 @@ import {
   definedTermNodes,
   definedTermSetNode,
   faqPageNode,
+  personId,
+  personNode,
   serviceNode,
   webPageNode,
 } from '@/lib/structured-data';
-import { identity, serviceSEO, site } from '@/data/seo';
+import { DEFAULT_OG_IMAGE, identity, serviceSEO, site } from '@/data/seo';
 import type { Service } from '@/types';
-import { buildMetadata } from '@/utils/metadata';
+import { buildMetadata, normalizeMetadataImage } from '@/utils/metadata';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -195,6 +212,17 @@ function QuickFacts({ service }: { service: Service }) {
   );
 }
 
+/**
+ * The pinned copy for the retargeted `/services/digital-marketing` page —
+ * title, description, H1, side note, FAQ set and schema identity — lives in
+ * `src/data/digital-marketing.ts`, shared with the script that mirrors it
+ * into the `seo_meta` row.
+ *
+ * Every other service on this route renders from the database, and keeps
+ * doing so: everything below keys off `slug === DM_SLUG`, so the change stays
+ * on this one URL.
+ */
+
 export async function generateStaticParams() {
   // Database-only: a service created in /admin after this build still gets a
   // page, rendered on demand through the route's ISR window — while a slug
@@ -206,14 +234,49 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const [live, meta] = await Promise.all([getService(slug), getSeo('service', slug)]);
+  const [live, meta, settings] = await Promise.all([
+    getService(slug),
+    getSeo('service', slug),
+    getSiteSettings(),
+  ]);
   const service = live;
   if (!service) {
     // `notFound()` renders the root boundary, which sends its own `noindex`.
     // This only has to avoid publishing a title that reads like a real page.
     return { title: 'Service Not Found', robots: { index: false, follow: false } };
   }
-  return buildMetadata(serviceSEO(service, meta), await getSiteSettings());
+
+  /**
+   * The retargeted page resolves its head from the constants above rather
+   * than from the `seo_meta` row.
+   *
+   * `withSeoMeta` lets a database row win over the generated defaults, which
+   * is right for every other service and wrong here: this URL's title,
+   * description and social copies are fixed by the brief, so they are spread
+   * over the resolved SEO data after the merge — the row still supplies the
+   * canonical URL, the OG image and the admin's custom nodes, it just no
+   * longer gets to rename the page. The third argument pins `og:image:alt`
+   * to the brief's string instead of the title fallback.
+   */
+  if (slug === DM_SLUG) {
+    const resolved = serviceSEO(service, meta);
+    return buildMetadata(
+      {
+        ...resolved,
+        title: DM_TITLE,
+        description: DM_DESCRIPTION,
+        keywords: DM_KEYWORDS,
+        ogTitle: DM_TITLE,
+        ogDescription: DM_DESCRIPTION,
+        twitterTitle: DM_TITLE,
+        twitterDescription: DM_DESCRIPTION,
+      },
+      settings,
+      DM_IMAGE_ALT,
+    );
+  }
+
+  return buildMetadata(serviceSEO(service, meta), settings);
 }
 
 export default async function ServicePage({ params }: PageProps) {
@@ -242,14 +305,25 @@ export default async function ServicePage({ params }: PageProps) {
     notFound();
   }
 
-  const [allServices, allProjects, allPosts, seoMeta] = await Promise.all([
+  const [allServices, allProjects, allPosts, seoMeta, settings] = await Promise.all([
     getServices(),
     getProjects(),
     getPosts(),
     // Cached by the same `revalidate` as the reads above, so this is not a
     // second round trip — see the note in `work/[slug]`.
     getSeo('service', service.slug),
+    // Only the retargeted page uses this (for its `ProfessionalService`
+    // `sameAs`), but the read is cached with the rest either way.
+    getSiteSettings(),
   ]);
+
+  /**
+   * The one service page with pinned copy. Every branch below — H1, side
+   * note, breadcrumb crumb, About line, schema identity, internal links —
+   * keys off this flag, so `/services/seo-services` and the rest render from
+   * the database exactly as they did before the retarget.
+   */
+  const isDigitalMarketing = service.slug === DM_SLUG;
 
   const related = allServices.filter((item) => item.slug !== service.slug).slice(0, 3);
   const { projects: relatedProjects, posts: relatedPosts } = relatedToService(service.slug, {
@@ -264,10 +338,14 @@ export default async function ServicePage({ params }: PageProps) {
    * word for word. The breadcrumb trail reads from the same string, which is
    * why the last crumb is the full heading and not an abbreviation.
    */
-  const pageTitle =
-    service.slug === 'web-development' ? 'Web Development Services in Nepal' : service.title;
-  const pageDescription =
-    service.slug === 'web-development'
+  const pageTitle = isDigitalMarketing
+    ? DM_H1
+    : service.slug === 'web-development'
+      ? 'Web Development Services in Nepal'
+      : service.title;
+  const pageDescription = isDigitalMarketing
+    ? DM_SIDE_NOTE
+    : service.slug === 'web-development'
       ? 'Website and ecommerce developer in Kathmandu, Nepal building business websites, online stores and web apps with Shopify, WooCommerce, React and Next.js.'
       : service.shortDescription;
   const body = service.body ?? [];
@@ -284,7 +362,9 @@ export default async function ServicePage({ params }: PageProps) {
   const terms = seoMeta?.entitySignals?.definedTerms;
   const pageNode = webPageNode({
     url: `${site.url}/services/${service.slug}`,
-    name: service.title,
+    // The H1, not the database title, on the retargeted page — the schema and
+    // the heading on the page should be able to be compared word for word.
+    name: isDigitalMarketing ? DM_H1 : service.title,
     mainEntityId: `${site.url}/services/${service.slug}/#service`,
     signals: seoMeta?.entitySignals,
     aiAnswer: seoMeta?.aiAnswer,
@@ -316,8 +396,9 @@ export default async function ServicePage({ params }: PageProps) {
     (service.slug === 'web-development'
       ? 'Dipendra Guragain is a web developer in Nepal and a website developer in Kathmandu building responsive business websites, ecommerce websites and custom web applications for businesses that need a faster, better-converting online presence. The work covers planning, UX and layout, frontend development, backend integration, ecommerce setup, analytics tracking and launch support. For projects that need more flexibility, I build with React and Next.js. For businesses that need simpler day-to-day editing, I can build on WordPress or Shopify. The goal is always a secure, SEO-friendly, performance-focused website that is easy to maintain and ready to support real business growth in Nepal.'
       : undefined);
-  const serviceAuthorSummary =
-    service.slug === 'web-development'
+  const serviceAuthorSummary = isDigitalMarketing
+    ? DM_AUTHOR_SUMMARY
+    : service.slug === 'web-development'
       ? 'I help businesses in Kathmandu and across Nepal build modern, high-performing websites that combine clean design, seamless functionality, and SEO-friendly development to turn visitors into customers.'
       : `I help businesses in Kathmandu and across Nepal with ${service.title.toLowerCase()} that is practical, well-structured and built around the goals of the business rather than a generic template.`;
 
@@ -329,6 +410,61 @@ export default async function ServicePage({ params }: PageProps) {
    */
   const faqNode = faqPageNode(boostedFaqs, `${site.url}/services/${service.slug}`);
 
+  /**
+   * The retargeted page's own entity nodes.
+   *
+   * Both are scoped to this URL's `@id` rather than reusing the site-wide
+   * `#person` and `#service` ids: the site-wide `Person` carries the admin's
+   * jobTitle and knowsAbout, so republishing it with different values under
+   * the same `@id` would be conflicting markup rather than reinforcement.
+   * These two say what *this* page is about — a digital marketing expert —
+   * and reference each other, while `serviceNode` keeps pointing at the
+   * canonical site-wide entities exactly as before.
+   */
+  const socials = Object.entries(settings.socialLinks)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([, href]) => href);
+
+  const dmPersonId = `${site.url}/services/${DM_SLUG}/#person`;
+
+  const dmNodes = isDigitalMarketing
+    ? [
+        {
+          ...personNode({
+            socials,
+            jobTitle: DM_JOB_TITLE,
+            knowsAbout: DM_KNOWS_ABOUT,
+          }),
+          '@id': dmPersonId,
+        },
+        {
+          '@type': 'ProfessionalService',
+          '@id': `${site.url}/services/${DM_SLUG}/#professionalservice`,
+          name: 'Dipendra Guragain – Digital Marketing Expert',
+          description: DM_DESCRIPTION,
+          url: `${site.url}/services/${DM_SLUG}`,
+          image: `${site.url}/images/profile.png`,
+          founder: { '@id': dmPersonId },
+          ...(identity.telephone ? { telephone: identity.telephone } : {}),
+          email: `mailto:${profile.email}`,
+          // The one published figure for this engagement: audit, strategy and
+          // ongoing monthly work at NPR 15,000 per month. Ad budget is paid
+          // directly to Google and Meta and is therefore not part of it.
+          priceRange: 'NPR 15,000 per month',
+          address: {
+            '@type': 'PostalAddress',
+            addressLocality: 'Kathmandu',
+            addressCountry: 'NP',
+          },
+          areaServed: [
+            { '@type': 'Country', name: 'Nepal' },
+            { '@type': 'City', name: 'Kathmandu' },
+          ],
+          sameAs: socials,
+        },
+      ]
+    : [];
+
   return (
     <article>
       {/* The breadcrumb trail is rendered by `PageHeader` below, which emits
@@ -336,7 +472,12 @@ export default async function ServicePage({ params }: PageProps) {
           same trail twice. */}
       <JsonLd
         graph={[
-          serviceNode(service),
+          {
+            ...serviceNode(service),
+            // The category, not the database title, on the retargeted page.
+            ...(isDigitalMarketing ? { serviceType: DM_SERVICE_TYPE } : {}),
+          },
+          ...dmNodes,
           ...(pageNode ? [pageNode] : []),
           ...definedTermNodes(terms),
           // The set is emitted only alongside terms, since it exists to give
@@ -352,7 +493,10 @@ export default async function ServicePage({ params }: PageProps) {
         breadcrumb={[
           { name: 'Home', path: '/' },
           { name: 'Services', path: '/services' },
-          { name: pageTitle, path: `/services/${service.slug}` },
+          {
+            name: isDigitalMarketing ? DM_BREADCRUMB : pageTitle,
+            path: `/services/${service.slug}`,
+          },
         ]}
         title={pageTitle}
         description={pageDescription}
@@ -514,6 +658,64 @@ export default async function ServicePage({ params }: PageProps) {
                     </section>
                   </Reveal>
                 ))}
+
+                {/*
+                  The service's outbound internal links. Only on the
+                  retargeted page — the anchors name this page's own keyword
+                  pair and the six destinations the brief specified, and the
+                  other services link where their own copy calls for it.
+                  Unwrapped in `Reveal` for the same reason the deliverables
+                  list is: the raw HTML has to carry the links for crawlers
+                  that do not run scripts.
+                */}
+                {isDigitalMarketing ? (
+                  <p className="max-w-2xl leading-relaxed text-muted">
+                    As a digital marketing expert in Nepal, I work across all of
+                    these:{' '}
+                    <Link
+                      href="/services/seo-services"
+                      className="underline decoration-line underline-offset-2 transition-colors hover:text-ink"
+                    >
+                      SEO services in Kathmandu
+                    </Link>
+                    ,{' '}
+                    <Link
+                      href="/services/google-ads"
+                      className="underline decoration-line underline-offset-2 transition-colors hover:text-ink"
+                    >
+                      Google Ads management in Nepal
+                    </Link>
+                    ,{' '}
+                    <Link
+                      href="/services/meta-ads"
+                      className="underline decoration-line underline-offset-2 transition-colors hover:text-ink"
+                    >
+                      Meta Ads management in Nepal
+                    </Link>{' '}
+                    and{' '}
+                    <Link
+                      href="/services/ai-search"
+                      className="underline decoration-line underline-offset-2 transition-colors hover:text-ink"
+                    >
+                      AI search optimisation
+                    </Link>{' '}
+                    — and{' '}
+                    <Link
+                      href="/work/drillthru"
+                      className="underline decoration-line underline-offset-2 transition-colors hover:text-ink"
+                    >
+                      the DrillThru case study
+                    </Link>{' '}
+                    shows what that work looks like in practice.{' '}
+                    <Link
+                      href="/contact"
+                      className="underline decoration-line underline-offset-2 transition-colors hover:text-ink"
+                    >
+                      Book the free first review
+                    </Link>{' '}
+                    and I will tell you what I would fix first.
+                  </p>
+                ) : null}
               </div>
             </div>
           ) : null}
@@ -556,7 +758,7 @@ export default async function ServicePage({ params }: PageProps) {
                       {profile.name}
                     </Link>
                     <p className="mt-1 text-sm font-medium text-accent">
-                      Web Development Expert in Kathmandu, Nepal
+                      {isDigitalMarketing ? DM_ABOUT_LINE : 'Web Development Expert in Kathmandu, Nepal'}
                     </p>
                     <p className="mt-3 leading-relaxed text-muted">{serviceAuthorSummary}</p>
                     <p className="mt-3 leading-relaxed text-muted">

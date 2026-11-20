@@ -170,7 +170,11 @@ export const monthlyTiers: PricingTier[] = [
     id: 'digital-marketing',
     name: 'Digital marketing retainer',
     serviceSlug: 'digital-marketing',
-    fromNpr: 35000,
+    // 15,000, not the 35,000 this tier used to carry: the owner's published
+    // figure is one price of NPR 15,000 per month for the whole engagement
+    // (audit, strategy and ongoing work), and a tier that says 35,000 while
+    // the service page says 15,000 is the same price conflict in two places.
+    fromNpr: 15000,
     unit: 'per month',
     summary:
       'Search, paid media, content and conversion held in one plan, for a business that would otherwise be coordinating four separate people.',

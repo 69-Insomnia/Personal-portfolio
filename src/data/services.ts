@@ -598,28 +598,63 @@ const serviceOrder: UnnumberedService[] = [
     title: 'Digital Marketing Services',
     shortDescription:
       'Digital marketing specialist in Nepal: one strategy across content, SEO, paid media and conversion, instead of four separate suppliers.',
+    /**
+     * The page's opening paragraph, rewritten as a direct answer (48 words).
+     *
+     * Third-person, front-loaded, and naming the person, the role, the place
+     * and the channels in the first sentence — the shape an answer engine
+     * lifts verbatim. `shortDescription` still holds the older card summary
+     * because that string also renders on `/services`, which is out of scope
+     * for this retarget; the visible side note under this page's H1 is
+     * overridden in `services/[slug]/page.tsx` instead.
+     */
     description:
-      "I am a digital marketing specialist in Kathmandu, which mostly means refusing to treat content, SEO, paid media and conversion as separate jobs. They get decided together because they only pay off together. An ad that sends traffic to a page which does not answer the query wastes the budget, and a page nobody can find wastes the writing. The question stays the same across all of it: what brings the right visitors, and what turns them into customers. For a business in Nepal that usually means search first, because demand already exists and it is the cheapest demand to capture, then paid media to reach the people who are not searching yet, then the conversion work that stops both from leaking. One person holding all four is not about doing more. It is about not having to reconcile four reports that disagree.",
+      'Dipendra Guragain is a digital marketing expert in Kathmandu, Nepal, who helps businesses get more enquiries and sales from Google search, Google Ads, Meta Ads, content and conversion optimisation. Instead of hiring four separate suppliers, you get one strategy, one tracking setup and one monthly report. Services start with a 2-3 week audit.',
     body: [
       {
-        heading: 'What does a digital marketing specialist actually own?',
+        heading: 'Why hire a digital marketing expert in Nepal?',
         paragraphs: [
-          'The plan and the numbers behind it. Which channel gets the next rupee, what each one is expected to return, and what gets cut when it does not deliver.',
           'That is a different job from running four channels well in isolation. When search, ads and content are optimised separately by different people against different targets, the business can hit every one of those targets and still not grow, because none of them was measuring the thing that mattered.',
+          'What makes it work is agreeing in advance what each channel is supposed to return, and on what timeline. Without that, nothing ever gets cut, because every channel can produce an anecdote about the time it worked. A digital marketing expert in Nepal is hired to make that decision on the numbers rather than defend every channel forever.',
         ],
       },
       {
-        heading: 'Which channel should come first?',
+        heading: 'What a digital marketing expert in Kathmandu actually does',
+        paragraphs: [
+          'The plan and the numbers behind it. Which channel gets the next rupee, what each one is expected to return, and what gets cut when it does not deliver.',
+          'In practice that means SEO and content that earn search traffic, Google and Meta Ads watched against cost per enquiry, landing-page conversion work, and one tracking setup underneath all of it — so the monthly report describes the same numbers everyone is looking at.',
+          'I would rather run three things properly than six badly. Most marketing budgets I see are spread thin enough that no single channel has enough data or enough spend to work at all.',
+        ],
+      },
+      {
+        heading: 'Digital marketing services in Kathmandu and across Nepal',
         paragraphs: [
           'For most small businesses in Nepal, search. The demand already exists and someone is already looking, which makes it far cheaper than creating demand from scratch with advertising.',
           'Paid social comes next, once there is something worth sending people to. Advertising a page that does not convert is the most reliable way to conclude, wrongly, that advertising does not work.',
+          'So the service covers SEO and content, Google Ads, Meta Ads, conversion work on the pages campaigns land on, and the analytics that decide what happens next — planned for businesses in Kathmandu and delivered across Nepal.',
         ],
       },
       {
-        heading: 'How do you decide what to stop doing?',
+        heading: 'How it works',
         paragraphs: [
-          'By agreeing in advance what each channel is supposed to return, and on what timeline. Without that, nothing ever gets cut, because every channel can produce an anecdote about the time it worked.',
-          'I would rather run three things properly than six badly. Most marketing budgets I see are spread thin enough that no single channel has enough data or enough spend to work at all.',
+          'Audit (2–3 weeks): a review of how you are found on Google today, what your ad accounts are actually spending against, how good the tracking is, and which pages people land on. You get what is working, what is wasting money and what is missing.',
+          'Strategy (agreed within the same 2–3 weeks): one plan across search, ads, content and conversion, with what each channel is expected to return and what gets cut if it does not. Nothing moves until you agree to it.',
+          'Launch: campaigns, content and tracking go live in the order the plan calls for. Tracking is verified before spend starts — optimising on broken data is how budgets get wasted.',
+          'Monthly review (ongoing): one report on one set of numbers — enquiries, sales and cost per result — and a decision on what to keep, what to change and what to stop.',
+        ],
+      },
+      {
+        heading: 'Results',
+        paragraphs: [
+          'Results here are reported as enquiries, sales and cost per result against the timeframe they took — never as impressions or clicks. Recent client results:',
+          'A camera and drone retailer — a Meta “Get more messages” campaign sending shoppers straight to WhatsApp: 143 messaging conversations started at NPR 5–7 each, in two days.',
+        ],
+      },
+      {
+        heading: 'Pricing',
+        paragraphs: [
+          'Digital marketing with me is NPR 15,000 per month: one figure covering the 2–3 week audit and strategy first, then the ongoing monthly work that follows. It is the same price for every part of the engagement.',
+          'Ad budget is paid directly to Google and Meta, so media spend sits with the platforms and my fee sits with the work. What changes the scope is how competitive your market is and which channels you actually need — the audit settles that before anything is committed.',
         ],
       },
     ],
@@ -633,7 +668,11 @@ const serviceOrder: UnnumberedService[] = [
     ],
     timeline: 'Ongoing, reviewed monthly',
     bestFor: 'A business currently coordinating several suppliers',
-    fromNpr: 35000,
+    // One price, decided by the site owner: NPR 15,000/month covers the
+    // audit, the strategy and the ongoing work. Mirrored in the database row
+    // (which wins) and in the `/pricing` tier so the two cannot quote
+    // different figures for the same service again.
+    fromNpr: 15000,
     icon: 'megaphone',
   },
 ];

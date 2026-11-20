@@ -42,6 +42,8 @@ const POST_IMAGE_ALT: Record<string, string> = {
     'Infographic showing the storefront, search, advertising and reporting work as four separate desks feeding one customer experience',
   'how-to-grow-ecommerce-in-nepal-2026':
     'Infographic headed "Ecommerce Is One System, Not Four Channels" — storefront, search, ads and reporting desks converging on one customer experience',
+  'digital-marketing-expert-nepal':
+    'Infographic of a laptop and phone showing search results and a map pin over a Kathmandu skyline, with growth arrows and icons for search, social, ads and analytics',
 };
 
 interface ImageSubject {

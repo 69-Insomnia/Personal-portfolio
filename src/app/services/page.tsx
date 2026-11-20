@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Comparison } from '@/sections/Comparison';
 import { Expertise } from '@/sections/Expertise';
@@ -38,6 +39,23 @@ export default async function ServicesPage() {
         ]}
         title="How I Can Help"
         description="Web development, SEO, advertising and ecommerce growth, built as one connected system."
+        footer={
+          /* The inbound link to the retargeted page, with the exact anchor
+             the brief specified. The cards below already link every service,
+             but under each service's own title — so the phrase "digital
+             marketing expert in Kathmandu" appeared nowhere on this route. */
+          <p className="mt-7 max-w-2xl text-sm leading-relaxed text-muted">
+            Looking for a{' '}
+            <Link
+              href="/services/digital-marketing"
+              className="font-medium text-ink underline decoration-line underline-offset-2 transition-colors hover:text-accent"
+            >
+              digital marketing expert in Kathmandu
+            </Link>
+            ? That page covers SEO, Google Ads, Meta Ads, content and conversion
+            as one strategy with one monthly report.
+          </p>
+        }
       />
       <Expertise showAllServices={false} data={services} />
       {/* The cards say what each service is; this says how they differ. The

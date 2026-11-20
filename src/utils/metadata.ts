@@ -109,8 +109,19 @@ export function clampDescription(text: string, limit = DESCRIPTION_LIMIT): strin
  *
  * Article fields are only emitted when `ogType` is `article`, so a stray
  * `publishedTime` on a service page cannot claim it was published.
+ *
+ * `imageAlt` overrides the alt text on both social cards. The default is the
+ * resolved title, which is honest for a typographic card — but a page whose
+ * brief specifies a dedicated image description (see
+ * `/services/digital-marketing`) needs that exact string on `og:image:alt`
+ * and `twitter:image:alt`. Optional and passed only by that route, so every
+ * other caller keeps the title fallback unchanged.
  */
-export function buildMetadata(seo: SEOData, settings?: SiteSettings): Metadata {
+export function buildMetadata(
+  seo: SEOData,
+  settings?: SiteSettings,
+  imageAlt?: string,
+): Metadata {
   const {
     title,
     description,
@@ -222,14 +233,14 @@ export function buildMetadata(seo: SEOData, settings?: SiteSettings): Metadata {
       // in place of the preview card, and what a text-only consumer shows
       // instead of the image. Falling back to the title is honest here: the
       // card is a typographic treatment of that same title.
-      images: [{ url: ogImageValue, width: 1200, height: 630, alt: ogTitleValue }],
+      images: [{ url: ogImageValue, width: 1200, height: 630, alt: imageAlt ?? ogTitleValue }],
       ...(isArticle ? { publishedTime, modifiedTime, authors: byline, tags } : {}),
     },
     twitter: {
       card: 'summary_large_image',
       title: twitterTitleValue,
       description: twitterDescriptionValue,
-      images: [{ url: twitterImageValue, alt: twitterTitleValue }],
+      images: [{ url: twitterImageValue, alt: imageAlt ?? twitterTitleValue }],
     },
   };
 }

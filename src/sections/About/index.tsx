@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { Container } from '@/components/ui/Container';
 import { Section } from '@/components/ui/Section';
 import { Reveal } from '@/components/ui/Reveal';
@@ -65,7 +66,14 @@ export function Introduction() {
                 With 3+ years of experience in ecommerce, SEO, and digital marketing, I help
                 businesses build better online stores, attract customers, and increase sales.
                 I focus on the complete growth process, from website experience and search
-                visibility to advertising and customer retention.
+                visibility to advertising and customer retention — working as a{' '}
+                <Link
+                  href="/services/digital-marketing"
+                  className="font-medium text-ink underline decoration-line underline-offset-2 transition-colors hover:text-accent"
+                >
+                  digital marketing expert in Kathmandu
+                </Link>{' '}
+                for businesses that want all of it run as one strategy.
               </p>
             </Reveal>
           </div>
