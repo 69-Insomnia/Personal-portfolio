@@ -71,7 +71,7 @@ export function Introduction() {
                   href="/services/digital-marketing"
                   className="font-medium text-ink underline decoration-line underline-offset-2 transition-colors hover:text-accent"
                 >
-                  digital marketing services in Nepal
+                  digital marketing expert in Kathmandu
                 </Link>{' '}
                 for businesses that want all of it run as one strategy.
               </p>

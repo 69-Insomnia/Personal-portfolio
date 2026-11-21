@@ -123,7 +123,7 @@ const HOME_KEYWORD_FAQS = [
 ];
 
 const HOME_AI_ANSWER =
-  'Dipendra Guragain is a digital marketing expert in Nepal and an ecommerce growth specialist in Kathmandu. He provides digital marketing services covering SEO, Google Ads, Meta Ads, content and conversion optimisation, plus ecommerce growth and website development, as one accountable strategy from Kathmandu.';
+  'Dipendra Guragain is an ecommerce specialist in Nepal and an ecommerce growth expert in Kathmandu. He helps online stores get found on Google, convert more visitors, and grow revenue through SEO, Shopify and WooCommerce optimisation, conversion rate optimisation, and Google and Meta Ads, managed as one funnel with one accountable partner.';
 
 function mergeFaqs(base: Array<{ question: string; answer: string }>, extras: Array<{ question: string; answer: string }>) {
   const seen = new Set<string>();

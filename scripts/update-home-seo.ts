@@ -1,7 +1,7 @@
 /**
- * One-off: align the homepage SEO row with the digital-marketing and
- * ecommerce expertise shown across the site, and keep the Person jobTitle
- * consistent with the target service.
+ * One-off: retarget the homepage SEO row at the "Ecommerce Specialist in
+ * Nepal / Ecommerce Expert in Nepal" query pair, and align the Person
+ * jobTitle with the same positioning.
  *
  * Only `seo_meta` where entity_type='page' AND entity_slug='home', plus the
  * single `site_settings` row's `person_job_title` (JSON-LD only — the navbar
@@ -15,34 +15,41 @@ import { readFileSync } from 'node:fs';
 import { Pool } from 'pg';
 
 const TITLE =
-  'Digital Marketing & Ecommerce Expert in Nepal | Dipendra Guragain';
+  'Ecommerce Specialist in Nepal | Ecommerce Expert in Nepal';
 const DESCRIPTION =
-  'Dipendra Guragain is a digital marketing expert in Nepal and ecommerce growth specialist in Kathmandu, covering SEO, Google Ads, Meta Ads, conversion optimisation and ecommerce growth.';
+  'Dipendra Guragain is an ecommerce specialist in Nepal and an e-commerce expert in Kathmandu helping online stores grow with SEO, Google Ads, Meta Ads and CRO.';
 const AI_ANSWER =
-  'Dipendra Guragain is a digital marketing expert in Nepal and an ecommerce growth specialist in Kathmandu. He provides digital marketing services covering SEO, Google Ads, Meta Ads, content and conversion optimisation, plus ecommerce growth and website development, as one accountable strategy from Kathmandu.';
+  'Dipendra Guragain is an ecommerce specialist in Nepal and an ecommerce growth expert in Kathmandu. He helps online stores get found on Google, convert more visitors, and grow revenue through SEO, Shopify and WooCommerce optimisation, conversion rate optimisation, and Google and Meta Ads, managed as one funnel with one accountable partner.';
 const LLM_SUMMARY =
-  'Dipendra Guragain is a digital marketing expert in Nepal and ecommerce growth specialist in Kathmandu, covering SEO, Google Ads, Meta Ads, content, conversion optimisation and ecommerce growth.';
-const FOCUS_KEYWORD = 'digital marketing expert in nepal';
+  'Dipendra Guragain is an e-commerce specialist in Nepal and an ecommerce growth expert in Kathmandu, helping online stores grow through ecommerce SEO, Google Ads, Meta Ads and conversion rate optimisation.';
+const FOCUS_KEYWORD = 'ecommerce specialist in nepal';
 const KEYWORDS = [
-  'digital marketing expert in nepal',
-  'digital marketing expert in kathmandu',
-  'digital marketing services nepal',
-  'digital marketing services kathmandu',
-  'freelance digital marketing expert nepal',
-  'seo services in kathmandu',
-  'google ads management in nepal',
-  'meta ads management in nepal',
-  'ecommerce growth specialist nepal',
+  'ecommerce specialist in nepal',
+  'ecommerce expert in nepal',
+  'ecommerce specialist in kathmandu',
+  'ecommerce expert in kathmandu',
+  'ecommerce growth specialist in nepal',
+  'ecommerce growth expert in nepal',
+  'ecommerce seo specialist in nepal',
+  'e-commerce specialist in nepal',
+  'e-commerce expert in nepal',
+  'ecommerce seo nepal',
+  'google ads nepal',
+  'meta ads nepal',
 ];
 const KEYWORD_CLUSTER = [
-  'Digital marketing expert Nepal',
-  'Digital marketing expert Kathmandu',
-  'Digital marketing services Nepal',
-  'Freelance digital marketing expert Nepal',
-  'SEO services Kathmandu',
-  'Google Ads management Nepal',
-  'Meta Ads management Nepal',
+  'Ecommerce specialist Nepal',
+  'Ecommerce expert Nepal',
+  'Ecommerce specialist Kathmandu',
+  'Ecommerce expert Kathmandu',
   'Ecommerce growth specialist Nepal',
+  'Ecommerce growth expert Nepal',
+  'E-commerce specialist Nepal',
+  'E-commerce expert Nepal',
+  'Ecommerce SEO specialist Nepal',
+  'Ecommerce SEO Nepal',
+  'Google Ads Nepal',
+  'Meta Ads Nepal',
 ];
 /**
  * Merged into the home graph by `customJsonLdNodes` — the site-wide node at
@@ -55,15 +62,13 @@ const CUSTOM_JSON_LD = {
   '@type': 'ProfessionalService',
   '@id': 'https://dipendraguragain.tech/#service',
   serviceType: [
-    'Digital Marketing',
-    'SEO',
-    'Google Ads',
-    'Meta Ads',
-    'Conversion Optimisation',
     'Ecommerce Growth',
+    'Ecommerce SEO',
+    'Website Development',
+    'Paid Advertising',
   ],
 };
-const PERSON_JOB_TITLE = 'Digital Marketing Expert in Kathmandu, Nepal';
+const PERSON_JOB_TITLE = 'Ecommerce Specialist & Growth Expert in Nepal';
 
 async function main() {
   const envFile = readFileSync('.env.local', 'utf8');
