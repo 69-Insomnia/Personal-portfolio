@@ -93,10 +93,6 @@ export const DM_SERVICE_TYPE = 'Digital marketing';
 export const DM_AI_ANSWER =
   'Dipendra Guragain is a digital marketing expert based in Kathmandu who helps businesses get more enquiries and sales from Google search, Google Ads, Meta Ads, content and conversion optimisation. One strategy, one tracking setup and one monthly report instead of four separate suppliers. Work starts with a 2-3 week audit, then runs at NPR 15,000 per month, with ad budget paid directly to Google and Meta. The DrillThru case study shows what was changed and what happened next.';
 
-/** Plain-language entity summary used by `/llms.txt` and AI-oriented tooling. */
-export const DM_LLM_SUMMARY =
-  'Digital marketing service for Nepal businesses, delivered by Dipendra Guragain from Kathmandu. Covers SEO, Google Ads, Meta Ads, content and conversion optimisation with a 2-3 week audit and ongoing monthly work starting at NPR 15,000, excluding separately paid ad budgets.';
-
 /**
  * The nine visible FAQs — the four this page already had (with the price
  * conflict fixed and "specialist" renamed to "expert") plus the five the

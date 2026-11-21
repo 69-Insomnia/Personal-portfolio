@@ -31,7 +31,6 @@ import {
   DM_FAQS,
   DM_KEYWORDS,
   DM_TITLE,
-  DM_LLM_SUMMARY,
 } from '../src/data/digital-marketing';
 
 /** The single price the site owner published: audit, strategy and ongoing work. */
@@ -135,9 +134,8 @@ async function syncSeoRow() {
             focus_keyword     = $9,
             faqs              = $10,
             ai_answer         = $11,
-            llm_summary       = $12,
-            entity_signals    = $13,
-            custom_json_ld    = $14,
+            entity_signals    = $12,
+            custom_json_ld    = $13,
             updated_at        = now()
       where entity_type = 'service' and entity_slug = $1`,
     [
@@ -152,7 +150,6 @@ async function syncSeoRow() {
       'digital marketing expert in Nepal',
       JSON.stringify(DM_FAQS),
       DM_AI_ANSWER,
-      DM_LLM_SUMMARY,
       JSON.stringify(entitySignals),
       JSON.stringify(customJsonLd),
     ],
