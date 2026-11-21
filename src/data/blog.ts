@@ -92,7 +92,7 @@ export const blogPosts: BlogPost[] = [
       '• A twelve-month contract signed before a single result exists.',
       '• Reporting that shows impressions and likes but never enquiries or sales.',
       '## My Results',
-      'The [DrillThru case study](/work/drillthru) is this approach applied end to end on a real project — what was changed, in what order, and what happened next. [ADD REAL RESULT HERE]',
+      'The [DrillThru case study](/work/drillthru) shows this approach applied end to end on a real project — what was changed, in what order, and what happened next. A separate Meta campaign for a Nepal camera and drone retailer sent shoppers straight to WhatsApp: 143 messaging conversations started at NPR 5–7 each over two days. The number is reported as a campaign result, not as a guarantee for every market or budget.',
       'If you would rather start with the audit than the pitch, send me a short brief on the [contact page](/contact) or message me on WhatsApp at [+977-9840814142](tel:+9779840814142). I reply with what I would look at first, then a 2-3 week audit so the plan is based on your data rather than a template.',
       '## Sources',
       'DataReportal, Digital 2026: Nepal (internet and social media figures, October 2025). StatCounter, search and traffic share for Nepal. Nepal Rastra Bank, payment systems indicators (digital wallet users, Falgun 2081). Reuters, "Nepal blocks some social media including Facebook", 4 September 2025.',

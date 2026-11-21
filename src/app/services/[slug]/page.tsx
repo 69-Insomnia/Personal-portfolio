@@ -761,12 +761,25 @@ export default async function ServicePage({ params }: PageProps) {
                       {isDigitalMarketing ? DM_ABOUT_LINE : 'Web Development Expert in Kathmandu, Nepal'}
                     </p>
                     <p className="mt-3 leading-relaxed text-muted">{serviceAuthorSummary}</p>
-                    <p className="mt-3 leading-relaxed text-muted">
-                      From business websites to custom eCommerce platforms, I focus on creating digital experiences that strengthen your online presence, generate quality leads, and support long-term business growth.
-                    </p>
-                    <p className="mt-3 leading-relaxed text-muted">
-                      My approach goes beyond just building websites. I focus on performance, user experience, mobile responsiveness, search visibility, and conversion-focused design to ensure every website delivers real value to your business.
-                    </p>
+                    {isDigitalMarketing ? (
+                      <>
+                        <p className="mt-3 leading-relaxed text-muted">
+                          I combine search strategy, paid advertising, content and conversion optimisation rather than managing each channel as an isolated activity. My work is backed by hands-on experience across ecommerce SEO, Google Ads, Meta Ads, analytics and website performance.
+                        </p>
+                        <p className="mt-3 leading-relaxed text-muted">
+                          I verify campaign tracking before increasing spend, tie recommendations to enquiries and sales, and report the decisions made from the data. Past work includes a Meta campaign that generated 143 messaging conversations at NPR 5–7 each for a Nepal-based camera and drone retailer.
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="mt-3 leading-relaxed text-muted">
+                          From business websites to custom eCommerce platforms, I focus on creating digital experiences that strengthen your online presence, generate quality leads, and support long-term business growth.
+                        </p>
+                        <p className="mt-3 leading-relaxed text-muted">
+                          My approach goes beyond just building websites. I focus on performance, user experience, mobile responsiveness, search visibility, and conversion-focused design to ensure every website delivers real value to your business.
+                        </p>
+                      </>
+                    )}
                     <div className="mt-4 flex flex-wrap gap-3">
                       <Link
                         href="/about"
