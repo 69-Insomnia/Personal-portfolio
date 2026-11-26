@@ -45,7 +45,17 @@ export type UnnumberedService = Omit<Service, 'index'>;
 const serviceOrder: UnnumberedService[] = [
   {
     slug: 'web-development',
-    title: 'Web Developer in Nepal',
+    /**
+     * The short, card-friendly name — what the `/services` grid and the
+     * homepage Services band render as the card heading, matching its
+     * siblings ("SEO Services", "Digital Marketing Services", "Ecommerce
+     * Growth Services"). The keyword-bearing phrase lives in `seoTitle` (the
+     * `<title>` tag, via `serviceSEO`'s `isWebDevelopment` branch in
+     * `src/data/seo.ts`) and in the H1 override in
+     * `services/[slug]/page.tsx` ("Ecommerce Website Developer in Nepal") —
+     * the same split `ecommerce-growth` and `digital-marketing` use.
+     */
+    title: 'Web Development Services',
     seoTitle: 'Web Developer in Nepal | Website Design & Development Services',
     shortDescription:
       'Website developer in Kathmandu, Nepal building business websites, ecommerce stores and custom web apps with React, Next.js, WordPress and Shopify.',
@@ -180,138 +190,6 @@ const serviceOrder: UnnumberedService[] = [
     bestFor: 'A site with pages that exist but do not rank',
     fromNpr: 15000,
     icon: 'search',
-  },
-  {
-    slug: 'ecommerce-growth-expert-nepal',
-    title: 'Ecommerce Growth Expert in Nepal',
-    seoTitle: 'Ecommerce Growth Expert in Nepal | Shopify SEO, CRO & Google Ads',
-    shortDescription:
-      'Ecommerce growth expert in Nepal helping online stores rank, convert more visitors, and grow revenue with SEO, CRO and paid media.',
-    description:
-      'I help ecommerce brands in Nepal grow with a full-funnel strategy built around search visibility, product-page conversion, and profitable acquisition. My work connects SEO, Shopify and WooCommerce optimisation, CRO, and Google and Meta Ads so the store does not just get traffic but turns that traffic into orders. The goal is not isolated channel wins. It is a cleaner path from product discovery to checkout, with clearer data and stronger conversion performance across the store. For Nepal-based retailers, this usually means fixing the pages that already exist before buying more traffic, then scaling only once the funnel is actually converting.',
-    body: [
-      {
-        heading: 'What does an ecommerce growth expert in Nepal actually do?',
-        paragraphs: [
-          'I work across the whole ecommerce funnel: technical SEO, category and product-page structure, conversion improvements, analytics setup, and campaign strategy. That is how a business grows without leaking customers between discovery, product view, and checkout.',
-          'The real work is usually a mix of search improvements and conversion fixes. A store may rank but still struggle because the product pages are weak, mobile UX is poor, or the ads are sending traffic to the wrong landing page. I connect those signals instead of treating them as separate problems.',
-        ],
-      },
-      {
-        heading: 'Why do ecommerce brands need a growth specialist instead of just SEO?',
-        paragraphs: [
-          'SEO brings demand, but conversion closes it. A store can rank well and still underperform if the product pages are thin, the page speed is weak, or the checkout is too slow on mobile. Paid media can also create noise if the landing page is not built for the intent of the click.',
-          'That is why I treat growth as one system. Search, page experience, product structure, and paid acquisition all influence revenue. When they are aligned, the store gets more qualified traffic and it converts better once the visitor arrives.',
-        ],
-      },
-      {
-        heading: 'How do you work with ecommerce businesses in Kathmandu and Nepal?',
-        paragraphs: [
-          'Most projects begin with a growth audit: traffic sources, conversion bottlenecks, page quality, product intent, and tracking accuracy. From there, I identify the first issue to fix and the highest-impact improvements to test or implement next.',
-          'I work with Shopify, WooCommerce and custom stores across Nepal, with the same goal: stronger rankings, stronger conversion performance, and a sustainable path to more revenue without wasting ad spend.',
-        ],
-      },
-    ],
-    capabilities: ecommerceCapabilities,
-    deliverables: [
-      'Ecommerce growth audit and funnel review',
-      'SEO and product-page optimisation roadmap',
-      'CRO fixes for higher conversion rate',
-      'Google and Meta Ads alignment with store performance',
-      'Tracking and reporting that connects traffic to revenue',
-    ],
-    timeline: '4–10 weeks to improve the funnel; ongoing optimisation after',
-    bestFor: 'A Nepal ecommerce business that wants more orders without wasting marketing spend',
-    fromNpr: 60000,
-    icon: 'shopping-bag',
-  },
-  {
-    slug: 'ecommerce-growth-specialist-kathmandu',
-    title: 'Ecommerce Growth Specialist in Kathmandu',
-    seoTitle: 'Ecommerce Growth Specialist in Kathmandu | Nepal SEO, CRO & Ads',
-    shortDescription:
-      'Kathmandu ecommerce growth specialist for stores that need better SEO, conversion, and paid media performance.',
-    description:
-      'I am an ecommerce growth specialist in Kathmandu, Nepal, helping online stores get found on Google and convert more visitors into customers. I work across search, conversion rate optimisation, page structure, and customer journey improvements so the business grows from a stronger funnel rather than from one-off campaigns. For ecommerce brands, that usually means fixing the search and product page foundation first, then improving the ad traffic and landing pages that feed the order flow. This is a practical model for stores that want better rankings, better conversion performance, and more sustainable growth.',
-    body: [
-      {
-        heading: 'Why businesses in Kathmandu need ecommerce growth support',
-        paragraphs: [
-          'The problem is rarely just one channel. A store may have traffic but poor conversion, or solid traffic but weak product page intent. Growth work fixes those weak connections so the store can turn more visits into sales.',
-          'In Kathmandu and across Nepal, many ecommerce stores struggle because they treat SEO, ads, and UX as separate projects. The better model is one revenue system where search, landing pages, product pages, tracking, and campaigns are designed to work together.',
-        ],
-      },
-      {
-        heading: 'What leads to stronger ecommerce growth?',
-        paragraphs: [
-          'Better product-page structure, cleaner keyword targeting, stronger mobile performance, trust signals, and clearer calls to action all help. Add conversion tracking and better attribution, and the business starts making decisions from evidence rather than guesswork.',
-          'This is where a growth specialist adds value. Instead of making one isolated change, the work focuses on the places where the funnel leaks most and the places where the next rupee will produce the strongest return.',
-        ],
-      },
-      {
-        heading: 'How do I know if I need help?',
-        paragraphs: [
-          'If your store gets traffic but not enough orders, or if you are spending on ads without clear ROI, it is a sign the funnel needs review. A growth specialist can diagnose whether the issue is search visibility, page quality, product intent, or attribution quality.',
-          'The right fix is the one that improves the actual revenue path. That is what I focus on with Kathmandu and Nepal ecommerce clients.',
-        ],
-      },
-    ],
-    capabilities: ecommerceCapabilities,
-    deliverables: [
-      'Growth audit for Kathmandu and Nepal ecommerce stores',
-      'Funnel and conversion diagnosis',
-      'Shopify and WooCommerce improvement roadmap',
-      'Search and paid media strategy alignment',
-      'Monthly performance review for growth actions',
-    ],
-    timeline: '4–8 weeks for the first growth improvements',
-    bestFor: 'An online store in Nepal that needs more qualified traffic and better conversion performance',
-    fromNpr: 55000,
-    icon: 'target',
-  },
-  {
-    slug: 'ecommerce-growth-specialist-nepal',
-    title: 'Ecommerce Growth Specialist in Nepal',
-    seoTitle: 'Ecommerce Growth Specialist in Nepal | Shopify, SEO & CRO Expert',
-    shortDescription:
-      'Ecommerce growth specialist in Nepal for stores that need better SEO, conversion rate, and profitable growth strategy.',
-    description:
-      'I help ecommerce businesses in Nepal grow with a practical growth system built around SEO, conversion rate optimisation, product-page performance, and paid media alignment. The work is focused on one goal: turning more of the store’s traffic into orders without wasting budget. This means improving product discoverability, fixing conversion bottlenecks on the storefront, and making sure the marketing channels are aligned with what the product page can actually convert. For many online stores in Nepal, the biggest win is not more ads or more keywords alone — it is a clearer funnel and a better store experience.',
-    body: [
-      {
-        heading: 'Why ecommerce stores in Nepal need a growth specialist',
-        paragraphs: [
-          'Most stores do not fail because they have no product demand. They fail because the funnel leaks at multiple points: weak search visibility, slow or confusing product pages, poor mobile experience, or paid traffic landing on pages that do not match the intent of the click.',
-          'When that happens, the business spends more but converts less. A growth specialist brings the system back together so the store can convert the traffic it already has and grow without guesswork.',
-        ],
-      },
-      {
-        heading: 'What growth work includes',
-        paragraphs: [
-          'I review the store’s visibility, product structure, conversion rate, analytics setup, and acquisition strategy. Then I focus on the actions that improve revenue most, whether that is better search performance, a stronger product page, cleaner tracking, or more efficient ad spend.',
-          'The aim is not to chase vanity metrics. It is to improve the parts of the funnel that lead to actual sales, repeat orders, and profit.',
-        ],
-      },
-      {
-        heading: 'What makes the approach more effective?',
-        paragraphs: [
-          'Ecommerce growth works best when SEO, CRO, paid media, and store experience are designed together. When they are managed separately, the store often gets conflicting signals, inconsistent reporting, and weak decision-making.',
-          'I help businesses in Nepal build that alignment so the same funnel can increase both traffic quality and conversion performance.',
-        ],
-      },
-    ],
-    capabilities: ecommerceCapabilities,
-    deliverables: [
-      'Growth strategy for Nepal ecommerce businesses',
-      'Store conversion and traffic quality review',
-      'SEO and product-page performance improvements',
-      'Ad and landing page strategy alignment',
-      'Growth reporting tied to revenue outcomes',
-    ],
-    timeline: '4–8 weeks for the first major improvements',
-    bestFor: 'A Nepal ecommerce brand that wants more qualified traffic and better conversion efficiency',
-    fromNpr: 50000,
-    icon: 'target',
   },
   {
     slug: 'shopify-seo-nepal',
@@ -540,17 +418,44 @@ const serviceOrder: UnnumberedService[] = [
     slug: 'ecommerce-growth',
     title: 'Ecommerce Growth Services',
     /**
-     * This page is the canonical target for the Nepal and Kathmandu ecommerce
-     * growth search cluster. The exact "Ecommerce Growth Specialist in Kathmandu"
-     * phrase is kept in the seoTitle so the page title matches high-intent
-     * commercial queries without duplicating the homepage H1.
+     * This page is the single canonical target for the whole Nepal/Kathmandu
+     * ecommerce growth, expert and specialist search cluster — including the
+     * e-commerce and "e commerce" spelling variants.
+     *
+     * Three near-duplicate pages used to split this same cluster:
+     * `ecommerce-growth-expert-nepal`, `ecommerce-growth-specialist-kathmandu`
+     * and `ecommerce-growth-specialist-nepal` (all unpublished, all 301'd here
+     * via the `redirects` table — see `scripts/consolidate-ecommerce-growth.ts`).
+     * Multiple pages on one site competing for the same exact-match query is
+     * cannibalization: Google has to pick one of your own pages to rank and
+     * often ranks neither well. Consolidating the link equity and content onto
+     * one page is the fix, not writing a fourth page to compete with the other
+     * three.
+     *
+     * `title` stays the short, card-friendly name — it is what the `/services`
+     * grid and the homepage Services band render as the card heading, and it
+     * should read like its siblings ("SEO Services", "Digital Marketing
+     * Services"), not like a meta title. The keyword-bearing phrase lives in
+     * `seoTitle` (the `<title>` tag) and in the `isEcommerceGrowth` override in
+     * `services/[slug]/page.tsx`, which sets this page's own `<h1>` to
+     * "Ecommerce Growth Expert in Nepal" without touching the shared `title`
+     * field every card reads from — the exact split `digital-marketing`
+     * already uses (`DM_H1` vs. this service's own "Digital Marketing
+     * Services" card title).
      */
-    seoTitle: 'Ecommerce Growth Specialist in Kathmandu | Dipendra Guragain',
+    seoTitle: 'Ecommerce Growth Expert in Nepal | Specialist in Kathmandu',
     shortDescription:
-      'Ecommerce growth expert in Nepal and Kathmandu. Storefront, SEO, product pages, ads and analytics are managed as one funnel for sustainable growth.',
+      'Ecommerce growth expert in Nepal, and ecommerce specialist in Nepal, Kathmandu. Storefront, e-commerce SEO, product pages, ads and analytics run as one funnel, not four separate projects.',
     description:
-      'I am an ecommerce growth specialist in Kathmandu helping online stores in Nepal improve traffic quality, conversion rate, and revenue through a single growth system. In practice the work connects storefront performance, product page SEO, paid acquisition, analytics, and conversion optimization so the store keeps converting instead of leaking customers at different points. Most ecommerce problems look like separate issues until you follow the funnel end to end. Traffic falls, ad cost rises, or checkout drops, and the real cause is usually a weak page, unclear product intent, poor mobile UX, or bad tracking that keeps the business guessing. I fix the leak first and then choose the channel changes that actually improve the result.',
+      'I am an ecommerce growth expert in Nepal and an ecommerce specialist in Nepal, Kathmandu, helping online stores improve traffic quality, conversion rate, and revenue through one connected growth system. In practice the work connects storefront performance, e-commerce SEO, paid acquisition, analytics, and conversion optimization so the store keeps converting instead of leaking customers at different points. Most e commerce problems look like separate issues until you follow the funnel end to end. Traffic falls, ad cost rises, or checkout drops, and the real cause is usually a weak page, unclear product intent, poor mobile UX, or bad tracking that keeps the business guessing. I fix the leak first and then choose the channel changes that actually improve the result.',
     body: [
+      {
+        heading: 'Ecommerce expert, ecommerce specialist, or ecommerce growth expert — what\'s the difference?',
+        paragraphs: [
+          'In practice, not much — they describe the same work from different angles, and people search for all of them (plus "e-commerce" and "e commerce" spelled as two words) when they mean the same thing: someone who connects an online store\'s SEO, product pages, ads and analytics into one system instead of leaving a business to coordinate four suppliers.',
+          'I use "ecommerce growth expert" to describe the full-funnel version of the job, and "ecommerce specialist in Nepal, Kathmandu" for the same work with the location made explicit. Whichever term you search, you land on this one page rather than three thin variations of it.',
+        ],
+      },
       {
         heading: 'Why do ecommerce growth problems look like several different issues?',
         paragraphs: [
@@ -559,14 +464,14 @@ const serviceOrder: UnnumberedService[] = [
         ],
       },
       {
-        heading: 'How does ecommerce SEO differ from a normal website?',
+        heading: 'How does e-commerce SEO differ from a normal website?',
         paragraphs: [
           'A normal website may have a handful of important pages. An ecommerce store has category pages, product pages, collection filters, tags, variants and transactional landing pages, all of which compete for the same search intent. If those pages do not match user search intent, the store cannot scale sustainably.',
           'The biggest issues are usually repetitive product descriptions, thin category pages, poor internal linking, weak mobile performance, inconsistent product page metadata and conversion paths that fail on mobile. In Nepal, one extra challenge is that buyers often search using both English and Romanized Nepali terms, so the page has to serve both search styles naturally without keyword stuffing.',
         ],
       },
       {
-        heading: 'What does a growth specialist actually work on?',
+        heading: 'What does an ecommerce growth specialist actually work on?',
         paragraphs: [
           'I look at the full funnel: store speed, product page structure, category intent, search visibility, landing-page messaging, and analytics quality. If conversion tracking is wrong, the business is making decisions from poor data and spending money in the wrong place.',
           'I fix the weak points that actually block growth first, then align SEO, paid media, CRO and merchandising so they reinforce each other instead of working against each other. That is how ecommerce growth becomes repeatable rather than dependent on guesswork.',
@@ -646,8 +551,9 @@ const serviceOrder: UnnumberedService[] = [
       {
         heading: 'Results',
         paragraphs: [
-          'Results here are reported as enquiries, sales and cost per result against the timeframe they took — never as impressions or clicks. Recent client results:',
+          'Results here are reported as enquiries, sales and cost per result against the timeframe they took — never as impressions or clicks. Recent results:',
           'A camera and drone retailer — a Meta “Get more messages” campaign sending shoppers straight to WhatsApp: 143 messaging conversations started at NPR 5–7 each, in two days.',
+          'My own website — SEO work: around 2,000 monthly visits from organic search within four months.',
         ],
       },
       {

@@ -101,6 +101,35 @@ const WEB_DEVELOPMENT_FAQ_BOOSTERS = [
     answer:
       'Checkout can be set up with eSewa and Khalti wallets, Fonepay, cards, bank transfer and cash on delivery. Which of those a store can actually use depends on the platform: WooCommerce and custom builds integrate the gateways directly, while a Shopify store uses the payment apps available to it.',
   },
+  /**
+   * The five phrases added for the "ecommerce website developer in Nepal"
+   * cluster: designer, bare "developer", the "company" framing (twice, Nepal
+   * and Kathmandu), and the "best" superlative. Answered honestly for a
+   * one-person practice rather than claiming to be a team or an agency —
+   * the FAQ says what's true and lets the reader decide if that's what they
+   * want, which is also why "best" is answered as a question to ask rather
+   * than a claim about myself.
+   */
+  {
+    question: 'Do you work as an ecommerce website designer as well as a developer in Nepal?',
+    answer:
+      'Yes. Design and development run as one process rather than being handed off between two people: page layout, product and category structure, and the visual design happen alongside the build, so the design decisions are the ones the code actually has to support.',
+  },
+  {
+    question: 'Who is an ecommerce developer in Nepal?',
+    answer:
+      'An ecommerce developer in Nepal builds and maintains the online store itself — product pages, checkout, payment integration and the backend behind it — on Shopify, WooCommerce or a custom build. That is the core of what I do, alongside the SEO and design work the store needs around it.',
+  },
+  {
+    question: 'Are you an ecommerce website development company in Nepal, or a freelancer?',
+    answer:
+      'I work as a freelancer, not a company with account managers — you work directly with the person building the site. For an ecommerce website development company in Kathmandu, that usually means a bigger team and a higher cost for the same work; for a single build, a freelancer is often the simpler and cheaper route to the same result.',
+  },
+  {
+    question: 'How do I find the best ecommerce website developer in Nepal?',
+    answer:
+      'Ask to see real ecommerce stores they built, not just a portfolio screenshot, and ask who specifically worked on each one. Check whether they handle payment integration (eSewa, Khalti, Fonepay) and SEO themselves or outsource it, and get a fixed scope and price before the build starts rather than an open-ended hourly estimate.',
+  },
 ];
 
 function mergeFaqs(base: Array<{ question: string; answer: string }>, extras: Array<{ question: string; answer: string }>) {
@@ -324,6 +353,17 @@ export default async function ServicePage({ params }: PageProps) {
    * the database exactly as they did before the retarget.
    */
   const isDigitalMarketing = service.slug === DM_SLUG;
+  /**
+   * The consolidated ecommerce-growth-cluster page (see the long comment on
+   * this slug's entry in `src/data/services.ts`). Its card/listing `title`
+   * stays the short "Ecommerce Growth Services" so the `/services` grid and
+   * the homepage Services band read like their siblings; this flag swaps in
+   * the keyword-bearing H1 only on the page itself, the same split
+   * `isDigitalMarketing` already uses for `DM_H1` vs. "Digital Marketing
+   * Services".
+   */
+  const isEcommerceGrowth = service.slug === 'ecommerce-growth';
+  const ECOMMERCE_GROWTH_H1 = 'Ecommerce Growth Expert in Nepal';
 
   const related = allServices.filter((item) => item.slug !== service.slug).slice(0, 3);
   const { projects: relatedProjects, posts: relatedPosts } = relatedToService(service.slug, {
@@ -341,12 +381,23 @@ export default async function ServicePage({ params }: PageProps) {
   const pageTitle = isDigitalMarketing
     ? DM_H1
     : service.slug === 'web-development'
-      ? 'Web Development Services in Nepal'
-      : service.title;
+      ? /**
+         * Realigned to the exact lead phrase of the `<title>` tag
+         * ("Ecommerce Website Developer in Nepal | Web Development Services")
+         * — it previously read "Web Development Services in Nepal", which
+         * does not contain any of the "ecommerce website developer/designer/
+         * development company" phrases this page targets. The one H1 on the
+         * page should be able to be compared word for word with its primary
+         * query, same as `DM_H1` and `ECOMMERCE_GROWTH_H1` below.
+         */
+        'Ecommerce Website Developer in Nepal'
+      : isEcommerceGrowth
+        ? ECOMMERCE_GROWTH_H1
+        : service.title;
   const pageDescription = isDigitalMarketing
     ? DM_SIDE_NOTE
     : service.slug === 'web-development'
-      ? 'Website and ecommerce developer in Kathmandu, Nepal building business websites, online stores and web apps with Shopify, WooCommerce, React and Next.js.'
+      ? 'Ecommerce website developer in Nepal and Kathmandu — also a website designer and development company for businesses that need a custom build. Online stores, business websites and web apps with Shopify, WooCommerce, React and Next.js.'
       : service.shortDescription;
   const body = service.body ?? [];
 
@@ -364,7 +415,11 @@ export default async function ServicePage({ params }: PageProps) {
     url: `${site.url}/services/${service.slug}`,
     // The H1, not the database title, on the retargeted page — the schema and
     // the heading on the page should be able to be compared word for word.
-    name: isDigitalMarketing ? DM_H1 : service.title,
+    // Same value as the visible `<h1>` (`pageTitle` below) rather than
+    // re-deriving the per-slug override here a second time — the schema and
+    // the heading on the page should always be able to be compared word for
+    // word, and a second copy of the same branching is how they drift.
+    name: pageTitle,
     mainEntityId: `${site.url}/services/${service.slug}/#service`,
     signals: seoMeta?.entitySignals,
     aiAnswer: seoMeta?.aiAnswer,
@@ -440,7 +495,7 @@ export default async function ServicePage({ params }: PageProps) {
         {
           '@type': 'ProfessionalService',
           '@id': `${site.url}/services/${DM_SLUG}/#professionalservice`,
-          name: 'Dipendra Guragain – Digital Marketing Expert',
+          name: 'Dipendra Guragain – Ecommerce Marketing Expert',
           description: DM_DESCRIPTION,
           url: `${site.url}/services/${DM_SLUG}`,
           image: `${site.url}/images/profile.png`,
@@ -670,8 +725,8 @@ export default async function ServicePage({ params }: PageProps) {
                 */}
                 {isDigitalMarketing ? (
                   <p className="max-w-2xl leading-relaxed text-muted">
-                    As a digital marketing expert in Nepal, I work across all of
-                    these:{' '}
+                    As an ecommerce marketing expert in Nepal, I work across all of
+                    these channels:{' '}
                     <Link
                       href="/services/seo-services"
                       className="underline decoration-line underline-offset-2 transition-colors hover:text-ink"

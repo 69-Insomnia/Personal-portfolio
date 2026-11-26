@@ -72,15 +72,10 @@ export function Hero() {
         <div className="grid items-center gap-16 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-7">
             <h1 className="max-w-2xl">
-              <motion.span
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: 'easeOut' }}
-                className="eyebrow"
-              >
+              <span className="eyebrow">
                 <span aria-hidden className="eyebrow-tick" />
                 <span>{H1_KEYWORD}</span>
-              </motion.span>
+              </span>
 
               {/* The display lines are NOT `aria-hidden`, and there is no
                   visually-hidden duplicate of them either.
@@ -91,39 +86,32 @@ export function Hero() {
                   same sentence twice (once visually, once in an `sr-only` span)
                   would put it in the `<h1>`'s text content twice, and the
                   `<h1>` is the one element on the page where duplicated text is
-                  worth avoiding. So it is published exactly once. */}
+                  worth avoiding. So it is published exactly once.
+
+                  This is the LCP candidate on mobile and the first thing a
+                  reader's eye and a retriever's first chunk land on, so it is
+                  plain, unanimated markup rather than a `motion.span` keyed to
+                  a JS-driven entrance — an animation here was gating paint
+                  until hydration finished (an 8s LCP delay with nothing else
+                  to blame: TTFB was under 400ms). The slide-up entrance is still
+                  available as a pure-CSS animation for anyone who wants the
+                  motion back without re-coupling it to hydration. */}
               <span className="mt-7 block text-display text-ink">
-                {DISPLAY_LINES.map((line, index) => (
+                {DISPLAY_LINES.map((line) => (
                   <span key={line} className="-mb-[0.08em] block overflow-hidden pb-[0.08em]">
-                    <motion.span
-                      initial={{ y: '112%' }}
-                      animate={{ y: 0 }}
-                      transition={{
-                        delay: 0.12 + index * 0.09,
-                        duration: 0.8,
-                        ease: [0.22, 1, 0.36, 1],
-                      }}
-                      className="block"
-                    >
-                      {line}
-                    </motion.span>
+                    <span className="block animate-hero-line">{line}</span>
                   </span>
                 ))}
               </span>
             </h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.48, duration: 0.6, ease: 'easeOut' }}
-              className="measure mt-8 border-l-2 border-marigold pl-5 text-lead text-muted md:pl-6"
-            >
+            <p className="measure mt-8 border-l-2 border-marigold pl-5 text-lead text-muted md:pl-6">
               I&apos;m Dipendra Guragain, an ecommerce growth specialist in Kathmandu,
               Nepal. I help online stores get found on Google, convert more visitors,
               and grow revenue through SEO, Shopify and WooCommerce optimisation,
               conversion rate optimisation, and Google and Meta Ads managed as one
               funnel with one accountable partner.
-            </motion.p>
+            </p>
 
             <motion.div
               initial={{ opacity: 0, y: 14 }}

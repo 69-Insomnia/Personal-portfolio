@@ -2,11 +2,14 @@
  * Everything the retargeted `/services/digital-marketing` page publishes that
  * is pinned to this one URL rather than read from the database.
  *
- * Every other service renders from `seo_meta`, but this page targets a single
- * keyword pair — "digital marketing expert in Nepal" (primary) and "digital
- * marketing expert in Kathmandu" (secondary) — so its title, description, H1,
- * side note, FAQ set and schema identity live here, where a diff shows them.
- * Two consumers import this module:
+ * Every other service renders from `seo_meta`, but this page now targets two
+ * paired keyword sets — "ecommerce marketing expert/specialist in Nepal,
+ * Kathmandu" (primary, added 2026-11-26) and "digital marketing expert in
+ * Nepal/Kathmandu" (the original retarget, kept rather than replaced, since
+ * ecommerce marketing is the specialism and digital marketing is the broader
+ * discipline it sits inside) — so its title, description, H1, side note, FAQ
+ * set and schema identity live here, where a diff shows them. Two consumers
+ * import this module:
  *
  * - `src/app/services/[slug]/page.tsx` — the head tags, the H1, the side
  *   note, the breadcrumb crumb, the About line and the page-scoped JSON-LD
@@ -24,40 +27,52 @@
 
 export const DM_SLUG = 'digital-marketing';
 
-/** 65 characters — inside `clampTitle`'s 72, so it ships verbatim. */
+/**
+ * 72 characters — at `clampTitle`'s ceiling, so it ships verbatim. Leads with
+ * the new primary pair ("Ecommerce Marketing Expert in Nepal") and carries
+ * the original pair ("Digital Marketing Expert … Kathmandu") after the pipe,
+ * so both disciplines and both target cities are present verbatim in the one
+ * line a searcher reads — the same arithmetic the homepage title uses in
+ * `src/data/seo.ts`.
+ */
 export const DM_TITLE =
-  'Digital Marketing Expert in Nepal & Kathmandu | Dipendra Guragain';
+  'Ecommerce Marketing Expert in Nepal | Digital Marketing Expert Kathmandu';
 
 /**
- * 158 characters — under the brief's 160 cap and inside `clampDescription`'s
- * 140-170 window, so neither clamp rewrites it. The brief's own draft ran 171
- * characters (which the clamp would have truncated); "planned " and the
- * "+977-" prefix were dropped to fit, which is the only change from that text.
+ * 165 characters — inside `clampDescription`'s 140-170 window, so it ships
+ * unchanged. Answers the other half of the target set verbatim — "ecommerce
+ * marketing specialist in Nepal, Kathmandu" — then the broader digital
+ * marketing channels, the free-review hook and the WhatsApp number.
  */
 export const DM_DESCRIPTION =
-  'Digital marketing expert in Nepal, based in Kathmandu. SEO, Google & Meta Ads, content and conversion as one strategy. Free first review. WhatsApp 9840814142.';
+  'Ecommerce marketing specialist in Nepal, Kathmandu, and digital marketing expert for SEO, Google & Meta Ads, content and CRO. Free first review. WhatsApp 9840814142.';
 
-/** The single H1, also the last breadcrumb crumb and the WebPage name. */
-export const DM_H1 = 'Digital Marketing Expert in Nepal (Kathmandu)';
+/**
+ * The single H1, also the last breadcrumb crumb and the WebPage name.
+ * Matches the title's lead phrase verbatim — the one heading on the page
+ * should be able to be compared word for word with the query it targets.
+ */
+export const DM_H1 = 'Ecommerce Marketing Expert in Nepal (Kathmandu)';
 
 /** The coral-ruled side note under the H1 — the short version of the page. */
 export const DM_SIDE_NOTE =
-  'Digital marketing expert in Kathmandu, Nepal: SEO, Google Ads, Meta Ads, content and conversion run as one strategy with one monthly report.';
+  'Ecommerce marketing specialist in Kathmandu, Nepal: SEO, Google Ads, Meta Ads, content and conversion built around ecommerce stores — also available as a digital marketing expert for non-ecommerce businesses, run as one strategy with one monthly report.';
 
 /** Alt text for the social card, as specified by the brief. */
 export const DM_IMAGE_ALT =
-  'Digital Marketing Expert in Nepal and Kathmandu – Dipendra Guragain';
+  'Ecommerce Marketing Expert in Nepal and Kathmandu – Dipendra Guragain';
 
 /** Short crumb: the H1 reads as a sentence in a trail, this does not. */
-export const DM_BREADCRUMB = 'Digital Marketing';
+export const DM_BREADCRUMB = 'Ecommerce Marketing';
 
 /** The "About the Expert" accent line, which reads `Web Development Expert…` on every other service page. */
-export const DM_ABOUT_LINE = 'Digital Marketing Expert in Kathmandu, Nepal';
+export const DM_ABOUT_LINE = 'Ecommerce Marketing Expert in Kathmandu, Nepal';
 
-export const DM_JOB_TITLE = 'Digital Marketing Expert';
+export const DM_JOB_TITLE = 'Ecommerce Marketing Expert';
 
-/** The six terms the brief specified for this page's `Person` node. */
+/** The terms for this page's `Person` node — ecommerce marketing first, the original digital marketing set kept after it. */
 export const DM_KNOWS_ABOUT = [
+  'ecommerce marketing',
   'digital marketing',
   'SEO',
   'Google Ads',
@@ -67,22 +82,30 @@ export const DM_KNOWS_ABOUT = [
 ];
 
 export const DM_KEYWORDS = [
+  'ecommerce marketing expert in Nepal',
+  'ecommerce marketing specialist in Nepal',
+  'ecommerce marketing expert in Kathmandu',
+  'ecommerce marketing specialist in Kathmandu',
+  'ecommerce marketing experts in Nepal',
+  'ecommerce marketing specialists in Kathmandu',
   'digital marketing expert in Nepal',
   'digital marketing expert in Kathmandu',
   'digital marketing Nepal',
   'digital marketing Kathmandu',
   'digital marketing services Nepal',
+  'ecommerce digital marketing expert Nepal',
   'SEO services in Kathmandu',
   'Google Ads management in Nepal',
   'freelance digital marketing expert Nepal',
+  'freelance ecommerce marketing expert Nepal',
 ];
 
 /** The first-person line under the name in the About card. */
 export const DM_AUTHOR_SUMMARY =
-  'I run strategy and execution from the same desk: one plan across search, ads, content and conversion, one tracking setup, and one monthly report on enquiries, sales and cost per result. Based in Kathmandu, working with businesses across Nepal.';
+  'I run ecommerce marketing and general digital marketing from the same desk: one plan across search, ads, content and conversion, one tracking setup, and one monthly report on enquiries, sales and cost per result. Based in Kathmandu, working with ecommerce brands and other businesses across Nepal.';
 
 /** `serviceType` for this page's `Service` node — the category, not the page title. */
-export const DM_SERVICE_TYPE = 'Digital marketing';
+export const DM_SERVICE_TYPE = 'Ecommerce marketing';
 
 /**
  * The passage the `ai_answer` field publishes — the same text `AnswerBlock`
@@ -91,12 +114,12 @@ export const DM_SERVICE_TYPE = 'Digital marketing';
  * citations are pulled from the first third of a page.
  */
 export const DM_AI_ANSWER =
-  'Dipendra Guragain is a digital marketing expert based in Kathmandu who helps businesses get more enquiries and sales from Google search, Google Ads, Meta Ads, content and conversion optimisation. One strategy, one tracking setup and one monthly report instead of four separate suppliers. Work starts with a 2-3 week audit, then runs at NPR 15,000 per month, with ad budget paid directly to Google and Meta. The DrillThru case study shows what was changed and what happened next.';
+  'Dipendra Guragain is an ecommerce marketing expert and digital marketing expert based in Kathmandu who helps ecommerce stores and other businesses in Nepal get more enquiries and sales from Google search, Google Ads, Meta Ads, content and conversion optimisation. One strategy, one tracking setup and one monthly report instead of four separate suppliers. Work starts with a 2-3 week audit, then runs at NPR 15,000 per month, with ad budget paid directly to Google and Meta. The Nano Store and DrillThru case studies show what was changed and what happened next.';
 
 /**
- * The nine visible FAQs — the four this page already had (with the price
- * conflict fixed and "specialist" renamed to "expert") plus the five the
- * brief asked for.
+ * The visible FAQs — the nine original digital-marketing questions plus the
+ * five below targeting the ecommerce-marketing pair, merged by `mergeFaqs` in
+ * the page component so no question repeats.
  *
  * `faqPageNode` builds its `FAQPage` node from this exact array, which is
  * what keeps the schema's text identical to the visible text `FaqBlock`
@@ -105,6 +128,31 @@ export const DM_AI_ANSWER =
  * with the answer itself.
  */
 export const DM_FAQS: Array<{ question: string; answer: string }> = [
+  {
+    question: 'What does an ecommerce marketing expert do?',
+    answer:
+      'An ecommerce marketing expert plans and runs the channels that bring buyers to an online store: ecommerce SEO, paid search and social ads, content, and conversion rate optimisation for product and category pages. I treat them as one strategy for the store, judged on orders and revenue rather than clicks or impressions.',
+  },
+  {
+    question: 'Who is the best ecommerce marketing specialist in Nepal?',
+    answer:
+      'The best ecommerce marketing specialist in Nepal ties search, ads and store conversion to orders and revenue, not vanity metrics, and shows real case studies rather than screenshots of a dashboard. The Nano Store case study shows what was changed on a real store and what happened to its traffic and sales next.',
+  },
+  {
+    question: 'Do you work as an ecommerce marketing expert in Kathmandu?',
+    answer:
+      'Yes. I am based in Kathmandu and work as an ecommerce marketing expert for Shopify and WooCommerce stores across Nepal, covering ecommerce SEO, Google and Meta Ads, product and category page conversion, and the analytics to measure what actually sold.',
+  },
+  {
+    question: 'How is ecommerce marketing different from general digital marketing?',
+    answer:
+      'Ecommerce marketing is digital marketing built specifically around a store: product and category page SEO, shopping ads, cart and checkout conversion, and revenue-per-channel reporting. General digital marketing covers the same channels for a business that is not selling products online, such as a lead-generation or service site.',
+  },
+  {
+    question: 'How do I hire an ecommerce marketing specialist in Nepal, Kathmandu?',
+    answer:
+      'Send your store link through the contact page or WhatsApp 9840814142. I review the store, reply with what I would fix first, then run a 2-3 week audit so the plan is based on your real traffic and order data before any ongoing work starts at NPR 15,000 per month.',
+  },
   {
     question: 'What does a digital marketing expert do?',
     answer:
@@ -148,19 +196,24 @@ export const DM_FAQS: Array<{ question: string; answer: string }> = [
   {
     question: 'Do you work with businesses outside Kathmandu?',
     answer:
-      'Yes. I work remotely across Nepal with businesses in Lalitpur, Bhaktapur, Pokhara, Biratnagar, Chitwan and elsewhere. Everything runs over WhatsApp, email and scheduled calls, and the audit and monthly report work the same way they would if you were sitting across the table in Kathmandu.',
+      'Yes. I work remotely across Nepal with ecommerce stores and other businesses in Lalitpur, Bhaktapur, Pokhara, Biratnagar, Chitwan and elsewhere. Everything runs over WhatsApp, email and scheduled calls, and the audit and monthly report work the same way they would if you were sitting across the table in Kathmandu.',
   },
 ];
 
 /**
  * The glossary terms for this page's `entity_signals.definedTerms`.
  *
- * The first term used to be "Digital marketing specialist:", which is both
- * the phrase this retarget replaces and a definition the page no longer uses
- * to describe its author. The other two terms were already accurate and are
- * restated here only because the field is replaced wholesale.
+ * "Ecommerce marketing" leads the set now that it is the page's primary
+ * target; the other three are the terms the original digital-marketing
+ * retarget already defined and are restated here only because the field is
+ * replaced wholesale.
  */
 export const DM_DEFINED_TERMS = [
+  {
+    name: 'Ecommerce marketing:',
+    description:
+      'digital marketing built specifically around an online store — product and category page SEO, shopping and social ads, and cart or checkout conversion work — measured on orders and revenue rather than clicks.',
+  },
   {
     name: 'Digital marketing expert:',
     description:

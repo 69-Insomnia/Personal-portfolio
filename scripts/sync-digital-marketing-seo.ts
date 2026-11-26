@@ -30,6 +30,7 @@ import {
   DM_DESCRIPTION,
   DM_FAQS,
   DM_KEYWORDS,
+  DM_SERVICE_TYPE,
   DM_TITLE,
 } from '../src/data/digital-marketing';
 
@@ -105,7 +106,7 @@ async function syncSeoRow() {
   const offers = custom.offers ?? null;
   const customJsonLd = {
     ...custom,
-    serviceType: 'Digital marketing',
+    serviceType: DM_SERVICE_TYPE,
     ...(offers
       ? {
           offers: {
@@ -147,7 +148,7 @@ async function syncSeoRow() {
       DM_TITLE,
       DM_DESCRIPTION,
       DM_KEYWORDS,
-      'digital marketing expert in Nepal',
+      'ecommerce marketing expert in Nepal',
       JSON.stringify(DM_FAQS),
       DM_AI_ANSWER,
       JSON.stringify(entitySignals),

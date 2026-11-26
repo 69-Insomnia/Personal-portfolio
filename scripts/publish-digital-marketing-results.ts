@@ -27,8 +27,9 @@ const SECTION = 'Results';
  * repository fallback and the live page disagree.
  */
 const PARAGRAPHS = [
-  'Results here are reported as enquiries, sales and cost per result against the timeframe they took — never as impressions or clicks. Recent client results:',
+  'Results here are reported as enquiries, sales and cost per result against the timeframe they took — never as impressions or clicks. Recent results:',
   'A camera and drone retailer — a Meta “Get more messages” campaign sending shoppers straight to WhatsApp: 143 messaging conversations started at NPR 5–7 each, in two days.',
+  'My own website — SEO work: around 2,000 monthly visits from organic search within four months.',
 ];
 
 /** Order-insensitive compare; `jsonb` reorders object keys on storage. */

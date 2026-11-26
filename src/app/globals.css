@@ -309,6 +309,54 @@
     @apply h-1.5 w-1.5 shrink-0 rotate-45 bg-marigold;
   }
 
+  /* The hero display line's entrance, as a pure CSS animation rather than a
+     framer-motion `motion.span`. It used to run on JS hydration, which gated
+     the LCP paragraph's paint behind the bundle loading — an 8s LCP with a
+     sub-400ms TTFB, all of it this animation. CSS runs the instant the
+     stylesheet parses, so the text is visible with the rest of the SSR'd HTML
+     and still slides up for anyone who stays to watch it. */
+  .animate-hero-line {
+    animation: hero-line-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+
+  @keyframes hero-line-in {
+    from {
+      transform: translateY(112%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-hero-line {
+      animation: none;
+    }
+  }
+
+  /* `RevealText`'s per-word entrance — the same CSS-over-JS trade as
+     `.animate-hero-line` above, applied to every page's `<h1>` (via
+     `PageHeader`) rather than only the homepage's. See the component for why
+     a JS/IntersectionObserver-gated heading was worth removing entirely. */
+  .animate-word-reveal {
+    animation: word-reveal-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+
+  @keyframes word-reveal-in {
+    from {
+      transform: translateY(115%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-word-reveal {
+      animation: none;
+    }
+  }
+
   /* The two surface roles, as named recipes rather than repeated class
      strings. This is what stops the site drifting back into two accidental card
      languages — the problem was never that there were two, it was that nothing
