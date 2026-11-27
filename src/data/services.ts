@@ -282,6 +282,7 @@ const serviceOrder: UnnumberedService[] = [
   {
     slug: 'ai-search',
     title: 'AI Search Optimization',
+    seoTitle: 'AI SEO Expert in Nepal | AI Search & Local SEO Services',
     shortDescription:
       'AI search visibility: getting mentioned or cited by AI Overviews, ChatGPT and Perplexity.',
     description:
@@ -332,6 +333,7 @@ const serviceOrder: UnnumberedService[] = [
   {
     slug: 'meta-ads',
     title: 'Meta Ads Management',
+    seoTitle: 'Facebook & Meta Ads Expert in Nepal | Ads Management Kathmandu',
     shortDescription:
       'Facebook and Instagram campaigns built around audiences, creative testing and real tracking.',
     description:
@@ -375,6 +377,7 @@ const serviceOrder: UnnumberedService[] = [
   {
     slug: 'google-ads',
     title: 'Google Ads Management',
+    seoTitle: 'Google Ads Expert in Nepal | Management Services in Kathmandu',
     shortDescription: 'Search, Display, YouTube and remarketing campaigns for businesses that want qualified buyers ready to purchase.',
     description:
       "I run Google Ads, and the difference between it and most other channels is intent: the person is already searching for the thing, so most of the work is about not wasting the click. That means tight accounts rather than broad ones, keywords matched to what the landing page actually delivers, and negative keyword lists that get maintained rather than set once and forgotten. I run Search, Display, YouTube and remarketing campaigns, and I would rather spend a week getting conversion tracking right than a month optimising against numbers I do not trust. For a business in Nepal, Search carries most of the value, because it catches demand that already exists. Display and YouTube do a different job, which is keeping a brand in view while someone decides.",
@@ -580,6 +583,148 @@ const serviceOrder: UnnumberedService[] = [
     // different figures for the same service again.
     fromNpr: 15000,
     icon: 'megaphone',
+  },
+  {
+    slug: 'shopify-woocommerce-wordpress',
+    title: 'Shopify, WooCommerce & WordPress Development',
+    seoTitle: 'Shopify, WooCommerce & WordPress Developer in Nepal | Kathmandu',
+    shortDescription:
+      'Shopify, WooCommerce and WordPress development in Nepal: online stores and business sites built to rank, load fast and convert.',
+    description:
+      "I am a Shopify developer, WooCommerce developer and WordPress developer in Nepal, working from Kathmandu. The platform matters less than the fit: Shopify suits stores that want hosted reliability and quick launches, WooCommerce suits stores that need control over checkout, local payment gateways and custom behaviour, and WordPress suits business and content sites that need to be edited by the people who run them. I build on whichever one the business actually needs, set it up so Google can read it, and keep it fast on the mid-range phones most Nepali customers use. That covers theme work and custom development, product and collection structure, payment and delivery setup, speed, and the SEO foundations a store needs before any marketing starts. I will tell you plainly if a platform is the wrong choice for your plans.",
+    body: [
+      {
+        heading: 'Which is better for a store in Nepal: Shopify, WooCommerce or WordPress?',
+        paragraphs: [
+          'It depends on how you sell and who will maintain the site. Shopify is the quicker route to a working store and removes most hosting and security work, but local payment and delivery options can need extra setup. WooCommerce, which runs on WordPress, gives more control over checkout and local gateways, in exchange for more upkeep.',
+          'A plain WordPress site is usually the right call when you are not selling products online and need a service, company or content website that staff can edit without a developer.',
+        ],
+      },
+      {
+        heading: 'What does a Shopify or WooCommerce build include?',
+        paragraphs: [
+          'Store structure first: collections, product pages, variants and filters organised around how people search, not how the stock list is sorted. Then the theme and storefront, checkout, payment and delivery setup, and the tracking that tells you which orders came from where.',
+          'Speed and search basics are part of the build rather than an add-on: image handling, clean URLs, metadata and structured data, so the store is not rebuilt later to fix them.',
+        ],
+      },
+      {
+        heading: 'Can you fix or redesign an existing site?',
+        paragraphs: [
+          'Yes. Many projects are not new builds but a slow theme, a plugin conflict, a broken checkout or a redesign that lost the search traffic the old site had. I audit what is there first and tell you whether it needs repair or replacement.',
+        ],
+      },
+      {
+        heading: 'What I will not promise',
+        paragraphs: [
+          'I will not promise sales or rankings from a build alone. A well-made store removes the obstacles to both, but traffic and conversion also depend on products, price and marketing. Where those need work, I will say so and, if you want, handle them under ecommerce SEO and ecommerce growth.',
+        ],
+      },
+    ],
+    capabilities: [
+      'Shopify store setup and theme customisation',
+      'WooCommerce store development',
+      'WordPress business and content websites',
+      'Payment, delivery and checkout setup',
+      'Product and collection structure built for search',
+      'Speed optimisation and mobile performance',
+      'Migration and redesign without losing rankings',
+      'Plugin, theme and bug fixes on existing sites',
+    ],
+    icon: 'shopping-bag',
+  },
+  {
+    slug: 'cro-website-optimisation',
+    title: 'CRO & Website Optimisation',
+    seoTitle: 'CRO Expert in Nepal | Conversion Rate Optimization Services Kathmandu',
+    shortDescription:
+      'Conversion rate optimization and website optimisation in Nepal: audits, speed fixes and tested changes that turn more visitors into customers.',
+    description:
+      "I work as a CRO expert in Nepal and Kathmandu, helping online stores and business websites turn more of their existing visitors into customers. Conversion rate optimization starts with finding where people leave and why: a slow page, a confusing product page, a checkout with too many steps, a form that does not work on a phone. I run a website audit, check page speed and mobile performance, review how visitors move through the site, then fix the problems in order of likely impact and measure what changed. It is usually cheaper to convert more of the traffic you already pay for than to buy more of it, which is why this work pairs well with SEO and advertising. I will not promise a specific lift, because it depends on the site, but I will show you what changed and what it did.",
+    body: [
+      {
+        heading: 'What is conversion rate optimization?',
+        paragraphs: [
+          'It is the work of increasing the share of visitors who take the action you want: buy, enquire, book or message. It starts from evidence about where visitors stop, not from opinions about colours and buttons.',
+        ],
+      },
+      {
+        heading: 'What does a website audit cover?',
+        paragraphs: [
+          'Speed and Core Web Vitals on mobile, how product and landing pages read, the checkout or enquiry flow, tracking accuracy, and the technical issues that quietly cost traffic. You get a prioritised list: what to fix first, what to leave alone, and why.',
+          'Tracking comes early. Conversion figures that count orders twice or miss them entirely make every later decision worse, so I verify them before optimising against them.',
+        ],
+      },
+      {
+        heading: 'How does website speed affect conversions?',
+        paragraphs: [
+          'A page that is slow on a mid-range phone loses visitors before they see the product. Speed optimisation means smaller images, less unused code and fewer blocking scripts, and it helps both conversion and search visibility.',
+        ],
+      },
+      {
+        heading: 'What I will not promise',
+        paragraphs: [
+          'I will not quote a conversion lift in advance. Changes are made one at a time where traffic allows, measured, and kept or reverted on the result. If a site has too little traffic to test properly, I will say so and focus on fixing the clear problems instead.',
+        ],
+      },
+    ],
+    capabilities: [
+      'Website and conversion audit',
+      'Core Web Vitals and speed optimisation',
+      'Product page and landing page improvements',
+      'Checkout and enquiry flow review',
+      'Conversion tracking setup and verification',
+      'A/B testing where traffic allows',
+      'Mobile experience fixes',
+      'Reporting on what changed and what it did',
+    ],
+    icon: 'chart',
+  },
+  {
+    slug: 'local-seo',
+    title: 'Local SEO Services',
+    seoTitle: 'Local SEO Expert in Nepal | Google Maps SEO Services Kathmandu',
+    shortDescription:
+      'Local SEO in Nepal and Kathmandu: Google Business Profile, Google Maps visibility, local pages and reviews for businesses that serve a place.',
+    description:
+      "I am a local SEO expert in Nepal, working from Kathmandu. Local SEO is about being found when someone nearby searches for what you do: the map results, your Google Business Profile, and the local searches that decide whether a phone rings or a customer walks in. The work covers setting up and optimising the Google Business Profile, keeping your name, address and phone number consistent wherever they appear, building location and service pages that say what you do and where, and a steady process for collecting and answering reviews. It suits shops, clinics, restaurants, agencies and any business with a physical location or a defined service area. I do not buy fake reviews or fake listings, because those get profiles suspended, and I will not promise a map position, which no one can guarantee.",
+    body: [
+      {
+        heading: 'What is local SEO?',
+        paragraphs: [
+          'It is search optimisation for businesses that serve a place. When someone searches for a service near them, Google shows a map and a short list of businesses before the ordinary results. Local SEO is the work of earning a place in that list.',
+        ],
+      },
+      {
+        heading: 'How do I appear on Google Maps?',
+        paragraphs: [
+          'Start with a verified, complete Google Business Profile: the right categories, accurate hours, services, photos and a clear description. Then make sure the same name, address and phone number appear consistently on your website and other listings, and that your site has pages that match what people search for locally.',
+          'Reviews matter, so I set up a simple, honest way to ask real customers for them and to reply to every one.',
+        ],
+      },
+      {
+        heading: 'Is local SEO different from regular SEO?',
+        paragraphs: [
+          'The foundations overlap: a fast, clear, well-structured site. Local SEO adds proximity, your Business Profile, reviews and local relevance, which regular SEO does not address. A business that serves a place usually needs both.',
+        ],
+      },
+      {
+        heading: 'What I will not promise',
+        paragraphs: [
+          'I will not promise a number one map position or a fixed ranking date. I will not buy reviews or create fake listings, because they put your profile at risk. I will show you what changed in views, calls and direction requests.',
+        ],
+      },
+    ],
+    capabilities: [
+      'Google Business Profile setup and optimisation',
+      'Google Maps visibility',
+      'Name, address and phone consistency',
+      'Location and service pages',
+      'Review collection and response process',
+      'Local schema markup',
+      'Local keyword research',
+      'Monthly reporting on views, calls and directions',
+    ],
+    icon: 'target',
   },
 ];
 
