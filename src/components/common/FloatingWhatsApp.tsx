@@ -33,7 +33,7 @@ export function FloatingWhatsApp() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label={`Message me on WhatsApp at ${profile.whatsapp}`}
-      className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-control border border-line bg-whatsapp text-whatsapp-ink shadow-md transition-all duration-200 ease-out hover:scale-105 hover:bg-whatsapp-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+      className="fixed bottom-4 right-4 z-50 flex h-12 w-12 sm:bottom-5 sm:right-5 sm:h-14 sm:w-14 items-center justify-center rounded-control border border-line bg-whatsapp text-whatsapp-ink shadow-md transition-all duration-200 ease-out hover:scale-105 hover:bg-whatsapp-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
     >
       <WhatsAppIcon size={26} />
     </a>

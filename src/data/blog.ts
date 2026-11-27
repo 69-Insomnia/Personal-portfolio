@@ -306,7 +306,7 @@ export const blogPosts: BlogPost[] = [
       '• Scaling up your ad spend before fixing conversion problems',
       'The fix is almost always to improve the whole system, rather than obsessing over one channel.',
       '## What Does an Ecommerce Expert in Nepal Actually Do?',
-      'An ecommerce expert in Nepal helps online businesses plan, launch and grow their stores — drawing on local payment knowledge, delivery realities, marketing and search. You\'ll see this role searched as "ecommerce expert in Nepal", "e-commerce expert in Nepal" or "E commerce expert in Nepal" — they all mean the same thing: someone who connects strategy, website, SEO, ads and operations into one growth system, instead of leaving you to coordinate four different people.',
+      'An ecommerce expert in Nepal helps online businesses plan, launch and grow their stores — drawing on local payment knowledge, delivery realities, marketing and search. You\'ll see this role searched as "ecommerce expert in Nepal", "e-commerce expert in Nepal" or "E commerce expert in Nepal" — they all mean the same thing: someone who connects strategy, website, SEO, ads and operations into one growth system, instead of leaving you to coordinate four different people. That is the work I do as an [ecommerce growth expert in Nepal](/services/ecommerce-growth), and it starts with a [Shopify or WooCommerce store built to convert](/services/web-development).',
       'A good ecommerce expert in Nepal usually covers:',
       '• **Strategy** — looking at the market and competitors, and figuring out the right products and pricing focus.',
       '• **Website** — a mobile-first store that\'s fast, with a checkout and payments that actually work.',
@@ -325,7 +325,7 @@ export const blogPosts: BlogPost[] = [
       'Be careful with anyone who guarantees you a ranking, buys fake reviews, or only ever talks about likes and followers. A real expert cares about profit, customer trust and growth that lasts.',
       '## Final Thoughts',
       'Growing ecommerce in Nepal comes down to building one connected system: a registered business, a fast mobile store, payment methods people trust, reliable delivery, honest social content, SEO, AI search visibility, and checking your numbers every week. Start with trust and the buying experience — traffic is the easy part to add later.',
-      'Don\'t chase new customers only. Improving delivery, support and repeat purchases is where the real profit in Nepali ecommerce gets built. And if you\'d rather have a specialist look at your store, SEO or ads, an ecommerce expert in Nepal can audit the whole thing and show you exactly where orders are slipping away.',
+      'Don\'t chase new customers only. Improving delivery, support and repeat purchases is where the real profit in Nepali ecommerce gets built. And if you\'d rather have a specialist look at your store, SEO or ads, an [ecommerce expert in Nepal](/services/ecommerce-growth) can audit the whole thing and show you exactly where orders are slipping away.',
       '## Sources',
       '• Kathmandu Post: Fast delivery changes the game for Nepal\'s online sellers (Aug 27, 2026)',
       '• Kathmandu Post: A cashless shift in Nepal brings new ease and new risks (Jun 17, 2026)',
@@ -408,7 +408,7 @@ export const blogPosts: BlogPost[] = [
       '## Speed, Measured on Real Phones',
       'Finally, speed. Not the number in a lab test, the number real visitors get. I look at field data for Core Web Vitals, find the slowest page that also gets traffic, and fix that one first instead of chasing a perfect score across the whole site.',
       '## Why the Order Matters',
-      'The order matters. Content is the last lever, not the first, because content on a site that cannot be crawled or understood just adds to the pile.',
+      'The order matters. Content is the last lever, not the first, because content on a site that cannot be crawled or understood just adds to the pile. If you want that order applied to your own site, that is what [my SEO services](/services/seo-services) start with.',
     ],
     faqs: [
       {
@@ -444,7 +444,7 @@ export const blogPosts: BlogPost[] = [
       'That decision shaped the rest of the build. If the enquiry happens in a chat, the site has one job: get someone to that tap with enough confidence to make it. Which means the apartments have to be comparable without clicking through, so three types sit side by side with their own photographs, a plain-language summary, the amenities that matter, and a from-price per night.',
       'Mobile-first stopped being a slogan and became the layout constraint. Photographs sized for a phone screen, an amenities section that scans, a gallery, and a booking button that stays reachable as you scroll.',
       '## When a Checkout Beats a Conversation',
-      'Not every business should do this. Sell something with a fixed price and no variables and a checkout will always beat a conversation. But anywhere the customer has a question before they commit, moving that conversation earlier in the flow is usually the right call.',
+      'Not every business should do this. Sell something with a fixed price and no variables and a checkout will always beat a conversation. But anywhere the customer has a question before they commit, moving that conversation earlier in the flow is usually the right call. It is one of the first questions I ask on any [website development project](/services/web-development).',
     ],
     faqs: [
       {
@@ -480,7 +480,7 @@ export const blogPosts: BlogPost[] = [
       '## Fix the Tracking Before Optimising Anything',
       'Analytics has to be trustworthy before any of this works. If the purchase event fires twice, or never fires on mobile, every decision downstream is made against a number that is wrong. I would rather spend a week fixing tracking than a month optimising against bad data.',
       '## Not a Channel Strategy',
-      'None of this is a channel strategy. It is just refusing to treat the storefront, the search result, the ad and the report as separate businesses, because the customer never does.',
+      'None of this is a channel strategy. It is just refusing to treat the storefront, the search result, the ad and the report as separate businesses, because the customer never does. That one-funnel view is how I run [ecommerce growth work for online stores in Nepal](/services/ecommerce-growth).',
     ],
     faqs: [
       {

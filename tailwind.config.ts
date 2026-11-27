@@ -1,12 +1,26 @@
 import type { Config } from 'tailwindcss';
 
+/**
+ * A CSS-variable colour that still supports Tailwind's `/opacity` modifier.
+ *
+ * A bare `'var(--x)'` string cannot be split into channels, so Tailwind 3
+ * silently emits nothing for `bg-danger/5` or `border-marigold/40` — those
+ * classes were shipping with no CSS at all. Tailwind substitutes the requested
+ * opacity for `<alpha-value>` (1 when there is no modifier), and `color-mix`
+ * blends the variable with transparent at that strength, which works for any
+ * value the variable holds (hex, rgb, or another var) in every theme.
+ */
+function themeColor(name: string) {
+  return `color-mix(in srgb, var(${name}) calc(<alpha-value> * 100%), transparent)`;
+}
+
 const config: Config = {
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
     extend: {
       colors: {
         paper: 'var(--color-paper)',
-        subtle: 'var(--color-subtle)',
+        subtle: themeColor('--color-subtle'),
         'paper-blur': 'var(--color-paper-blur)',
         surface: 'var(--color-surface)',
         ink: 'var(--color-ink)',
@@ -19,8 +33,8 @@ const config: Config = {
         scrim: 'var(--color-scrim)',
         /* Status colours live in the same luminance band as the accent, so no
            single one shouts louder than the brand colour. See globals.css. */
-        success: 'var(--color-success)',
-        danger: 'var(--color-danger)',
+        success: themeColor('--color-success'),
+        danger: themeColor('--color-danger'),
         info: 'var(--color-info)',
         /* WhatsApp brand — fixed identity colours, same in every theme. */
         whatsapp: {
@@ -35,7 +49,7 @@ const config: Config = {
            changes — only the value moved — which is why the whole site
            re-themed without a per-component edit. */
         accent: {
-          DEFAULT: 'var(--color-accent)',
+          DEFAULT: themeColor('--color-accent'),
           strong: 'var(--color-accent-strong)',
           soft: 'var(--color-accent-soft)',
           50: 'var(--color-accent-50)',
@@ -56,7 +70,7 @@ const config: Config = {
            the text-safe read of the same hue (6.4:1) for the rare place it
            must carry meaning. */
         marigold: {
-          DEFAULT: 'var(--color-marigold)',
+          DEFAULT: themeColor('--color-marigold'),
           soft: 'var(--color-marigold-soft)',
           ink: 'var(--color-marigold-ink)',
         },

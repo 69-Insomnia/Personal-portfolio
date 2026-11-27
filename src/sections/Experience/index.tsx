@@ -1,5 +1,3 @@
-'use client';
-
 import { EmptyState } from '@/components/common/EmptyState';
 import { TimelineItem } from '@/components/cards/TimelineItem';
 import { Container } from '@/components/ui/Container';

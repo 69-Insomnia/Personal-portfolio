@@ -16,7 +16,7 @@ import type { AnalyticsConfig } from '@/types';
  * operator can see it.
  *
  * The GTM snippet sets `j.async = true`, and is injected with Next's
- * `afterInteractive` strategy — it never blocks first paint.
+ * `lazyOnload` strategy — it waits for the page to finish loading, so it never competes with the LCP or hydration.
  *
  * ## GA4 keeps a fallback while no container is configured
  *
@@ -106,7 +106,7 @@ export function Analytics({ config }: { config: AnalyticsConfig }) {
     <>
       {validGtm ? (
         <>
-          <Script id="gtm" strategy="afterInteractive">
+          <Script id="gtm" strategy="lazyOnload">
             {gtmSnippet(validGtm, validGa4, validPixel)}
           </Script>
           {/* The container's fallback for visitors without JavaScript. */}
@@ -127,9 +127,9 @@ export function Analytics({ config }: { config: AnalyticsConfig }) {
           <Script
             id="ga4-loader"
             src={`https://www.googletagmanager.com/gtag/js?id=${fallbackGa4}`}
-            strategy="afterInteractive"
+            strategy="lazyOnload"
           />
-          <Script id="ga4-config" strategy="afterInteractive">
+          <Script id="ga4-config" strategy="lazyOnload">
             {gtagSnippet(fallbackGa4)}
           </Script>
         </>

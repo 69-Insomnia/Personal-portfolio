@@ -36,6 +36,23 @@ const H1_KEYWORD = 'Ecommerce specialist in Nepal';
 /** Split by hand — the breaks are a typographic decision, not the measure's. */
 const DISPLAY_LINES = ['Stores that rank,', 'convert, and grow.'];
 
+/** Sourced results only: the Nano Store case study and the documented Meta campaign. */
+const HERO_PROOF = [
+  { value: '15,000+', label: 'Monthly organic visits for Nano Store' },
+  { value: '1,000+', label: 'Keywords ranking on Google' },
+  { value: '143', label: 'WhatsApp chats in 2 days from Meta Ads' },
+];
+
+/** Projects with a live case study page. Labelled "recent work", not "trusted by". */
+const RECENT_WORK = [
+  { name: 'Nano Store', href: '/work/nano-store-ecommerce-seo' },
+  { name: 'DrillThru', href: '/work/drillthru' },
+  { name: 'Resthru', href: '/work/resthru' },
+  { name: 'Trip Zone', href: '/work/trip-zone' },
+  { name: 'Star Global Vision', href: '/work/starglobalvision' },
+  { name: "POM's Penthouse", href: '/work/poms-penthouse' },
+];
+
 export function Hero() {
   const whatsappHref = whatsappUrl(profile.whatsapp);
 
@@ -124,10 +141,10 @@ export function Hero() {
               </Button>
 
               <Link
-                href="/work"
+                href="/work/nano-store-ecommerce-seo"
                 className="group inline-flex min-h-[44px] items-center gap-1.5 text-[15px] font-medium text-ink transition-colors duration-200 hover:text-accent"
               >
-                See selected work
+                See the results
                 <ArrowRight
                   size={16}
                   aria-hidden
@@ -158,6 +175,28 @@ export function Hero() {
                 </span>
               </motion.p>
             ) : null}
+
+            {/* Proof before persuasion. Plain markup, no motion, so the
+                numbers are in the first paint alongside the H1. */}
+            {/* Phones: one row per result (number left, label right) so a
+                seven-character figure like "15,000+" never has to fit a third
+                of a 320px screen. From `sm`: three columns, numbers top-aligned
+                regardless of how long each label wraps. */}
+            <dl className="mt-10 grid max-w-xl grid-cols-1 divide-y divide-line overflow-hidden rounded-card border border-line bg-surface shadow-sm sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+              {HERO_PROOF.map((item) => (
+                <div
+                  key={item.label}
+                  className="flex items-center gap-4 px-5 py-4 sm:flex-col sm:items-start sm:gap-2 sm:py-5"
+                >
+                  <dt className="order-2 text-[0.8125rem] leading-snug text-muted sm:text-[0.75rem]">
+                    {item.label}
+                  </dt>
+                  <dd className="order-1 min-w-[7.75rem] shrink-0 whitespace-nowrap font-display text-[1.625rem] font-semibold leading-none tracking-[-0.02em] text-ink tabular-nums sm:min-w-0 sm:text-[clamp(1.375rem,2.6vw,1.875rem)]">
+                    {item.value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
           </div>
 
           <motion.div
@@ -169,6 +208,27 @@ export function Hero() {
             <Portrait />
           </motion.div>
         </div>
+
+        <nav
+          aria-label="Recent work"
+          className="mt-16 flex flex-col gap-4 border-t border-line pt-8 md:mt-20 md:flex-row md:items-center md:gap-8"
+        >
+          <p className="shrink-0 text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-muted">
+            Recent work
+          </p>
+          <ul className="flex flex-wrap items-center gap-x-7 gap-y-3">
+            {RECENT_WORK.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className="inline-flex min-h-[32px] items-center font-display text-[1.0625rem] font-semibold tracking-[-0.01em] text-muted transition-colors duration-200 hover:text-accent"
+                >
+                  {item.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </Container>
     </section>
   );

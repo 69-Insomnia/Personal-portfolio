@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import { Mail } from 'lucide-react';
 import { Breadcrumb } from '@/components/common/Breadcrumb';

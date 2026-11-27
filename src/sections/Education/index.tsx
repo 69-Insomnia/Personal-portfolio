@@ -1,5 +1,3 @@
-'use client';
-
 import { EmptyState } from '@/components/common/EmptyState';
 import { PlaceholderBadge } from '@/components/common/PlaceholderBadge';
 import { Container } from '@/components/ui/Container';

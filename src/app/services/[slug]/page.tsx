@@ -22,9 +22,7 @@ import {
   DM_DESCRIPTION,
   DM_H1,
   DM_IMAGE_ALT,
-  DM_JOB_TITLE,
   DM_KEYWORDS,
-  DM_KNOWS_ABOUT,
   DM_SERVICE_TYPE,
   DM_SIDE_NOTE,
   DM_SLUG,
@@ -38,7 +36,6 @@ import {
   definedTermSetNode,
   faqPageNode,
   personId,
-  personNode,
   serviceNode,
   webPageNode,
 } from '@/lib/structured-data';
@@ -150,22 +147,17 @@ function mergeFaqs(base: Array<{ question: string; answer: string }>, extras: Ar
  * The four facts a reader scans for before reading anything else: who does
  * this, what it covers, how long it takes, what it starts from.
  *
- * A genuine `<table>` with `scope="col"` headers for the same extraction
- * reason as the comparison matrix in `ComparisonTable.tsx` — the pairs
- * ("Timeline: 1-2 weeks setup") are exactly the shape an answer engine lifts,
- * and a grid of `<div>`s states the relationship only visually. It renders on
- * the server with no client JavaScript, so crawlers that do not run scripts
- * see it in the raw HTML.
+ * A `<dl>` of term/value pairs — the pairs ("Timeline: 1-2 weeks setup") are
+ * exactly the shape an answer engine lifts, and `<dt>`/`<dd>` state the
+ * relationship in markup rather than only visually. It renders on the server
+ * with no client JavaScript, so crawlers that do not run scripts see it in the
+ * raw HTML.
  *
  * The price resolves through `serviceStartingPrice`, so the database's
  * `from_npr` wins and a null falls back to the pricing tier — the same order
  * the matrix and `/llms.txt` use, which is what keeps one service from quoting
  * two different numbers. `formatNpr` renders the "no published price" case as
  * "Contact for a quote", which is a real answer, not a placeholder.
- *
- * Four columns fit a phone inside the horizontal-scroll wrapper used
- * everywhere else on the site; `min-w-0` on the parent is load-bearing and is
- * the same hazard documented in `ComparisonTable.tsx`.
  */
 function QuickFacts({ service }: { service: Service }) {
   const price = formatNpr(serviceStartingPrice(service.slug, service.fromNpr));
@@ -197,46 +189,43 @@ function QuickFacts({ service }: { service: Service }) {
     },
   ];
 
+  // A definition list in a responsive grid (2x2 on phones, 4 across from md)
+  // rather than a 44rem table in a horizontal scroller: on a phone the old
+  // table hid half its facts off-screen and put the rest under the floating
+  // WhatsApp button. Label/value pairs are still explicit in the markup for
+  // crawlers that do not run scripts.
   return (
-    <Card className="min-w-0 overflow-x-auto">
-      <table className="w-full min-w-[44rem] border-collapse text-left align-top">
-        <caption className="sr-only">
-          Quick facts: who delivers this service, what it covers, how long it
-          takes and what it starts from.
-        </caption>
-        <thead>
-          <tr className="border-b border-line">
-            {columns.map((column, index) => (
-              <th
-                key={column.label}
-                scope="col"
-                className={[
-                  'px-5 py-4 text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-muted',
-                  index > 0 ? 'border-l border-line' : '',
-                ].join(' ')}
-              >
-                {column.label}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            {columns.map((column, index) => (
-              <td
-                key={column.label}
-                className={[
-                  'px-5 py-4 text-sm text-ink',
-                  column.strong ? 'font-semibold' : '',
-                  index > 0 ? 'border-l border-line' : '',
-                ].join(' ')}
-              >
-                {column.value}
-              </td>
-            ))}
-          </tr>
-        </tbody>
-      </table>
+    <Card className="overflow-hidden">
+      <dl
+        aria-label="Quick facts: who delivers this service, what it covers, how long it takes and what it starts from"
+        className="grid grid-cols-2 md:grid-cols-4"
+      >
+        {columns.map((column, index) => (
+          <div
+            key={column.label}
+            className={[
+              'flex flex-col gap-2 px-4 py-4 sm:px-5 sm:py-5',
+              // Hairlines between cells for both the 2x2 and the 4-up layout.
+              index % 2 === 1 ? 'border-l border-line' : '',
+              index >= 2 ? 'border-t border-line md:border-t-0' : '',
+              index === 2 ? 'md:border-l' : '',
+              column.strong ? 'bg-subtle' : '',
+            ].join(' ')}
+          >
+            <dt className="text-[0.6875rem] font-semibold uppercase tracking-[0.12em] text-muted">
+              {column.label}
+            </dt>
+            <dd
+              className={[
+                'text-sm leading-snug text-ink',
+                column.strong ? 'font-display text-lg font-semibold' : '',
+              ].join(' ')}
+            >
+              {column.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
     </Card>
   );
 }
@@ -480,18 +469,26 @@ export default async function ServicePage({ params }: PageProps) {
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([, href]) => href);
 
-  const dmPersonId = `${site.url}/services/${DM_SLUG}/#person`;
+  /**
+   * Every service row carries a legacy admin-entered `Service` object in
+   * `custom_json_ld` with no `@id` and its own stale `minPrice` (45,000 where
+   * the real starting price is different). Emitted as-is it published a second
+   * `Service` entity with a conflicting price on every page. It is folded into
+   * the primary node instead (only its `serviceType` survives); any other
+   * custom nodes the admin adds still pass through untouched.
+   */
+  const allCustomNodes = customJsonLdNodes(seoMeta?.customJsonLd);
+  const legacyService = allCustomNodes.find(
+    (node) => node['@type'] === 'Service' && !node['@id'],
+  );
+  const customNodes = allCustomNodes.filter((node) => node !== legacyService);
 
+
+  // The page's service is founded by the one site-wide Person entity. A
+  // second page-scoped Person (same name, different jobTitle) used to sit
+  // here, which split the person's identity across two entities.
   const dmNodes = isDigitalMarketing
     ? [
-        {
-          ...personNode({
-            socials,
-            jobTitle: DM_JOB_TITLE,
-            knowsAbout: DM_KNOWS_ABOUT,
-          }),
-          '@id': dmPersonId,
-        },
         {
           '@type': 'ProfessionalService',
           '@id': `${site.url}/services/${DM_SLUG}/#professionalservice`,
@@ -499,7 +496,7 @@ export default async function ServicePage({ params }: PageProps) {
           description: DM_DESCRIPTION,
           url: `${site.url}/services/${DM_SLUG}`,
           image: `${site.url}/images/profile.png`,
-          founder: { '@id': dmPersonId },
+          founder: { '@id': personId },
           ...(identity.telephone ? { telephone: identity.telephone } : {}),
           email: `mailto:${profile.email}`,
           // The one published figure for this engagement: audit, strategy and
@@ -529,6 +526,12 @@ export default async function ServicePage({ params }: PageProps) {
         graph={[
           {
             ...serviceNode(service),
+            // The admin's legacy `Service` block only contributes its more
+            // specific category; see `customNodes` below for why the rest of
+            // it is dropped.
+            ...(typeof legacyService?.serviceType === 'string'
+              ? { serviceType: legacyService.serviceType }
+              : {}),
             // The category, not the database title, on the retargeted page.
             ...(isDigitalMarketing ? { serviceType: DM_SERVICE_TYPE } : {}),
           },
@@ -539,7 +542,7 @@ export default async function ServicePage({ params }: PageProps) {
           // them something to belong to.
           ...(terms?.length ? [definedTermSetNode()] : []),
           ...(faqNode ? [faqNode] : []),
-          ...customJsonLdNodes(seoMeta?.customJsonLd),
+          ...customNodes,
         ]}
       />
       <PageHeader

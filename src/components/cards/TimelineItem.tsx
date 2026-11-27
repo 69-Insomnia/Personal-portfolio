@@ -1,5 +1,3 @@
-'use client';
-
 import { PlaceholderBadge } from '@/components/common/PlaceholderBadge';
 import { Button } from '@/components/ui/Button';
 import type { ExperienceItem } from '@/types';

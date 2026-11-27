@@ -445,9 +445,9 @@ const serviceOrder: UnnumberedService[] = [
      */
     seoTitle: 'Ecommerce Growth Expert in Nepal | Specialist in Kathmandu',
     shortDescription:
-      'Ecommerce growth expert in Nepal, and ecommerce specialist in Nepal, Kathmandu. Storefront, e-commerce SEO, product pages, ads and analytics run as one funnel, not four separate projects.',
+      'Storefront, e-commerce SEO, product pages, ads and analytics for online stores in Nepal, run as one funnel instead of four separate projects.',
     description:
-      'I am an ecommerce growth expert in Nepal and an ecommerce specialist in Nepal, Kathmandu, helping online stores improve traffic quality, conversion rate, and revenue through one connected growth system. In practice the work connects storefront performance, e-commerce SEO, paid acquisition, analytics, and conversion optimization so the store keeps converting instead of leaking customers at different points. Most e commerce problems look like separate issues until you follow the funnel end to end. Traffic falls, ad cost rises, or checkout drops, and the real cause is usually a weak page, unclear product intent, poor mobile UX, or bad tracking that keeps the business guessing. I fix the leak first and then choose the channel changes that actually improve the result.',
+      'I am an ecommerce growth expert based in Kathmandu, helping online stores across Nepal improve traffic quality, conversion rate, and revenue through one connected growth system. In practice the work connects storefront performance, e-commerce SEO, paid acquisition, analytics, and conversion optimization so the store keeps converting instead of leaking customers at different points. Most e commerce problems look like separate issues until you follow the funnel end to end. Traffic falls, ad cost rises, or checkout drops, and the real cause is usually a weak page, unclear product intent, poor mobile UX, or bad tracking that keeps the business guessing. I fix the leak first and then choose the channel changes that actually improve the result.',
     body: [
       {
         heading: 'Ecommerce expert, ecommerce specialist, or ecommerce growth expert — what\'s the difference?',

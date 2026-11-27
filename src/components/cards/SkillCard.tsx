@@ -1,5 +1,3 @@
-'use client';
-
 import { Icon } from '@/components/common/Icon';
 import { Card } from '@/components/ui/Card';
 import type { IconName } from '@/types';

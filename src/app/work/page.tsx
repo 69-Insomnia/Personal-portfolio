@@ -5,11 +5,27 @@ import { WorkWithMe } from '@/sections/WorkWithMe';
 import { buildMetadata } from '@/utils/metadata';
 import { workSEO, withSeoMeta } from '@/data/seo';
 import { getProjects, getSeo, getSiteSettings } from '@/lib/content';
+import { JsonLd } from '@/components/common/JsonLd';
+import { collectionPageNode } from '@/lib/structured-data';
 
 export default async function WorkPage() {
   const projects = await getProjects();
   return (
     <>
+      <JsonLd
+        graph={[
+          collectionPageNode({
+            path: '/work',
+            name: 'Selected Projects',
+            description:
+              'Case studies of websites, ecommerce stores and SEO work by Dipendra Guragain in Nepal.',
+            items: projects.map((project) => ({
+              url: `/work/${project.slug}`,
+              name: project.title,
+            })),
+          }),
+        ]}
+      />
       <PageHeader
         label="Work"
         breadcrumb={[

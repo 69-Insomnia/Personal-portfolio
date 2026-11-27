@@ -314,10 +314,16 @@ export const homeSEO: SEOData = {
  * 'about'`) overrides title and description, so both were updated together —
  * this object is the fallback for an unreachable database, not the live value.
  */
+/*
+ * Retargeted 2026-11-27 from "Ecommerce Expert in Nepal & Kathmandu": that
+ * was the homepage's exact head term too, so the two pages competed for one
+ * query. The homepage keeps it; /about now targets the name/bio intent people
+ * actually use this page for.
+ */
 export const aboutSEO: SEOData = {
-  title: 'Ecommerce Expert in Nepal & Kathmandu | Dipendra Guragain',
+  title: 'About Dipendra Guragain | Ecommerce & SEO Specialist, Kathmandu',
   description:
-    'Dipendra Guragain, your ecommerce expert in Nepal, works from Kathmandu on SEO, Shopify and Google and Meta Ads. Send your store on WhatsApp.',
+    'Dipendra Guragain is an ecommerce and SEO specialist based in Kathmandu: his background, the stores he has grown, how he works, and what he is like to work with.',
   keywords: [
     'ecommerce expert in Nepal',
     'ecommerce expert in Kathmandu',

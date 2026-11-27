@@ -479,6 +479,45 @@ export function projectNode(project: Project): Node {
  * filters rather than trusts — a stray `null` inside an array would otherwise
  * serialise into the `@graph` as a node no validator can parse.
  */
+/**
+ * An index page (/work, /blog) as a `CollectionPage` whose main entity is an
+ * ordered `ItemList` of the items it links to, in the order they render. Lets a
+ * search engine read the page as a list of case studies or articles rather
+ * than as a thin page with some links on it.
+ */
+export function collectionPageNode({
+  path,
+  name,
+  description,
+  items,
+}: {
+  path: string;
+  name: string;
+  description?: string;
+  items: Array<{ url: string; name: string }>;
+}): Node {
+  const url = `${site.url}${path}`;
+  return {
+    '@type': 'CollectionPage',
+    '@id': `${url}/#collectionpage`,
+    url,
+    name,
+    ...(description ? { description } : {}),
+    isPartOf: { '@id': websiteId },
+    about: { '@id': personId },
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: items.length,
+      itemListElement: items.map((item, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        url: item.url.startsWith('http') ? item.url : `${site.url}${item.url}`,
+        name: item.name,
+      })),
+    },
+  };
+}
+
 export function customJsonLdNodes(value: unknown): Node[] {
   if (value === null || value === undefined) return [];
   if (Array.isArray(value)) {

@@ -1,5 +1,3 @@
-'use client';
-
 import { Container } from '@/components/ui/Container';
 import { Icon } from '@/components/common/Icon';
 import { Reveal } from '@/components/ui/Reveal';

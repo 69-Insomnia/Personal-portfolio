@@ -91,6 +91,15 @@ async function syncServices() {
          capabilities      = excluded.capabilities,
          icon              = excluded.icon,
          sort_order        = excluded.sort_order
+       -- Skip unchanged rows so the updated_at trigger (which feeds the
+       -- sitemap lastmod) only moves when the content actually changed.
+       where (services.service_index, services.title, services.short_description,
+              services.description, services.body, services.capabilities,
+              services.icon, services.sort_order)
+         is distinct from
+             (excluded.service_index, excluded.title, excluded.short_description,
+              excluded.description, excluded.body, excluded.capabilities,
+              excluded.icon, excluded.sort_order)
        returning (xmax = 0) as inserted`,
       [
         service.slug,
@@ -104,7 +113,7 @@ async function syncServices() {
         position,
       ],
     );
-    const verb = result.rows[0]?.inserted ? 'inserted' : 'updated ';
+    const verb = result.rowCount === 0 ? 'unchanged' : result.rows[0]?.inserted ? 'inserted' : 'updated ';
     console.log(`${verb} services/${service.slug}`);
   }
 }
@@ -136,6 +145,14 @@ async function syncPosts() {
          tags           = excluded.tags,
          is_placeholder = excluded.is_placeholder,
          sort_order     = excluded.sort_order
+       -- Same as services: leave unchanged rows (and their updated_at) alone.
+       where (posts.title, posts.excerpt, posts.category, posts.date,
+              posts.reading_time, posts.image, posts.content, posts.tags,
+              posts.is_placeholder, posts.sort_order)
+         is distinct from
+             (excluded.title, excluded.excerpt, excluded.category, excluded.date,
+              excluded.reading_time, excluded.image, excluded.content, excluded.tags,
+              excluded.is_placeholder, excluded.sort_order)
        returning (xmax = 0) as inserted`,
       [
         post.slug,
@@ -151,7 +168,7 @@ async function syncPosts() {
         position,
       ],
     );
-    const verb = result.rows[0]?.inserted ? 'inserted' : 'updated ';
+    const verb = result.rowCount === 0 ? 'unchanged' : result.rows[0]?.inserted ? 'inserted' : 'updated ';
     console.log(`${verb} posts/${post.slug}`);
   }
 }

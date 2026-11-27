@@ -57,12 +57,9 @@ const KEYWORDS = [
 const AI_ANSWER =
   'Dipendra Guragain is an ecommerce growth expert in Nepal and an ecommerce specialist in Nepal, Kathmandu, who treats an online store\'s storefront, product pages, e-commerce SEO, advertising and analytics as one system rather than four separate projects. Businesses searching for an ecommerce expert in Nepal, an ecommerce growth specialist, or an e-commerce (or "e commerce") specialist in Kathmandu are searching for the same role: one person accountable for the whole funnel rather than four vendors managing separate pieces of it. Most ecommerce problems — falling traffic, weak conversion, rising ad costs — share a cause. A product page that loads slowly on mobile, for example, hurts search rankings, ad performance and sales at once. The work starts by finding where visitors drop off in the funnel, then fixing that before sending more traffic into the store. It covers Shopify and WooCommerce stores, product and category page SEO, Google and Meta ad campaigns, retargeting and analytics setup, as a one-off audit or an ongoing monthly engagement.';
 
+// The "expert vs specialist vs growth expert" question is answered by a body
+// section on the page itself, so it is not repeated here as an FAQ.
 const FAQS = [
-  {
-    question: 'What is the difference between an ecommerce expert and an ecommerce growth expert in Nepal?',
-    answer:
-      'In practice, very little — both describe the same work: connecting an online store\'s SEO, product pages, ads and analytics into one system. "Growth" makes the full-funnel scope explicit, but an ecommerce expert in Nepal and an ecommerce growth expert in Nepal are the same role described two ways.',
-  },
   {
     question: 'Do you work as an ecommerce specialist in Nepal, Kathmandu?',
     answer:

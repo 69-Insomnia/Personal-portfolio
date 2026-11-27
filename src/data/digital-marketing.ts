@@ -117,26 +117,21 @@ export const DM_AI_ANSWER =
   'Dipendra Guragain is an ecommerce marketing expert and digital marketing expert based in Kathmandu who helps ecommerce stores and other businesses in Nepal get more enquiries and sales from Google search, Google Ads, Meta Ads, content and conversion optimisation. One strategy, one tracking setup and one monthly report instead of four separate suppliers. Work starts with a 2-3 week audit, then runs at NPR 15,000 per month, with ad budget paid directly to Google and Meta. The Nano Store and DrillThru case studies show what was changed and what happened next.';
 
 /**
- * The visible FAQs — the nine original digital-marketing questions plus the
- * five below targeting the ecommerce-marketing pair, merged by `mergeFaqs` in
- * the page component so no question repeats.
+ * The visible FAQs. Each question is genuinely distinct: earlier versions
+ * asked the same thing twice with "digital marketing expert" swapped for
+ * "ecommerce marketing specialist", which reads as keyword permutation. Both
+ * phrases are still covered, inside one honest question each.
  *
  * `faqPageNode` builds its `FAQPage` node from this exact array, which is
  * what keeps the schema's text identical to the visible text `FaqBlock`
  * renders — a mismatch between the two is treated by search engines as a
- * claim the page does not support. Every answer is 40-70 words and starts
- * with the answer itself.
+ * claim the page does not support. Every answer starts with the answer itself.
  */
 export const DM_FAQS: Array<{ question: string; answer: string }> = [
   {
-    question: 'What does an ecommerce marketing expert do?',
+    question: 'What does an ecommerce marketing or digital marketing expert actually do?',
     answer:
-      'An ecommerce marketing expert plans and runs the channels that bring buyers to an online store: ecommerce SEO, paid search and social ads, content, and conversion rate optimisation for product and category pages. I treat them as one strategy for the store, judged on orders and revenue rather than clicks or impressions.',
-  },
-  {
-    question: 'Who is the best ecommerce marketing specialist in Nepal?',
-    answer:
-      'The best ecommerce marketing specialist in Nepal ties search, ads and store conversion to orders and revenue, not vanity metrics, and shows real case studies rather than screenshots of a dashboard. The Nano Store case study shows what was changed on a real store and what happened to its traffic and sales next.',
+      'They plan and run the channels that bring customers to a business online — SEO, content, Google and Meta Ads, and conversion work on the pages people land on — as one strategy judged on sales and enquiries rather than clicks. For an online store that means product and category page SEO, shopping ads and checkout conversion; for a service business, the same channels aimed at enquiries.',
   },
   {
     question: 'Do you work as an ecommerce marketing expert in Kathmandu?',
@@ -147,16 +142,6 @@ export const DM_FAQS: Array<{ question: string; answer: string }> = [
     question: 'How is ecommerce marketing different from general digital marketing?',
     answer:
       'Ecommerce marketing is digital marketing built specifically around a store: product and category page SEO, shopping ads, cart and checkout conversion, and revenue-per-channel reporting. General digital marketing covers the same channels for a business that is not selling products online, such as a lead-generation or service site.',
-  },
-  {
-    question: 'How do I hire an ecommerce marketing specialist in Nepal, Kathmandu?',
-    answer:
-      'Send your store link through the contact page or WhatsApp 9840814142. I review the store, reply with what I would fix first, then run a 2-3 week audit so the plan is based on your real traffic and order data before any ongoing work starts at NPR 15,000 per month.',
-  },
-  {
-    question: 'What does a digital marketing expert do?',
-    answer:
-      'A digital marketing expert plans and runs the channels that bring customers to a business online: content, search engine optimization, paid media and conversion improvement. I treat them as one strategy, so each channel supports the others and the whole effort is judged on enquiries and sales rather than clicks.',
   },
   {
     question: 'Why combine content, SEO, paid media and conversion?',
@@ -174,14 +159,14 @@ export const DM_FAQS: Array<{ question: string; answer: string }> = [
       'Digital marketing with me is NPR 15,000 per month, covering the 2-3 week audit and strategy first and then the ongoing monthly work. Your ad budget is separate and is paid directly to Google and Meta. The audit settles which channels you actually need before anything is committed.',
   },
   {
-    question: 'Who is the best digital marketing expert in Nepal?',
+    question: 'How do I choose the best digital marketing expert in Nepal?',
     answer:
-      'The best digital marketing expert in Nepal ties every channel to enquiries and sales, shows real case studies rather than impressions, and reports on one set of numbers you can check. That is how I work — the DrillThru case study shows what was changed and what happened next, in the same format I would report for you.',
+      'Pick the one who ties every channel to sales and enquiries, shows real case studies rather than impressions, and reports on one set of numbers you can check against your own records. The Nano Store and DrillThru case studies show what I changed and what happened next, in the same format I would report for you.',
   },
   {
-    question: 'How do I hire a digital marketing expert in Kathmandu?',
+    question: 'How do I hire you as my digital marketing expert in Kathmandu?',
     answer:
-      'Send a short brief through the contact page or WhatsApp 9840814142. I reply with what I would look at first, then a 2-3 week audit so the strategy is based on your real data. You get one plan and one price — NPR 15,000 per month — before any ongoing work starts.',
+      'Send your website or store link through the contact page or WhatsApp 9840814142. I reply with what I would fix first, then run a 2-3 week audit so the plan is based on your real data. You get one plan and one price — NPR 15,000 per month — before any ongoing work starts.',
   },
   {
     question: 'Should I hire a freelance digital marketing expert or an agency in Nepal?',
