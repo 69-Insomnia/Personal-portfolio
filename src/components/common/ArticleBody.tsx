@@ -32,6 +32,7 @@ function getCodeContent(block: string) {
 type Segment =
   | { kind: 'heading'; level: 2 | 3; text: string }
   | { kind: 'list'; items: string[] }
+  | { kind: 'table'; head: string[]; rows: string[][] }
   | { kind: 'code'; text: string }
   | { kind: 'paragraph'; text: string };
 
@@ -175,6 +176,26 @@ function parseSegments(content: string[]): Segment[] {
       continue;
     }
 
+    // A markdown table kept as one block: every line starts with `|`, the
+    // second line is the `---` separator. Rendered as a real <table>.
+    const lines = block.trim().split('\n');
+    if (
+      lines.length >= 3 &&
+      lines.every((l) => l.trim().startsWith('|')) &&
+      /^\|?\s*:?-{3,}/.test(lines[1].trim())
+    ) {
+      flushList();
+      const cells = (l: string) =>
+        l
+          .trim()
+          .replace(/^\|/, '')
+          .replace(/\|$/, '')
+          .split('|')
+          .map((c) => c.trim());
+      segments.push({ kind: 'table', head: cells(lines[0]), rows: lines.slice(2).map(cells) });
+      continue;
+    }
+
     const bullet = block.match(/^[•*-]\s+(.+)$/);
     if (bullet) {
       // No flush here: consecutive bullets are one list. The heading and
@@ -243,6 +264,31 @@ export function ArticleBody({ content }: { content: string[] }) {
                 </li>
               ))}
             </ul>
+          ) : segment.kind === 'table' ? (
+            <div className="max-w-2xl overflow-x-auto rounded-card border border-line">
+              <table className="w-full border-collapse text-left text-sm">
+                <thead className="bg-subtle">
+                  <tr>
+                    {segment.head.map((cell, cellIndex) => (
+                      <th key={cellIndex} scope="col" className="px-4 py-3 font-semibold text-ink">
+                        {renderInline(parseInline(cell), `th-${index}-${cellIndex}`)}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-line">
+                  {segment.rows.map((row, rowIndex) => (
+                    <tr key={rowIndex}>
+                      {row.map((cell, cellIndex) => (
+                        <td key={cellIndex} className="px-4 py-3 align-top text-muted">
+                          {renderInline(parseInline(cell), `td-${index}-${rowIndex}-${cellIndex}`)}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           ) : segment.kind === 'code' ? (
             <pre className="mt-2 max-w-2xl overflow-x-auto rounded-card border border-line bg-ink p-4 text-sm leading-6 text-paper shadow-sm">
               <code className="whitespace-pre-wrap break-words font-mono">{segment.text}</code>
