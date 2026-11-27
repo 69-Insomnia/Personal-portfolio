@@ -165,13 +165,14 @@ export default async function HomePage() {
   /**
    * The "Quick answers" list under the answer paragraph.
    *
-   * Hidden at the owner's request (2026-11-16), restored at the owner's
-   * request (2026-11-27). Set to `false` to hide it again. Both the rendering and the `FAQPage` node below follow this flag,
+   * Hidden at the owner's request (2026-11-16), briefly restored and hidden
+   * again at the owner's request (2026-11-27). Set to `true` to
+   * restore it. Both the rendering and the `FAQPage` node below follow this flag,
    * because structured data has to describe what a visitor can actually see —
    * emitting these questions to schema after taking them off the page would be
    * exactly the mismatch the note above `faqNode` was written to prevent.
    */
-  const SHOW_QUICK_ANSWERS: boolean = true;
+  const SHOW_QUICK_ANSWERS: boolean = false;
   const numbers = [
     { value: '3+', label: 'Years of web development & SEO experience' },
     { value: '2+', label: 'Years of focused ecommerce growth experience' },
