@@ -46,7 +46,7 @@ export function Services({ data }: { data: Service[] }) {
       <Container>
         <SectionHeading
           section="services"
-          title="One accountable partner for the whole funnel."
+          title="What does an ecommerce growth expert do? One accountable partner for the whole funnel."
           description="The store, the search result and the ad usually get handed to different specialists, and the customer only ever meets them together. Doing all of it myself is useful because the fix is so often in the gap between them."
           action={
             <Link

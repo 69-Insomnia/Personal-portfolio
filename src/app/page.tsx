@@ -383,6 +383,10 @@ export async function generateMetadata(): Promise<Metadata> {
     ...merged,
     title: HOME_TITLE,
     description: HOME_DESCRIPTION,
+    // Keeps the Open Graph and Twitter cards on the same title as `<title>`;
+    // an admin-set `ogTitle` would otherwise show a different headline.
+    ogTitle: HOME_TITLE,
+    twitterTitle: HOME_TITLE,
   };
 
   const settings = await getSiteSettings();

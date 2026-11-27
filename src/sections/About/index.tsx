@@ -55,7 +55,7 @@ export function Introduction() {
 
             <RevealText
               as="h2"
-              text="Helping ecommerce businesses in Nepal grow online and sell more."
+              text="Who is Dipendra Guragain? An ecommerce growth expert helping Nepal's online stores sell more."
               className="mt-6 text-h2"
             />
 
