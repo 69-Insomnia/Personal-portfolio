@@ -136,6 +136,10 @@ ${projects.map((p) => `- [${p.title}](${abs(`/work/${p.slug}`)}): ${summary('pro
 
 ${posts.map((p) => `- [${p.title}](${abs(`/blog/${p.slug}`)}): ${summary('post', p.slug, p.excerpt)}`).join('\n')}
 
+## Full text
+
+- [Full service copy](${abs('/llms-full.txt')})
+
 ## Pages
 
 - [Home](${abs('/')})

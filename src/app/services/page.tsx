@@ -6,6 +6,8 @@ import { Expertise } from '@/sections/Expertise';
 import { Approach } from '@/sections/Approach';
 import { FAQ } from '@/sections/FAQ';
 import { getSeo, getServices, getSiteSettings } from '@/lib/content';
+import { JsonLd } from '@/components/common/JsonLd';
+import { collectionPageNode } from '@/lib/structured-data';
 import { buildMetadata } from '@/utils/metadata';
 import { servicesSEO, withSeoMeta } from '@/data/seo';
 
@@ -31,6 +33,20 @@ export default async function ServicesPage() {
 
   return (
     <>
+      <JsonLd
+        graph={[
+          collectionPageNode({
+            path: '/services',
+            name: 'Services',
+            description:
+              'Web development, SEO, advertising and ecommerce growth services by Dipendra Guragain in Kathmandu, Nepal.',
+            items: services.map((service) => ({
+              url: `/services/${service.slug}`,
+              name: service.title,
+            })),
+          }),
+        ]}
+      />
       <PageHeader
         label="Services"
         breadcrumb={[
