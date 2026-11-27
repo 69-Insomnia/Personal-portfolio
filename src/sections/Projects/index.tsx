@@ -42,6 +42,13 @@ export function Projects({
       ? items
       : items.filter((project) => projectCategories(project).includes(activeFilter));
 
+  // The full /work page (no section heading) leads with the first project that
+  // has real, sourced results as a wide featured case study, then a visible
+  // grid of the rest. The homepage band keeps its compact swipe row.
+  const isIndexPage = !showHeading;
+  const featured = isIndexPage ? filtered.find((project) => project.results?.length) : undefined;
+  const rest = featured ? filtered.filter((project) => project !== featured) : filtered;
+
   return (
     <Section id="work" className="border-t border-line">
       <Container>
@@ -83,15 +90,34 @@ export function Projects({
           ))}
         </div>
 
+        {featured ? (
+          <p className="mt-10 text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-muted">
+            Featured case study
+          </p>
+        ) : null}
+        {featured ? (
+          <div className="mt-4">
+            <ProjectCard project={featured} featured priority />
+          </div>
+        ) : null}
+
+        {featured && rest.length > 0 ? (
+          <p className="mt-14 text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-muted">
+            More projects
+          </p>
+        ) : null}
+
         <motion.ul
           layout
           className={cn(
-            'no-scrollbar mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2',
-            'md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:pb-0 lg:gap-7',
+            isIndexPage
+              ? 'mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6'
+              : 'no-scrollbar mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:pb-0 lg:gap-7',
+            featured ? '' : isIndexPage ? 'mt-10' : '',
           )}
         >
           <AnimatePresence mode="popLayout">
-            {filtered.map((project) => (
+            {rest.map((project) => (
               <motion.li
                 key={project.slug}
                 layout
@@ -99,7 +125,10 @@ export function Projects({
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.98 }}
                 transition={{ duration: 0.25, ease: 'easeOut' }}
-                className="h-full w-[82vw] max-w-[400px] shrink-0 snap-start md:w-auto md:max-w-none"
+                className={cn(
+                  'h-full',
+                  isIndexPage ? 'min-w-0' : 'w-[82vw] max-w-[400px] shrink-0 snap-start md:w-auto md:max-w-none',
+                )}
               >
                 <ProjectCard project={project} />
               </motion.li>
