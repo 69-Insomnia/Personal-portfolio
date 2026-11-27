@@ -36,7 +36,14 @@ export function Blog({ data }: { data?: BlogPost[] }) {
         */}
         <ul className="mt-12 flex flex-col gap-4">
           {items.map((post, index) => (
-            <Reveal key={post.slug} as="li" delay={index * 0.06}>
+            <Reveal
+              key={post.slug}
+              as="li"
+              delay={index * 0.06}
+              // Phones show the three newest; the rest sit behind "All articles"
+              // so this band is not ~3,400px of scrolling on a small screen.
+              className={index >= 3 ? 'hidden md:block' : undefined}
+            >
               <BlogCard post={post} />
             </Reveal>
           ))}

@@ -184,7 +184,7 @@ export function Footer({ services }: FooterProps) {
                     <Link
                       href={item.href}
                       title={item.title}
-                      className="-mx-2 block rounded-control px-2 py-1.5 text-[15px] text-muted transition-colors duration-200 hover:bg-subtle hover:text-accent"
+                      className="-mx-2 block rounded-control px-2 py-2.5 md:py-1.5 text-[15px] text-muted transition-colors duration-200 hover:bg-subtle hover:text-accent"
                     >
                       {item.label}
                     </Link>
@@ -202,7 +202,7 @@ export function Footer({ services }: FooterProps) {
                       <Link
                         href={`/services/${service.slug}`}
                         title={`${service.title} in ${profile.location}`}
-                        className="-mx-2 block rounded-control px-2 py-1.5 text-[15px] text-muted transition-colors duration-200 hover:bg-subtle hover:text-accent"
+                        className="-mx-2 block rounded-control px-2 py-2.5 md:py-1.5 text-[15px] text-muted transition-colors duration-200 hover:bg-subtle hover:text-accent"
                       >
                         {service.shortName ?? listServiceName(service.title)}
                       </Link>
@@ -218,7 +218,7 @@ export function Footer({ services }: FooterProps) {
                 {telHref ? (
                   <a
                     href={telHref}
-                    className="-mx-2 block rounded-control px-2 py-1.5 text-[15px] font-medium text-ink transition-colors duration-200 hover:bg-subtle hover:text-accent"
+                    className="-mx-2 block rounded-control px-2 py-2.5 md:py-1.5 text-[15px] font-medium text-ink transition-colors duration-200 hover:bg-subtle hover:text-accent"
                   >
                     {profile.whatsapp}
                   </a>
@@ -229,7 +229,7 @@ export function Footer({ services }: FooterProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                     title={`Message ${profile.name} on WhatsApp`}
-                    className="-mx-2 block rounded-control px-2 py-1.5 text-[15px] text-muted transition-colors duration-200 hover:bg-subtle hover:text-accent"
+                    className="-mx-2 block rounded-control px-2 py-2.5 md:py-1.5 text-[15px] text-muted transition-colors duration-200 hover:bg-subtle hover:text-accent"
                   >
                     WhatsApp
                   </a>
@@ -237,7 +237,7 @@ export function Footer({ services }: FooterProps) {
                 {profile.email ? (
                   <a
                     href={mailtoUrl(profile.email) ?? undefined}
-                    className="-mx-2 block rounded-control px-2 py-1.5 break-words text-[15px] text-muted transition-colors duration-200 hover:bg-subtle hover:text-accent"
+                    className="-mx-2 block rounded-control px-2 py-2.5 md:py-1.5 break-words text-[15px] text-muted transition-colors duration-200 hover:bg-subtle hover:text-accent"
                   >
                     {profile.email}
                   </a>
@@ -246,7 +246,7 @@ export function Footer({ services }: FooterProps) {
                   href="https://www.google.com/maps/search/?api=1&query=Kathmandu%2C%20Nepal"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="-mx-2 block rounded-control px-2 py-1.5 text-[15px] text-muted transition-colors duration-200 hover:bg-subtle hover:text-accent"
+                  className="-mx-2 block rounded-control px-2 py-2.5 md:py-1.5 text-[15px] text-muted transition-colors duration-200 hover:bg-subtle hover:text-accent"
                   aria-label={`View ${profile.location} service area on Google Maps`}
                 >
                   {profile.location}
