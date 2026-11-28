@@ -1,4 +1,5 @@
 import { BlogCard } from '@/components/cards/BlogCard';
+import { FeaturedPostCard as FeaturedPost } from '@/components/cards/FeaturedPostCard';
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import { Reveal } from '@/components/ui/Reveal';
@@ -9,6 +10,7 @@ import type { BlogPost } from '@/types';
 
 export function Blog({ data }: { data?: BlogPost[] }) {
   const items = data ?? blogPosts;
+  const [featured, ...rest] = items;
   return (
     <Section id="insights" className="border-t border-line">
       <Container>
@@ -23,32 +25,36 @@ export function Blog({ data }: { data?: BlogPost[] }) {
           }
         />
 
-        {/*
-          A stack of full-width rows, not a scroll row of cards.
+        {/* The newest article as a large featured card, then the rest as the
+            existing compact rows. Phones show the featured post plus two. */}
+        {featured ? (
+          <Reveal className="mt-12">
+            <FeaturedPost post={featured} />
+          </Reveal>
+        ) : null}
 
-          This band used to swipe three cards horizontally on every viewport —
-          the same shape the project grid had a section earlier. The articles
-          are now a plain vertical list of the horizontal BlogCard, full width,
-          which reads as a contents page rather than a gallery and gives the
-          homepage one more distinct section composition. On mobile the rows
-          simply stack, so the swipe affordance (and its hidden-scrollbar
-          styling) is no longer needed here at all.
-        */}
-        <ul className="mt-12 flex flex-col gap-4">
-          {items.map((post, index) => (
-            <Reveal
-              key={post.slug}
-              as="li"
-              delay={index * 0.06}
-              // Phones show the three newest; the rest sit behind "All articles"
-              // so this band is not ~3,400px of scrolling on a small screen.
-              className={index >= 3 ? 'hidden md:block' : undefined}
-            >
-              <BlogCard post={post} />
-            </Reveal>
-          ))}
-        </ul>
+        {rest.length > 0 ? (
+          <ul className="mt-4 grid gap-4 lg:grid-cols-2">
+            {rest.map((post, index) => (
+              <Reveal
+                key={post.slug}
+                as="li"
+                delay={index * 0.05}
+                className={index >= 2 ? 'hidden md:block' : undefined}
+              >
+                <BlogCard post={post} />
+              </Reveal>
+            ))}
+          </ul>
+        ) : null}
+
+        <div className="mt-10 flex justify-center">
+          <Button href="/blog" variant="outline" showArrow>
+            View all articles
+          </Button>
+        </div>
       </Container>
     </Section>
   );
 }
+

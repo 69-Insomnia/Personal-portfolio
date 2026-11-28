@@ -60,38 +60,36 @@ export function Approach() {
           description="Same order every time. It isn't clever, but it stops us polishing a page nobody can find."
         />
 
-        {/*
-          A band of three divided columns, not a connector line.
-
-          The old composition drew one horizontal hairline through three
-          circular icon markers — a stepper idiom, which reads as software
-          chrome on a page that otherwise has no circles left. The redesign
-          sits the steps on the section's subtle band and separates them with
-          vertical rules instead: on desktop the three share one row divided
-          by hairlines, on mobile they stack with a horizontal rule between.
-          The marker is a white icon tile so each step has a physical anchor
-          without a ring around it.
-        */}
-        <ol className="mt-14 grid gap-8 md:grid-cols-3 md:gap-0">
+        {/* Three numbered cards joined by a progress rail on desktop; the
+            middle step sits on the charcoal band so the sequence reads as a
+            build-up rather than three equal tiles. */}
+        <ol className="relative mt-14 grid gap-4 md:grid-cols-3">
+          <span
+            aria-hidden
+            className="pointer-events-none absolute left-[16%] right-[16%] top-[3.25rem] hidden h-px bg-gradient-to-r from-transparent via-line-strong to-transparent md:block"
+          />
           {steps.map((step, index) => (
             <Reveal
               key={step.title}
               as="li"
               delay={index * 0.1}
-              className={
-                index === 0
-                  ? 'md:pr-8'
-                  : 'border-t border-line pt-8 md:border-l md:border-t-0 md:px-8 md:pt-0'
-              }
+              className={`group relative flex flex-col rounded-[1.5rem] border p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg md:p-8 ${
+                index === 1
+                  ? 'section-inverse border-transparent shadow-md'
+                  : 'border-line bg-surface shadow-xs'
+              }`}
             >
-              <span className="flex h-14 w-14 items-center justify-center rounded-card border border-line bg-surface text-accent shadow-xs">
-                <Icon name={step.icon} size={22} />
-              </span>
+              <div className="flex items-center justify-between">
+                <span className="relative z-10 flex h-14 w-14 items-center justify-center rounded-2xl border border-line bg-paper text-accent shadow-xs transition-colors duration-300 group-hover:border-accent">
+                  <Icon name={step.icon} size={22} />
+                </span>
+                <span aria-hidden className="font-display text-5xl font-semibold leading-none tracking-[-0.04em] text-line">
+                  0{index + 1}
+                </span>
+              </div>
 
-              <h3 className="mt-6 font-display text-h3">{step.title}</h3>
-              <p className="mt-3 max-w-sm leading-relaxed text-muted">
-                {step.description}
-              </p>
+              <h3 className="mt-8 font-display text-h3 text-ink">{step.title}</h3>
+              <p className="mt-3 max-w-sm leading-relaxed text-muted">{step.description}</p>
             </Reveal>
           ))}
         </ol>

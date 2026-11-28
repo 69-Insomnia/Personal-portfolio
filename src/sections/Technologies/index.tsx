@@ -40,31 +40,25 @@ export function Technologies() {
           description="What I actually reach for. The stack changes with the job — these are the ones I know well enough to choose between rather than just recognise."
         />
 
-        {/*
-          A spec-sheet, not a card grid or a two-up label grid.
-
-          Each category is one full-width record: the term pinned to a narrow
-          left column (icon + uppercase label), its tools flowing in the wide
-          right column, a hairline under the pair. The `<dl>` semantics are
-          unchanged from the previous pass — the wrapping `Reveal` div is the
-          one element HTML5 allows between `<dl>` and `<dt>`/`<dd>`, and it
-          must hold the pair, not another container.
-        */}
-        <dl className="mt-14 border-t border-line">
+        {/* Category cards in a grid. The `<dl>` semantics hold: each Reveal
+            div wraps exactly one dt/dd pair, which HTML allows inside a dl. */}
+        <dl className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {technologyCategories.map((category, index) => (
             <Reveal
               key={category.id}
               delay={index * 0.04}
-              className="grid gap-3 border-b border-line py-6 md:grid-cols-12 md:items-baseline md:gap-8 md:py-7"
+              className="group flex flex-col rounded-[1.25rem] border border-line bg-surface p-6 shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:border-line-strong hover:shadow-md"
             >
-              <dt className="flex items-center gap-2.5 md:col-span-4">
-                <Icon name={category.icon} size={16} className="shrink-0 text-accent" />
+              <dt className="flex items-center gap-3">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-line bg-subtle text-accent transition-colors duration-300 group-hover:border-accent group-hover:bg-accent group-hover:text-on-accent">
+                  <Icon name={category.icon} size={18} />
+                </span>
                 <span className="text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-ink">
                   {category.name}
                 </span>
               </dt>
 
-              <dd className="flex flex-wrap gap-2 md:col-span-8">
+              <dd className="mt-5 flex flex-wrap gap-2">
                 {category.items.map((item) => (
                   <ToolChip key={item} tool={toPlatformTool(item)} />
                 ))}
