@@ -42,7 +42,7 @@ export function AuthorCard() {
           {profile.name}
         </h2>
 
-        <p className="mt-3 font-mono text-[0.76rem] font-medium uppercase tracking-[0.24em] text-[#df6d42]">
+        <p className="mt-3 font-mono text-[0.76rem] font-medium uppercase tracking-[0.24em] text-accent">
           {profile.title}
         </p>
 

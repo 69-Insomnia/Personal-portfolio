@@ -48,37 +48,37 @@
   color-scheme: light;
 
   /* --- 1. Palette ------------------------------------------------------- */
-  --bg: #ffffff;
+  --bg: #fafaf7;
   --surface: #ffffff;
-  --border: #e6eaf3;
-  --text: #0f172a;
-  --muted: #55617a;
-  --primary: #1e40af;
-  --primary-hover: #16337f;
-  --accent: #ff6b4a;
+  --border: #e6e5de;
+  --text: #0c0d0f;
+  --muted: #575b63;
+  --primary: #047857;
+  --primary-hover: #065f46;
+  --accent: #84cc16;
 
   /* --- 2. Semantic surfaces -------------------------------------------- */
   --color-paper: var(--bg);
   --color-surface: var(--surface);
   /* The alternate band. A half-step off --bg rather than a second colour, so a
      striped page reads as one material catching the light differently. */
-  --color-subtle: #f4f6fb;
+  --color-subtle: #f2f2ec;
   /* Not alpha-based: Tailwind 3 cannot inject an alpha channel into a theme
      colour declared as a bare var(), so `/82` modifiers silently drop the
      utility and the header renders transparent. */
-  --color-paper-blur: rgba(255, 255, 255, 0.82);
+  --color-paper-blur: rgba(250, 250, 247, 0.8);
 
   /* --- 2. Semantic text ------------------------------------------------- */
   --color-ink: var(--text);
   --color-muted: var(--muted);
-  --color-faint: #7e8799;
+  --color-faint: #7c8088;
 
   /* --- 2. Semantic lines ------------------------------------------------
      `line` is decorative (dividers, card edges). `line-strong` is the
      accessible component boundary — form fields, anything a user must be able
      to see the edge of — and clears the 3:1 WCAG 1.4.11 asks (3.4:1 here). */
   --color-line: var(--border);
-  --color-line-strong: #7f8da6;
+  --color-line-strong: #8a8d93;
 
   /* --- 2. Semantic brand ------------------------------------------------
      `accent` is the INTERACTIVE colour and is deep blue. It was green; the
@@ -89,35 +89,35 @@
      named `marigold` — see the header note). */
   --color-accent: var(--primary);
   --color-accent-strong: var(--primary-hover);
-  --color-accent-soft: rgba(30, 64, 175, 0.08);
+  --color-accent-soft: rgba(4, 120, 87, 0.08);
   --color-on-accent: #ffffff;
 
   --color-marigold: var(--accent);
-  --color-marigold-soft: rgba(255, 107, 74, 0.16);
+  --color-marigold-soft: rgba(132, 204, 22, 0.18);
   /* Text-safe coral. See the contrast table above. */
-  --color-marigold-ink: #ad3512;
+  --color-marigold-ink: #3f6212;
 
   /* Blue ramp. Only the flat tokens above are used by components today; the
      ramp exists so a future hover/tint/soft state derives from one hue rather
      than being hand-mixed. */
-  --color-accent-50: #eff6ff;
-  --color-accent-100: #dbeafe;
-  --color-accent-200: #bfdbfe;
-  --color-accent-300: #93c5fd;
-  --color-accent-400: #60a5fa;
-  --color-accent-500: #3b82f6;
-  --color-accent-600: #2563eb;
-  --color-accent-700: #1d4ed8;
-  --color-accent-800: #1e40af;
-  --color-accent-900: #1e3a8a;
-  --color-accent-950: #172554;
+  --color-accent-50: #ecfdf5;
+  --color-accent-100: #d1fae5;
+  --color-accent-200: #a7f3d0;
+  --color-accent-300: #6ee7b7;
+  --color-accent-400: #34d399;
+  --color-accent-500: #10b981;
+  --color-accent-600: #059669;
+  --color-accent-700: #047857;
+  --color-accent-800: #065f46;
+  --color-accent-900: #064e3b;
+  --color-accent-950: #022c22;
 
   /* --- 2. Status --------------------------------------------------------
      Kept in the same luminance band as the accent so no single status colour
      shouts louder than the brand. */
   --color-success: #15803d;
   --color-danger: #b91c1c;
-  --color-info: #1d4ed8;
+  --color-info: #047857;
 
   /* WhatsApp brand. Deliberately NOT re-pointed in the inverse band
      — the green is the product's identity, not part of our palette, and it
@@ -132,22 +132,22 @@
   /* Inverse band — deliberately dark in BOTH themes so it stays a feature band
      rather than flipping with the page. Deep navy rather than near-black, so
      it belongs to the same family as `--primary`. */
-  --color-inverse: #0b1e45;
-  --color-inverse-surface: #12295a;
-  --color-inverse-raised: #18336b;
-  --color-inverse-line: #23437f;
-  --color-inverse-ink: #f2f6ff;
-  --color-inverse-muted: #a9b8dd;
-  --color-inverse-faint: #8fa1cf;
-  --color-inverse-accent: #ff7a5c;
-  --color-inverse-accent-strong: #ffa08a;
-  --color-inverse-accent-soft: rgba(255, 122, 92, 0.16);
-  --color-inverse-on-accent: #3d1400;
+  --color-inverse: #0c0d0f;
+  --color-inverse-surface: #141518;
+  --color-inverse-raised: #1c1d21;
+  --color-inverse-line: #2b2d32;
+  --color-inverse-ink: #f4f4ef;
+  --color-inverse-muted: #a3a6ad;
+  --color-inverse-faint: #80838a;
+  --color-inverse-accent: #bef264;
+  --color-inverse-accent-strong: #d9f99d;
+  --color-inverse-accent-soft: rgba(190, 242, 100, 0.14);
+  --color-inverse-on-accent: #0c0d0f;
   --color-inverse-danger: #f87171;
 
   /* Modal scrim. A pre-mixed rgba rather than a `/95` opacity modifier on
      `--color-inverse` — see `--color-paper-blur` above for why. */
-  --color-scrim: rgba(11, 30, 69, 0.94);
+  --color-scrim: rgba(12, 13, 15, 0.94);
 
   /* --- Elevation --------------------------------------------------------
      Layered cool shadows rather than one flat blur: a tight contact shadow
@@ -157,13 +157,13 @@
      its neighbour should earn that from size or position. `lg` exists only
      for hover lift. Cool slate rather than warm near-black, so the shadow
      belongs to the same family as `--text`. */
-  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-xs: 0 1px 2px rgba(12, 13, 15, 0.05);
   --shadow-sm:
-    0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -12px rgba(15, 23, 42, 0.1);
+    0 1px 2px rgba(12, 13, 15, 0.04), 0 8px 24px -12px rgba(12, 13, 15, 0.1);
   --shadow-md:
-    0 2px 4px rgba(15, 23, 42, 0.04), 0 16px 40px -16px rgba(15, 23, 42, 0.14);
+    0 2px 4px rgba(12, 13, 15, 0.04), 0 16px 40px -16px rgba(12, 13, 15, 0.14);
   --shadow-lg:
-    0 4px 8px rgba(15, 23, 42, 0.04), 0 32px 64px -24px rgba(15, 23, 42, 0.18);
+    0 4px 8px rgba(12, 13, 15, 0.04), 0 32px 64px -24px rgba(12, 13, 15, 0.18);
 
   /* Two radii, and no others: `card` for surfaces (14px — crisp enough to
      read as product UI rather than a bubble), `control` for anything a finger
@@ -319,6 +319,63 @@
     animation: hero-line-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) backwards;
   }
 
+  /* Hero decoration: slow-drifting colour fields, a faint grid, a pulsing
+     availability dot and the gradient accent word. All decorative. */
+  .hero-grid {
+    background-image:
+      linear-gradient(to right, rgba(12, 13, 15, 0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(12, 13, 15, 0.045) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
+  }
+
+  .hero-orb {
+    animation: hero-orb-drift 18s ease-in-out infinite alternate;
+  }
+
+  .hero-orb--slow {
+    animation-duration: 26s;
+    animation-direction: alternate-reverse;
+  }
+
+  @keyframes hero-orb-drift {
+    from {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    to {
+      transform: translate3d(-40px, 30px, 0) scale(1.08);
+    }
+  }
+
+  .pulse-dot {
+    animation: pulse-dot 2.2s ease-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0% {
+      box-shadow: 0 0 0 0 rgba(132, 204, 22, 0.55);
+    }
+    80%,
+    100% {
+      box-shadow: 0 0 0 8px rgba(132, 204, 22, 0);
+    }
+  }
+
+  .text-gradient-accent {
+    background-image: linear-gradient(100deg, #047857 0%, #059669 45%, #4d7c0f 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-orb,
+    .pulse-dot {
+      animation: none;
+    }
+  }
+
   @keyframes hero-line-in {
     from {
       transform: translateY(112%);
@@ -417,7 +474,7 @@
     --color-marigold: var(--color-inverse-accent);
     --color-marigold-ink: var(--color-inverse-accent-strong);
     --color-danger: var(--color-inverse-danger);
-    --color-info: #7dabf8;
+    --color-info: var(--color-inverse-accent);
     --color-ring: var(--color-inverse-accent);
 
     background-color: var(--color-inverse);

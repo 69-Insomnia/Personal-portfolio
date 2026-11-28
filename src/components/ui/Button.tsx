@@ -39,7 +39,7 @@ interface ButtonProps {
  */
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-accent text-on-accent shadow-sm hover:bg-accent-strong hover:shadow-md focus-visible:outline-ink',
+    'bg-ink text-paper shadow-sm hover:bg-accent hover:text-on-accent hover:shadow-md focus-visible:outline-accent',
   inverse: 'bg-ink text-paper hover:opacity-85 focus-visible:outline-accent',
   secondary:
     'border border-accent bg-surface text-accent hover:bg-accent-soft focus-visible:outline-accent',
@@ -86,7 +86,7 @@ export function Button({
   external,
 }: ButtonProps) {
   const classes = cn(
-    'group inline-flex items-center justify-center rounded-control font-semibold tracking-[-0.01em] transition-all duration-200 ease-out active:scale-[0.98]',
+    'group inline-flex items-center justify-center rounded-full font-semibold tracking-[-0.01em] transition-all duration-200 ease-out active:scale-[0.98]',
     'focus-visible:outline-2 focus-visible:outline-offset-2',
     'disabled:pointer-events-none disabled:opacity-60',
     variantClasses[variant],

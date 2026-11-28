@@ -61,8 +61,10 @@ export function Navbar() {
       */}
       <header
         className={cn(
-          'fixed inset-x-0 top-0 z-nav border-b border-line bg-paper-blur backdrop-blur-md transition-all duration-200 ease-out',
-          scrolled && 'shadow-xs',
+          'fixed inset-x-0 top-0 z-nav border-b transition-all duration-300 ease-out',
+          scrolled || menuOpen
+            ? 'border-line bg-paper-blur shadow-xs backdrop-blur-md'
+            : 'border-transparent bg-transparent',
         )}
       >
         <Container
@@ -77,7 +79,7 @@ export function Navbar() {
               alt=""
               width={40}
               height={40}
-              className="h-10 w-10 shrink-0 rounded-control border border-line object-cover transition-shadow duration-200 group-hover:shadow-sm"
+              className="h-10 w-10 shrink-0 rounded-full border border-line object-cover ring-2 ring-transparent transition-all duration-200 group-hover:ring-accent/30"
             />
             <span className="flex flex-col">
               <span className="text-[15px] font-semibold leading-tight tracking-[-0.01em] text-ink transition-colors group-hover:text-accent">
@@ -128,15 +130,15 @@ export function Navbar() {
                   aria-current={active ? 'page' : undefined}
                   title={item.title}
                   className={cn(
-                    'relative rounded-control px-3.5 py-2 text-sm font-medium transition-colors duration-200',
-                    active ? 'text-ink' : 'text-muted hover:bg-subtle hover:text-ink',
+                    'relative rounded-full px-3.5 py-2 text-sm font-medium transition-colors duration-200',
+                    active ? 'text-ink' : 'text-muted hover:text-ink',
                   )}
                 >
                   {item.label}
                   {active ? (
                     <motion.span
                       layoutId="nav-active-link"
-                      className="absolute inset-0 -z-10 rounded-control bg-accent-soft ring-1 ring-accent/15"
+                      className="absolute inset-0 -z-10 rounded-full bg-surface shadow-xs ring-1 ring-line"
                       transition={{ type: 'spring', stiffness: 420, damping: 34 }}
                     />
                   ) : null}
@@ -146,45 +148,35 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center gap-2.5">
-            {/*
-              One action, not two.
-
-              The header used to carry both a WhatsApp icon circle and a "Let's
-              Work Together" button pointing at /contact. Two CTAs side by side
-              in a fixed bar split the intent rather than reinforcing it, and
-              with seven nav items the row had no room for a third element
-              anyway. The pill IS the header's call to action; /contact is one
-              tap away in the nav itself.
-            */}
+            {/* Primary CTA (Book a Call) plus WhatsApp as a compact secondary. */}
+            <Link
+              href="/contact"
+              className="hidden h-11 items-center gap-2 rounded-full bg-ink pl-5 pr-4 text-sm font-semibold text-paper shadow-sm transition-all duration-200 hover:bg-accent hover:text-on-accent hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent sm:inline-flex"
+            >
+              Book a Call
+              <span
+                aria-hidden
+                className="h-2 w-2 rounded-full bg-marigold shadow-[0_0_0_3px_rgba(132,204,22,0.25)]"
+              />
+            </Link>
             {whatsappHref ? (
-              <>
-                <a
-                  href={whatsappHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Message me on WhatsApp at ${profile.whatsapp}`}
-                  className="hidden h-11 items-center gap-2 rounded-control bg-whatsapp pl-4 pr-5 text-[15px] font-semibold text-whatsapp-ink shadow-sm transition-all duration-200 hover:bg-whatsapp-hover hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink lg:inline-flex"
-                >
-                  <WhatsAppIcon size={17} aria-hidden />
-                  Message me on WhatsApp
-                </a>
-                <a
-                  href={whatsappHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Message me on WhatsApp at ${profile.whatsapp}`}
-                  className="flex h-11 w-11 items-center justify-center rounded-control bg-whatsapp text-whatsapp-ink transition-colors duration-200 hover:bg-whatsapp-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink lg:hidden"
-                >
-                  <WhatsAppIcon size={17} aria-hidden />
-                </a>
-              </>
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Message me on WhatsApp at ${profile.whatsapp}`}
+                title="Message me on WhatsApp"
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-whatsapp text-whatsapp-ink transition-all duration-200 hover:bg-whatsapp-hover hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+              >
+                <WhatsAppIcon size={18} aria-hidden />
+              </a>
             ) : null}
             <button
               type="button"
               onClick={() => setMenuOpen(true)}
               aria-label="Open menu"
               aria-expanded={menuOpen}
-              className="flex h-11 w-11 items-center justify-center rounded-control border border-line-strong text-ink transition-colors duration-200 hover:border-accent hover:text-accent xl:hidden"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-line-strong text-ink transition-colors duration-200 hover:border-accent hover:text-accent xl:hidden"
             >
               <Menu size={18} aria-hidden />
             </button>

@@ -21,9 +21,14 @@ export function Experience({ data }: { data?: ExperienceItem[] }) {
 
         <Reveal delay={0.05}>
           {realExperience.length > 0 ? (
-            <ol className="mt-14 flex flex-col gap-5">
-              {realExperience.map((item) => (
-                <TimelineItem key={item.id} item={item} />
+            <ol className="mt-14">
+              {realExperience.map((item, index) => (
+                <TimelineItem
+                  key={item.id}
+                  item={item}
+                  isFirst={index === 0}
+                  isLast={index === realExperience.length - 1}
+                />
               ))}
             </ol>
           ) : (
