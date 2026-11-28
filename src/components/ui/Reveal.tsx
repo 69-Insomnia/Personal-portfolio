@@ -1,78 +1,72 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import type { ElementType, ReactNode } from 'react';
-import { useRevealOnView } from '@/hooks/useRevealOnView';
-import { fadeUp } from '@/utils/variants';
+import { createElement, useEffect, useRef } from 'react';
+import type { CSSProperties, ElementType, ReactNode } from 'react';
 import { cn } from '@/utils/cn';
 
-/** Tags this can render as. Anything needing different motion uses Reveal's classes directly. */
-const motionTags = {
-  div: motion.div,
-  li: motion.li,
-} as const;
+/**
+ * Fade-up on scroll, implemented with one shared native IntersectionObserver
+ * and a CSS animation (see `.reveal` in globals.css) instead of a Framer Motion
+ * component, a per-instance observer and a fallback timer.
+ *
+ * Why it changed: the page renders this ~50 times, and each instance paid for
+ * a motion component, its own observer and a timer during hydration — real
+ * main-thread cost on phones. One observer for all of them is much cheaper and
+ * the visual result is the same (18px rise + fade, 0.55s, same easing).
+ *
+ * Crawlers: the hidden state only applies when scripting is enabled
+ * (`@media (scripting: enabled)`), so a client that does not run JavaScript
+ * receives the content fully visible instead of `opacity: 0`.
+ */
+let sharedObserver: IntersectionObserver | null = null;
+
+function getObserver(): IntersectionObserver {
+  if (!sharedObserver) {
+    sharedObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          (entry.target as HTMLElement).dataset.shown = 'true';
+          sharedObserver?.unobserve(entry.target);
+        }
+      },
+      // Threshold 0 + a small bottom margin: reliable for elements taller than
+      // the viewport, which a fractional threshold can never satisfy.
+      { threshold: 0, rootMargin: '0px 0px -6% 0px' },
+    );
+  }
+  return sharedObserver;
+}
 
 interface RevealProps {
   children: ReactNode;
   className?: string;
   delay?: number;
-  /**
-   * Rendered tag. Defaults to `div`.
-   *
-   * `li` exists because a `Reveal` that animates a row of a `<ul>`/`<ol>` has to
-   * BE the `<li>` — wrapping one in a `<div>` puts a non-list child directly
-   * inside a list, which is invalid and which some screen readers handle by
-   * dropping the list semantics entirely. Where a list item needs the animation,
-   * ask for `li` rather than nesting.
-   */
   as?: ElementType;
 }
 
-/**
- * The site's standard entrance animation.
- *
- * Driven by `useRevealOnView` rather than `whileInView` directly — see that
- * hook for the missed-callback bug it guards against. The one behavioural
- * difference is that the old `viewport.margin` of `-50px` (which delayed the
- * trigger until the element was 50px past the fold) is gone. It was there to
- * stop things animating in at the very edge of the screen, and the watchdog in
- * the hook cannot honour it, so keeping it would have meant two different
- * definitions of "in view" between the observer and the fallback.
- */
-export function Reveal({
-  children,
-  className,
-  delay = 0,
-  as = 'div',
-}: RevealProps) {
-  const { ref, shown } = useRevealOnView<HTMLDivElement>(0.15);
+export function Reveal({ children, className, delay = 0, as = 'div' }: RevealProps) {
+  const ref = useRef<HTMLElement>(null);
 
-  /**
-   * The cast is the one loose spot in this file, and it is deliberately narrow.
-   *
-   * `motion.li` and `motion.div` carry different ref types, so a tag chosen at
-   * runtime produces a union that TypeScript will not accept a single ref
-   * against. Widening to `typeof motion.div` lets both branches share the one
-   * `useRevealOnView<HTMLDivElement>` ref.
-   *
-   * It is safe because the only thing that touches the ref is
-   * `getBoundingClientRect()`, which is on every `HTMLElement`. The element that
-   * actually renders is still whatever `as` asked for — the cast changes the
-   * type, not the tag.
-   */
-  const Tag = (motionTags[as as keyof typeof motionTags] ??
-    motion.div) as unknown as typeof motion.div;
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === 'undefined') {
+      el.dataset.shown = 'true';
+      return;
+    }
+    const observer = getObserver();
+    observer.observe(el);
+    return () => observer.unobserve(el);
+  }, []);
 
-  return (
-    <Tag
-      ref={ref}
-      initial="hidden"
-      animate={shown ? 'show' : 'hidden'}
-      custom={delay}
-      variants={fadeUp}
-      className={cn(className)}
-    >
-      {children}
-    </Tag>
+  return createElement(
+    as,
+    {
+      ref,
+      className: cn('reveal', className),
+      style: delay ? ({ '--reveal-delay': `${delay}s` } as CSSProperties) : undefined,
+    },
+    children,
   );
 }

@@ -61,12 +61,14 @@ export function SocialIcon({ network, size = 17 }: SocialIconProps) {
   if (!monogram) return null;
 
   return (
+    // Drawn with a CSS pseudo-element rather than a text node: the link's
+    // accessible name is the aria-label ("LinkedIn"), and a visible text node
+    // of "in" that the name does not contain trips WCAG 2.5.3 (Label in Name).
     <span
       aria-hidden
-      className="font-semibold leading-none tracking-tight"
+      data-glyph={monogram}
+      className="font-semibold leading-none tracking-tight after:content-[attr(data-glyph)]"
       style={{ fontSize: Math.round(size * 0.72) }}
-    >
-      {monogram}
-    </span>
+    />
   );
 }

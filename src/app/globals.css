@@ -71,7 +71,7 @@
   /* --- 2. Semantic text ------------------------------------------------- */
   --color-ink: var(--text);
   --color-muted: var(--muted);
-  --color-faint: #7c8088;
+  --color-faint: #676b73;
 
   /* --- 2. Semantic lines ------------------------------------------------
      `line` is decorative (dividers, card edges). `line-strong` is the
@@ -348,6 +348,36 @@
     }
   }
 
+  /* Hero "Recent work" marquee: two copies scroll left forever; the second
+     copy is aria-hidden. Paused on hover and frozen for reduced motion. */
+  .marquee-track {
+    animation: marquee 32s linear infinite;
+  }
+
+  .marquee-mask:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  .marquee-mask {
+    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none;
+    }
+  }
+
   .pulse-dot {
     animation: pulse-dot 2.2s ease-out infinite;
   }
@@ -496,5 +526,61 @@
 
   .no-scrollbar::-webkit-scrollbar {
     display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Below-the-fold rendering budget.
+
+   The homepage is ~1,400 elements. Lighthouse showed ~3s of main-thread time
+   was the browser laying out and painting it — not script. `content-visibility:
+   auto` lets the browser skip layout/paint for each section until it is near
+   the viewport. The content stays in the DOM and the accessibility tree (and
+   is still indexable), and in-page anchors and find-in-page still work.
+   `contain-intrinsic-size: auto <h>` reserves a placeholder height and then
+   remembers each section's real height after first render, so the scrollbar
+   does not jump and there is no layout shift.
+
+   Scoped to the homepage section ids only — the hero (first screen) is
+   deliberately excluded so the LCP element renders immediately.
+--------------------------------------------------------------------------- */
+#about,
+#work,
+#numbers,
+#services,
+#approach,
+#technologies,
+#experience,
+#insights,
+#faq,
+#contact {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}
+
+/* Scroll reveal (see components/ui/Reveal.tsx). Hidden state only when
+   scripting is on and motion is allowed, so no-JS clients and users who ask for
+   reduced motion get fully visible content. After the animation ends the
+   element returns to its natural style, so hover transforms still work. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .reveal:not([data-shown]) {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  .reveal[data-shown] {
+    animation: reveal-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    animation-delay: var(--reveal-delay, 0s);
+  }
+}
+
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
