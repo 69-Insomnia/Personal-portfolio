@@ -1,5 +1,4 @@
 import { Container } from '@/components/ui/Container';
-import { CountUp } from '@/components/ui/CountUp';
 import { Reveal } from '@/components/ui/Reveal';
 import { Section } from '@/components/ui/Section';
 import { experience } from '@/data/experience';
@@ -87,36 +86,39 @@ export function Stats({ serviceCount }: { serviceCount: number }) {
   ];
 
   return (
-    <Section id="numbers" padded={false} className="section-inverse relative overflow-hidden">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            'radial-gradient(50% 80% at 85% 0%, rgba(190, 242, 100, 0.10), transparent 70%), radial-gradient(40% 70% at 0% 100%, rgba(16, 185, 129, 0.14), transparent 70%)',
-        }}
-      />
-      <Container className="relative">
-        {/* A plain list: four figures and what they count. Bento cards on a
-            charcoal band; the figures count up once on view (CountUp renders
-            the final value on the server). */}
-        <ul className="grid grid-cols-2 gap-3 py-16 md:gap-4 md:py-20 lg:grid-cols-4">
+    <Section id="numbers" padded={false} className="bg-subtle">
+      <Container>
+        {/*
+          A plain list, not a `<dl>`.
+
+          A definition list would be the tempting choice here, but the visual
+          order is number-then-label while a `<dl>` requires `dt` before `dd` —
+          so getting the semantics right meant either reversing the visual order
+          or hiding a duplicate `<dt>` and having a screen reader hear every
+          label twice. Neither is worth it: there is no term being defined, just
+          four figures and what they count, which is a list.
+
+          The redesign: the strip is now a single hairline-bordered band with
+          the figures in display face and each label preceded by a coral
+          diamond — no cards, no per-cell backgrounds. The dividers only appear
+          from `lg`, where the four cells share one row.
+        */}
+        <ul className="grid grid-cols-2 gap-x-6 gap-y-10 border-y border-line py-14 md:py-16 lg:grid-cols-4 lg:gap-y-0">
           {stats.map((stat, index) => (
             <Reveal
               key={stat.label}
               as="li"
               delay={index * 0.06}
-              className="group relative flex min-h-[11rem] flex-col justify-between overflow-hidden rounded-[1.25rem] border border-line bg-surface p-5 transition-colors duration-300 hover:border-accent md:min-h-[13rem] md:p-7"
+              className="border-line lg:border-l lg:pl-8 lg:first:border-l-0 lg:first:pl-0"
             >
-              <span
-                aria-hidden
-                className="absolute right-5 top-5 h-2 w-2 rounded-full bg-marigold opacity-70 transition-opacity duration-300 group-hover:opacity-100"
-              />
-              <CountUp
-                value={stat.value}
-                className="block font-display text-[clamp(2.75rem,5vw,4.25rem)] font-semibold leading-none tracking-[-0.04em] text-ink tabular-nums"
-              />
-              <span className="mt-6 block max-w-[22ch] text-sm leading-relaxed text-muted">
+              <span className="block font-display text-5xl font-semibold leading-none tracking-[-0.03em] text-ink md:text-6xl">
+                {stat.value}
+              </span>
+              <span className="mt-4 flex max-w-[22ch] items-start gap-2.5 text-sm leading-relaxed text-muted">
+                <span
+                  aria-hidden
+                  className="mt-[0.45em] h-1.5 w-1.5 shrink-0 rotate-45 bg-marigold"
+                />
                 {stat.label}
               </span>
             </Reveal>
