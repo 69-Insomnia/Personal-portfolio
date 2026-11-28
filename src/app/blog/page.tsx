@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { PageHeader } from '@/components/common/PageHeader';
-import { BlogCard } from '@/components/cards/BlogCard';
+import { FeaturedPostCard } from '@/components/cards/FeaturedPostCard';
+import { BlogIndex } from '@/components/common/BlogIndex';
 import { Container } from '@/components/ui/Container';
 import { Reveal } from '@/components/ui/Reveal';
 import { Section } from '@/components/ui/Section';
@@ -14,6 +15,7 @@ import { collectionPageNode } from '@/lib/structured-data';
 export default async function BlogPage() {
   const posts = await getPosts();
   const shown = posts.length > 0 ? posts : blogPosts;
+  const [featured, ...rest] = shown;
   return (
     <>
       <JsonLd
@@ -38,14 +40,21 @@ export default async function BlogPage() {
       />
       <Section>
         <Container>
-          <h2 className="sr-only">Latest articles</h2>
-          <div className="grid gap-x-4 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
-            {shown.map((post, index) => (
-              <Reveal key={post.slug} delay={index * 0.07} className="h-full">
-                <BlogCard post={post} />
-              </Reveal>
-            ))}
-          </div>
+          {featured ? (
+            <Reveal>
+              <h2 className="mb-5 text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-faint">
+                Latest article
+              </h2>
+              <FeaturedPostCard post={featured} />
+            </Reveal>
+          ) : null}
+
+          {rest.length > 0 ? (
+            <div className="mt-16 md:mt-20">
+              <h2 className="mb-6 font-display text-h3 text-ink">All articles</h2>
+              <BlogIndex posts={rest} />
+            </div>
+          ) : null}
         </Container>
       </Section>
     </>
