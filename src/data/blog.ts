@@ -21,6 +21,383 @@ import type { BlogPost } from '@/types';
  */
 export const blogPosts: BlogPost[] = [
   {
+    "slug": "ecommerce-website-developer-vs-agency-vs-freelancer-nepal",
+    "title": "Ecommerce Website Developer vs Agency vs Freelancer in Nepal: Which Should You Hire?",
+    "excerpt": "Hiring someone to build your online store in Nepal? An honest comparison of a freelancer, an agency and an in-house developer: cost, risk, speed, and who to pick for your situation.",
+    "category": "Web Development",
+    "date": "28 November 2026",
+    "readingTime": "7 min read",
+    "image": "/images/blog-ecommerce-developer-vs-agency-nepal.webp",
+    "tags": [
+      "Web Development",
+      "Ecommerce",
+      "Hiring",
+      "Nepal",
+      "Ecommerce Website Developer in Nepal"
+    ],
+    "content": [
+      "**Short answer:** for most small and mid-sized online stores in Nepal, a freelance ecommerce website developer is the best value, because you work directly with the person building your store and you are not paying for account managers. An agency makes sense when you need a whole team working at once and you have the budget for it. Hiring in-house only makes sense once your store needs constant work every week.",
+      "I'm Dipendra Guragain, a freelance ecommerce website developer in Kathmandu. That means I have a stake in this question, so I'll say it plainly: I'm not going to tell you a freelancer is always the right answer. This guide tries to be fair, and it tells you when an agency is the better choice, because sometimes it is.",
+      "## What are your three options?",
+      "• **A freelancer.** One person (or one person with a small circle of partners) who builds your store. You talk to the builder directly.",
+      "• **An agency or web development company.** A team with designers, developers and project managers. You usually talk to an account manager or project manager, and the work is done by people you may never meet.",
+      "• **An in-house developer.** Someone you employ. They work only on your business, every week, and you pay them a salary whether the month is busy or quiet.",
+      "## Freelancer vs agency vs in-house: a quick comparison",
+      "| | Freelancer | Agency | In-house developer |\n|---|---|---|---|\n| Who you talk to | The person doing the work | Usually a project or account manager | Your own employee |\n| Cost | Lower: you pay for the work, not for team overhead | Higher: you also pay for management and overhead | A monthly salary, every month |\n| Speed to start | Often quick | Often slower: proposals, scoping, team scheduling | Slowest: you have to recruit first |\n| Range of skills | One person's skills, plus partners they trust | Wide: design, development, copywriting, marketing | Whatever that one person knows |\n| If the person leaves | A real risk: ask who else can take over | Lower: someone else on the team can continue | A real risk, and you carry it |\n| Best for | One store build, a redesign, or steady improvements | Large projects that need several specialists at once | A store that needs development work every single week |",
+      "## When a freelancer is the right choice",
+      "• You are building or rebuilding one online store and want to know who is actually writing the code.",
+      "• You want a direct line: a message on WhatsApp goes to the person doing the work, not through a chain.",
+      "• Your budget matters, and you would rather pay for the build than for meetings about the build.",
+      "• You want one person who understands the whole picture, from the store and the payment setup to how Google will find it.",
+      "The honest downside: a freelancer is one person. If they are ill, busy or move on, your project slows down. That is why the questions further down matter, especially who owns your store and your accounts.",
+      "## When an agency is the right choice",
+      "• You need design, development, content and marketing all delivered together on a tight deadline.",
+      "• Your project is large: thousands of products, several languages, or custom integrations with other systems.",
+      "• You want a company that can sign a formal contract, issue invoices for a registered business and keep working even if one person leaves.",
+      "• You have the budget, and you value having a team and a process over having a direct line to the builder.",
+      "The honest downside: the person who sells you the project is often not the person who builds it, and you pay for the overhead that makes the team possible. For a single store, that can be more than you need.",
+      "## When to hire in-house",
+      "Hire someone in-house when your store needs development work every week: new features, constant testing, integrations, a growing catalogue. If you only need a few changes a month, a salary is an expensive way to buy them. Many stores start with a freelancer, and only hire in-house once the workload clearly justifies it.",
+      "## 7 questions to ask before you hire anyone",
+      "• Can you show me real online stores you built, and what you personally did on each one?",
+      "• Which payment methods have you set up in Nepal: eSewa, Khalti, Fonepay, bank transfer and cash on delivery? (What is possible depends on the platform, so ask to see one that is live.)",
+      "• Who owns the store, the domain and the hosting when the project ends? The answer should be you.",
+      "• Is SEO built in (clean page structure, fast product pages, proper titles) or is it an extra?",
+      "• What happens after launch: who fixes bugs, and for how long is that included?",
+      "• What is the fixed scope and price, and what would cost extra?",
+      "• How will we talk during the project: WhatsApp, calls, a weekly update?",
+      "## Red flags to avoid",
+      "• They will not show you previous work, or the stores they show are all templates with a logo changed.",
+      "• They ask for 100% of the payment upfront, with no written scope.",
+      "• They register the domain or hosting in their own name and keep control of it.",
+      "• They promise a number one ranking on Google. Nobody can promise that.",
+      "• They have no plan for what happens after the launch day.",
+      "## What does an ecommerce store cost in Nepal?",
+      "I can't honestly give you one market-wide number, because it depends on how many products you have, which platform you use, how many payment methods you need and whether you want custom features. What I can do is publish my own starting prices. A website or web application starts from NPR 45,000, and an ecommerce store from NPR 60,000, both as one-off projects. You can see the full breakdown on my [pricing page](/pricing).",
+      "What pushes a price up: a large product catalogue, moving content from an old site, custom features, and extra payment or delivery integrations. What keeps it down: a clear brief, ready product photos and descriptions, and deciding the scope before the build starts.",
+      "## My view, as a freelancer",
+      "If you are a small or mid-sized business in Nepal building one online store, a freelancer who has built real stores, who will put the scope and price in writing, and who hands you full ownership at the end is usually the best value. If your project is bigger than one person can safely carry, hire an agency and be honest with yourself about why.",
+      "If you would like to talk it through, see how I work as an [ecommerce website developer in Nepal](/services/web-development), or send me a short description of your store on the [contact page](/contact). I will tell you plainly whether I am the right fit, and if I am not, what I would look for instead. If you are still choosing a platform, read [Shopify vs WooCommerce vs a custom store](/blog/shopify-vs-woocommerce-vs-custom-ecommerce-store-nepal) first, because the platform changes what the build involves."
+    ],
+    "faqs": [
+      {
+        "question": "How do I choose an ecommerce website developer in Nepal?",
+        "answer": "Ask to see real online stores they have built and what they personally did on each. Check that they have set up local payments, that you will own the store, domain and hosting, and that the scope and price are in writing before any work starts."
+      },
+      {
+        "question": "Is a freelancer or an agency cheaper for an online store in Nepal?",
+        "answer": "A freelancer is usually cheaper for a single store, because you pay for the work rather than for a team's management and overhead. An agency can still be the better choice for large projects that need several specialists at once."
+      },
+      {
+        "question": "Can a freelance developer set up eSewa and Khalti on my store?",
+        "answer": "Yes, if they have done it before. WooCommerce and custom builds can integrate the gateways directly, while a Shopify store depends on the payment apps available to it. Ask to see a live store that already uses them."
+      },
+      {
+        "question": "When should I hire an ecommerce website development company instead of a freelancer?",
+        "answer": "When the project is large, needs design, development, content and marketing together on a deadline, or when you want a registered company and a team that keeps working if one person leaves."
+      }
+    ]
+  },
+  {
+    "slug": "what-does-an-ecommerce-growth-expert-do-nepal",
+    "title": "What Does an Ecommerce Growth Expert Do? A Plain-English Guide for Nepali Store Owners",
+    "excerpt": "What does an ecommerce growth expert actually do, and how is it different from a marketer or a developer? A plain-English guide for store owners in Nepal, with signs you need one.",
+    "category": "Ecommerce",
+    "date": "28 November 2026",
+    "readingTime": "5 min read",
+    "image": "/images/blog-ecommerce-growth-expert-nepal.webp",
+    "tags": [
+      "Ecommerce",
+      "Growth",
+      "Nepal",
+      "Strategy",
+      "Ecommerce Growth Expert in Nepal"
+    ],
+    "content": [
+      "**Short answer:** an ecommerce growth expert finds where your online store is losing customers and fixes those leaks, then brings in the right visitors through search and ads, and checks that the extra traffic turns into orders. Instead of treating your website, your SEO, your ads and your reports as separate jobs, they treat them as one system, because that is how your customer experiences them.",
+      "I'm Dipendra Guragain, and this is the work I do as an [ecommerce growth expert in Nepal](/services/ecommerce-growth). This guide explains it in plain English, so you can decide whether you need someone like me, or whether you need something different.",
+      "## The one idea behind everything",
+      "An online store is a funnel. Someone finds you, looks at a product, adds it to the cart, checks out, and hopefully buys again. At every step, some people drop out. Growth work is about finding the step where the most people drop out, fixing it, and then bringing more of the right visitors in at the top.",
+      "That order matters. If you pay for more visitors before you fix a leaking checkout, you simply pay more to lose more people.",
+      "## The five jobs of an ecommerce growth expert",
+      "• **Find the leaks.** Look at your numbers to see where visitors drop off: product pages, cart or checkout. Often the fix is simple and costs very little.",
+      "• **Fix the store experience.** Speed on mobile, clearer product pages, simpler checkout, visible delivery and return details, and the payment methods your customers actually use.",
+      "• **Bring in the right traffic.** Search (SEO) for people already looking for what you sell, and ads on Google and Meta for people you want to reach.",
+      "• **Make the tracking trustworthy.** If purchases are counted twice, or never counted on mobile, every decision after that is based on a wrong number. Fixing tracking comes before optimising anything.",
+      "• **Bring customers back.** Repeat orders are usually cheaper than new customers, so follow-up through WhatsApp, email and offers matters.",
+      "## How is it different from other roles?",
+      "| | What they mainly do | What is missing on its own |\n|---|---|---|\n| Web developer | Builds and fixes the store | Does not bring traffic or decide what to improve |\n| SEO specialist | Brings visitors from Google | Cannot fix a checkout that loses them |\n| Ads manager | Brings paid visitors | Wastes budget if the page they land on does not convert |\n| Ecommerce growth expert | Connects all of these around orders and revenue | Needs a store and a product people want to buy |",
+      "A growth expert is not a replacement for a good product, and they do not replace a developer when you need a build. They are the person whose job is to make the whole thing work together, and to be accountable for orders, not for clicks.",
+      "## What the first month often looks like",
+      "Every store is different, but a sensible start usually follows this order:",
+      "• **Review.** Look at where traffic comes from, where people drop off, how fast the store is and whether the tracking can be trusted.",
+      "• **Fix tracking.** Make sure orders and key actions are counted correctly.",
+      "• **Fix the biggest leak.** Usually a slow mobile page, a confusing product page or a checkout problem.",
+      "• **Then add traffic.** Once the store converts better, SEO and ads give a better return.",
+      "• **Report on orders.** A monthly summary of the numbers that matter: orders, revenue, cost per order and repeat customers.",
+      "## Signs you might need one",
+      "• You get visitors but few orders.",
+      "• You spend on ads but cannot say what each order really cost you.",
+      "• Your SEO, ads and website are handled by different people who do not talk to each other.",
+      "• Your numbers do not agree: the ad platform says one thing, your sales say another.",
+      "• You have grown through social media but have no steady source of customers that you own.",
+      "## Signs you do not need one yet",
+      "• You have no store, and you are still deciding what to sell. Start with a good product and a simple store first.",
+      "• You have almost no traffic and no sales yet. You may need a developer or a clearer product before growth work helps.",
+      "• You want guaranteed results. Be careful with anyone who promises them.",
+      "## How you should measure success",
+      "Judge growth work by the numbers that connect to money: orders, revenue, cost per order, the share of visitors who buy, and how many customers come back. Likes, followers and raw traffic are not the goal. A good report lets you check every figure against your own sales records.",
+      "## What it costs",
+      "Prices depend on the size of your store and what it needs, so I would rather show you than guess. You can see my published starting prices on the [pricing page](/pricing). The sensible first step is a review of your store, so the plan is based on your real numbers, not a template.",
+      "## How to hire a good one",
+      "Ask what they would fix first on your store and why, how they will measure it, and whether they treat search, ads and the store as one system. Ask to see real results with real numbers, and be wary of guarantees. For more on choosing well, read my guides to [growing ecommerce in Nepal](/blog/how-to-grow-ecommerce-in-nepal-2026) and [why ecommerce is one system, not four channels](/blog/ecommerce-one-system). If you would like me to look at your store, send a short message on the [contact page](/contact)."
+    ],
+    "faqs": [
+      {
+        "question": "What does an ecommerce growth expert do?",
+        "answer": "They find where your online store loses customers and fix those leaks, bring in the right visitors through search and ads, make sure tracking is trustworthy, and check that more traffic turns into more orders."
+      },
+      {
+        "question": "How is an ecommerce growth expert different from a digital marketer?",
+        "answer": "A digital marketer mainly brings traffic. A growth expert also looks at what happens after the click: the product page, the checkout, the tracking and repeat customers, and is judged on orders and revenue rather than clicks."
+      },
+      {
+        "question": "When should I hire an ecommerce growth expert?",
+        "answer": "When you already have a store and some traffic but too few orders, when you cannot say what each order really costs you, or when your SEO, ads and website are handled separately and not working together."
+      },
+      {
+        "question": "Can an ecommerce growth expert guarantee more sales?",
+        "answer": "No honest one can. They can find and fix problems and report on the numbers, but results depend on your product, prices, competition and market. Be careful with anyone who guarantees a specific result."
+      }
+    ]
+  },
+  {
+    "slug": "ecommerce-seo-checklist-nepal",
+    "title": "Ecommerce SEO Checklist for Nepali Online Stores: Product Pages, Categories and Local Search",
+    "excerpt": "A practical ecommerce SEO checklist for online stores in Nepal: keyword research in English and Nepali, category and product pages, technical basics, local SEO and how to track results.",
+    "category": "SEO",
+    "date": "28 November 2026",
+    "readingTime": "6 min read",
+    "image": "/images/blog-ecommerce-seo-checklist-nepal.webp",
+    "tags": [
+      "SEO",
+      "Ecommerce SEO",
+      "Nepal",
+      "Product Pages",
+      "Local SEO"
+    ],
+    "content": [
+      "**Short answer:** ecommerce SEO in Nepal comes down to six things: finding the words your shoppers actually search, giving every product and category its own clear page, making those pages fast on a phone, setting up the technical basics so Google can read them, linking your pages together sensibly, and tracking what happens in Google Search Console. Do them in that order and you will fix most of what holds stores back.",
+      "I'm Dipendra Guragain, an SEO and ecommerce specialist in Kathmandu. This is the checklist I work through on online stores. Use it as a to-do list: you do not need to do everything in one week, but every item you tick off helps.",
+      "## Step 1: Set up the basics before you optimise anything",
+      "• Add your site to Google Search Console. It is free, and it is the only place Google tells you which pages it has found, which it has indexed and which searches brought people to you.",
+      "• Submit your XML sitemap in Search Console, and make sure it only lists pages that load properly.",
+      "• Check your site loads over HTTPS everywhere, with no mixed or broken pages.",
+      "• Set up analytics, and make sure purchases and WhatsApp or call clicks are tracked. You cannot improve what you cannot measure.",
+      "• Test your store on a real phone. Most of your shoppers are on mobile, often on mobile data.",
+      "## Step 2: Keyword research for a Nepali store",
+      "Shoppers in Nepal search in English, in Nepali and in Romanized Nepali, sometimes all three for the same product. Look for the phrases real buyers use:",
+      "• Product searches such as buy [product] online in Nepal, and [product] price in Nepal.",
+      "• Comparison and choice searches such as best [product] in Nepal, or [product] vs [product].",
+      "• Local searches such as [product] in Kathmandu, or [product] shop near me.",
+      "Give each search intent its own page. If two of your pages try to rank for the same phrase, they compete with each other and neither does well. This is the single most common mistake I see.",
+      "## Step 3: Category pages",
+      "Category pages often bring the most traffic, because they match broad searches like running shoes in Nepal or mobile phones in Kathmandu.",
+      "• Give each category a clear, specific title and a short helpful introduction that is written for people, not stuffed with keywords.",
+      "• Make sure filters and sorting do not create thousands of duplicate pages that Google has to crawl.",
+      "• Link to your best-selling or most relevant products from the category page.",
+      "• Keep the category structure simple: shoppers and Google should reach any product in a few clicks.",
+      "## Step 4: Product pages",
+      "• **Unique title.** Include the product name and the most important detail, such as the brand or type. Keep it readable.",
+      "• **Unique description.** Do not paste the supplier's text. Describe what it is, who it is for and what is included.",
+      "• **Price in NPR and availability.** Show them clearly. Shoppers leave if they cannot see the price.",
+      "• **Real photos.** Use your own images, give each one a descriptive alt text, and compress them so the page loads quickly.",
+      "• **Reviews and questions.** Real customer reviews help buyers and add useful, original content. Never fake them.",
+      "• **Delivery and returns.** State them on the page or link to them. It lowers hesitation.",
+      "## Step 5: Technical SEO",
+      "• Pages should load fast on mobile. Image size is usually the biggest fix.",
+      "• Every page should have one clear canonical address, so Google knows which version to keep.",
+      "• Fix broken links, and redirect removed pages to the closest relevant page rather than leaving a dead end.",
+      "• Use structured data (schema) for products and breadcrumbs, and only mark up what is actually visible on the page.",
+      "• Do not block pages you want found in robots.txt, and do not leave a stray noindex tag on pages that should rank.",
+      "## Step 6: Link your pages together",
+      "Internal links help Google understand your site and help shoppers move around. Link from guides to the products and categories they talk about, link related products to each other, and use descriptive link text instead of click here. A buying guide that links to the products it recommends is one of the simplest SEO wins there is.",
+      "## Step 7: Local search",
+      "If you have a physical shop or serve a specific city, a complete Google Business Profile helps you appear in local results and on Google Maps. Keep your name, address and phone number identical everywhere they appear. If you only sell online, you can skip the map listing, but local phrases like in Kathmandu can still help when they match what you really do.",
+      "## Step 8: Write content that answers real questions",
+      "Product pages cannot rank for how to choose searches. Short buying guides, comparisons and answers to real customer questions can. Start from the questions your customers already ask you on WhatsApp and in messages, because those are the questions other people are typing into Google.",
+      "## Step 9: Track, then improve",
+      "• Check Search Console every month: which searches bring clicks, which pages get impressions but few clicks, and which pages are not indexed.",
+      "• Improve the titles of pages that get plenty of impressions but few clicks.",
+      "• Look at which pages bring orders, not just visits.",
+      "• Be patient. SEO usually takes months, not days, but a well-built store keeps earning traffic long after the work is done.",
+      "## What to avoid",
+      "• Copying supplier descriptions across hundreds of products.",
+      "• Creating a separate page for every tiny keyword variation.",
+      "• Buying links or paying for thousands of directory listings.",
+      "• Promising yourself a number one ranking. Nobody controls that, and anyone who guarantees it is guessing.",
+      "## Want to see it applied to a real store?",
+      "My [Nano Store case study](/work/nano-store-ecommerce-seo) shows how this kind of work played out on a real ecommerce store, including the traffic and keyword figures. If you want a professional look at your own store, I offer an [SEO audit and ongoing SEO services](/services/seo-services), or you can [get in touch](/contact) and I will tell you what I would fix first. If you are still choosing a platform, start with [Shopify vs WooCommerce vs custom](/blog/shopify-vs-woocommerce-vs-custom-ecommerce-store-nepal)."
+    ],
+    "faqs": [
+      {
+        "question": "How long does ecommerce SEO take to work in Nepal?",
+        "answer": "Usually several months. Technical fixes can show results sooner, but ranking for competitive searches takes steady work. A well-built store keeps earning traffic long after the work is done."
+      },
+      {
+        "question": "Do I need Nepali keywords or only English ones?",
+        "answer": "Both. Shoppers search in English, Nepali and Romanized Nepali, sometimes for the same product. Research the phrases your own customers use, and give each search intent its own page."
+      },
+      {
+        "question": "What is the most common ecommerce SEO mistake?",
+        "answer": "Having several pages compete for the same search, and copying supplier descriptions across many products. Give each intent one clear page and write your own product descriptions."
+      },
+      {
+        "question": "Do I need Google Search Console for my online store?",
+        "answer": "Yes. It is free and it is the only place Google tells you which pages are indexed, which searches bring clicks and what is stopping pages from showing up."
+      }
+    ]
+  },
+  {
+    "slug": "shopify-vs-woocommerce-vs-custom-ecommerce-store-nepal",
+    "title": "Shopify vs WooCommerce vs a Custom Store: Which Is Best for an Online Store in Nepal?",
+    "excerpt": "Choosing a platform for your online store in Nepal? A plain-English comparison of Shopify, WooCommerce and a custom build: payments, cost, control, SEO and who each one suits.",
+    "category": "Ecommerce",
+    "date": "28 November 2026",
+    "readingTime": "5 min read",
+    "image": "/images/blog-shopify-woocommerce-custom-nepal.webp",
+    "tags": [
+      "Ecommerce",
+      "Shopify",
+      "WooCommerce",
+      "Web Development",
+      "Nepal"
+    ],
+    "content": [
+      "**Short answer:** choose Shopify if you want to launch fast and keep things simple, WooCommerce if you want more control and easy local payment integration and you are happy to look after a WordPress site, and a custom-built store when you need speed, flexibility or features that off-the-shelf platforms cannot give you and you have the budget. There is no single best platform for Nepal. There is only the best one for your products, your team and your budget.",
+      "I'm Dipendra Guragain, an ecommerce website developer in Kathmandu. I build stores on all three, so I have no reason to push one. Here is how I help store owners decide.",
+      "## What actually matters for a store in Nepal",
+      "Before comparing platforms, get clear on what your store really needs. For most Nepali stores, these are the questions that decide it:",
+      "• **Local payments.** Can customers pay with eSewa, Khalti, Fonepay or bank transfer?",
+      "• **Cash on delivery.** Many first-time buyers want to see the product before they pay, so cash on delivery needs to work properly.",
+      "• **Running costs.** What will you pay every month, and in which currency?",
+      "• **Who looks after it.** Updates, backups, security and fixes: is that you, a developer or the platform?",
+      "• **Speed on mobile.** Most of your shoppers will be on a phone, often on mobile data.",
+      "• **Room to grow.** Will it still work when you have ten times the products?",
+      "## Shopify, WooCommerce and custom: side by side",
+      "| | Shopify | WooCommerce | Custom-built store |\n|---|---|---|---|\n| Time to launch | Fastest | Medium | Longest |\n| Local payments (eSewa, Khalti) | Depends on the payment apps available to a Shopify store: check before you commit | Gateways can be integrated directly | Gateways can be integrated directly |\n| Cash on delivery | Usually possible | Possible | Possible |\n| Running cost | A monthly subscription, usually billed in foreign currency, plus any paid apps | Hosting and plugins; you manage them | Hosting plus ongoing developer time |\n| Who maintains it | Shopify looks after the platform | You or your developer (updates, backups, security) | Your developer |\n| Control and flexibility | Good within the platform's rules | High | Highest |\n| Best for | A simple store you want live quickly | Stores that want control and local payment options on a smaller budget | Stores that need unusual features or maximum performance |",
+      "## Shopify: fast and simple, with a few things to check",
+      "Shopify is the quickest way to get a good-looking, reliable store live. You do not manage servers, and the checkout is well tested. For a team without a developer, that is a big advantage.",
+      "What to check before you commit: whether the payment methods you need are available to a store like yours (this can change, so confirm it, not assume it), how the monthly subscription is billed, and how much of your design you can change without paid apps. If eSewa or Khalti at checkout is essential, ask a developer to confirm exactly how it would work for your Shopify store before you build anything.",
+      "## WooCommerce: more control, more responsibility",
+      "WooCommerce runs on WordPress. It is flexible, there are plenty of plugins, and local payment gateways can be connected directly, which is why many stores in Nepal use it. It also suits a business that already has a WordPress website.",
+      "The trade-off is that you own the maintenance. Hosting quality, updates, backups, security and speed are your responsibility. A slow, neglected WooCommerce store converts badly and ranks badly, so budget for someone to look after it.",
+      "## A custom-built store: the most freedom, the highest cost",
+      "A custom store, for example one built with Next.js, is designed around your business. It can be very fast, you can build exactly the features you need, and nothing is limited by a theme or a plugin. This is what I use when speed and flexibility matter most.",
+      "The trade-off is cost and dependence on a developer. Every change needs a developer, and the build takes longer. It is usually not the right first step for a store that is still testing whether people will buy.",
+      "## How to decide",
+      "• **Choose Shopify if** you want to be live quickly, you do not have a developer, and the payment options you need are confirmed to work.",
+      "• **Choose WooCommerce if** you want control, you need local payments connected directly, and you are happy to have someone maintain the site.",
+      "• **Choose a custom build if** you have outgrown a template, you need specific features or top performance, and you have the budget and a developer you trust.",
+      "• **Not sure?** Start with the simplest option that meets your payment and delivery needs. Moving platforms later is possible, but it is easier to start right.",
+      "## What about SEO?",
+      "All three can rank on Google. What matters is how the store is set up: clean category and product pages, unique product descriptions, fast loading on mobile and sensible page titles. The platform does not decide that, the work does. I cover the details in my [ecommerce SEO checklist for Nepali stores](/blog/ecommerce-seo-checklist-nepal).",
+      "## Where to go from here",
+      "If you would like help choosing, or you already know your platform and want it built, take a look at my [web development services](/services/web-development) and the [starting prices](/pricing). A store starts from NPR 60,000 as a one-off project. Or tell me about your products on the [contact page](/contact), and I will tell you which option I would pick in your position. If you are weighing who should build it, read [freelancer vs agency](/blog/ecommerce-website-developer-vs-agency-vs-freelancer-nepal) too."
+    ],
+    "faqs": [
+      {
+        "question": "Which is better for Nepal, Shopify or WooCommerce?",
+        "answer": "Neither is better for everyone. Shopify is faster to launch and easier to manage, but local payment options depend on the apps available to a Shopify store. WooCommerce gives you more control and lets local gateways connect directly, but you maintain the site."
+      },
+      {
+        "question": "Can I accept eSewa and Khalti on my online store?",
+        "answer": "Usually yes, but how depends on the platform. WooCommerce and custom builds can integrate the gateways directly, while a Shopify store relies on the payment apps available to it. Confirm the exact setup before you start building."
+      },
+      {
+        "question": "Is a custom-built store worth it?",
+        "answer": "It is worth it when you need speed, unusual features or maximum flexibility and you have the budget. If you are still testing whether people will buy, a simpler platform is usually the better first step."
+      },
+      {
+        "question": "Can I switch ecommerce platforms later?",
+        "answer": "Yes. Products, customers and orders can be moved, and the main thing to protect is your search ranking by redirecting old page addresses to the new ones. It is easier to choose well at the start than to migrate later."
+      }
+    ]
+  },
+  {
+    "slug": "google-ads-vs-meta-ads-nepal",
+    "title": "Google Ads vs Meta Ads for Small Businesses in Nepal: Which Should You Start With?",
+    "excerpt": "Google Ads or Meta Ads first? A plain-English comparison for small businesses in Nepal: how each works, what they cost to manage, when to use which, and how to test with a small budget.",
+    "category": "Digital Marketing",
+    "date": "28 November 2026",
+    "readingTime": "5 min read",
+    "image": "/images/blog-google-ads-vs-meta-ads-nepal.webp",
+    "tags": [
+      "Google Ads",
+      "Meta Ads",
+      "Digital Marketing",
+      "Nepal",
+      "Paid Advertising"
+    ],
+    "content": [
+      "**Short answer:** start with Google Ads if people already search for what you sell, because you are reaching people who are ready to act. Start with Meta Ads (Facebook and Instagram) if your product is visual, if people do not know to search for it yet, or if you want customers to start a WhatsApp chat with you. Many businesses end up using both, but if you are starting small, pick one, test it properly and measure it before adding the other.",
+      "I'm Dipendra Guragain, a digital marketing expert in Kathmandu, and I manage both [Google Ads](/services/google-ads) and [Meta Ads](/services/meta-ads). This guide explains the difference in plain English so you can choose with confidence.",
+      "## The core difference: searching vs scrolling",
+      "• **Google Ads** show your business to people who are searching for something right now. Someone types what they need, and your ad appears. They already want it. This is called capturing demand.",
+      "• **Meta Ads** show your business to people while they scroll Facebook and Instagram. They were not looking for you. Good targeting and a strong image or video can make them interested. This is called creating demand.",
+      "Neither is better. They answer different situations.",
+      "## Google Ads vs Meta Ads at a glance",
+      "| | Google Ads | Meta Ads |\n|---|---|---|\n| Where it shows | Google search results and other Google places | Facebook and Instagram feeds, stories and reels |\n| Customer mindset | Looking for a solution now | Browsing, not yet looking |\n| Best for | Products and services people search for | Visual products, new brands, offers, WhatsApp enquiries |\n| Creative needed | Mostly text, a clear message | Strong images or short videos |\n| Typical goal | Sales or enquiries from ready buyers | Awareness, enquiries, WhatsApp chats, retargeting |\n| Main risk | Paying for searches that do not convert | Paying for attention that never turns into action |",
+      "## When Google Ads is the better first step",
+      "• People already search for what you sell, such as a specific product, a service or a repair.",
+      "• You want enquiries or sales from people who are ready to buy.",
+      "• Your website or landing page is clear and works well on a phone.",
+      "• You can describe your offer in a few sharp words.",
+      "## When Meta Ads is the better first step",
+      "• Your product looks good in a photo or short video: fashion, food, gadgets, interiors, travel.",
+      "• Nobody searches for it by name yet, because the brand or product is new.",
+      "• You want customers to message you on WhatsApp, which fits how many people in Nepal prefer to buy.",
+      "• You want to show a limited offer or a festival campaign to a defined audience.",
+      "## A real example, with context",
+      "For a camera and drone retailer, I ran a Meta campaign built around the Get more messages objective, sending shoppers straight to WhatsApp. It started 143 messaging conversations at roughly NPR 5 to 7 each over two days. That is a campaign result, not a promise: it depended on the product, the audience, the offer and the timing, and results will differ for every business. I share it because it shows what a clear goal and a short path (ad, then chat) can do. You can read the details in the article on [Meta Ads that start WhatsApp chats](/blog/meta-ads-whatsapp-chats-nepal).",
+      "## How to test with a small budget",
+      "• **Pick one channel and one goal.** For example, enquiries on WhatsApp, or sales from one product.",
+      "• **Set up tracking first.** Make sure you can see purchases, form fills and WhatsApp clicks. Without this, you are spending blind.",
+      "• **Start small and run it long enough.** Give it a few weeks, not two days, before you judge it, and change one thing at a time.",
+      "• **Measure cost per result.** Not clicks, not likes: cost per enquiry or per order.",
+      "• **Fix the page before you add budget.** If people click but do not act, more money will not help. Improve the landing page or the offer first.",
+      "• **Add the second channel later.** Once one works, add the other, or use Meta to follow up with people who visited your site.",
+      "## Common mistakes to avoid",
+      "• Sending ad traffic to a slow or confusing page.",
+      "• Running ads without conversion tracking.",
+      "• Judging an ad on likes or impressions instead of enquiries and sales.",
+      "• Switching off an ad after one weak day, or leaving a bad one running for a month.",
+      "• Spreading a small budget across too many campaigns, so none gets enough data to work.",
+      "## What does managing ads cost?",
+      "My ad management starts from NPR 25,000 a month for Google Ads and for Meta Ads, as listed on my [pricing page](/pricing). Your ad budget is separate and is paid directly to Google and Meta, so you always see exactly what was spent. If you want ads, search, content and conversion planned together under one strategy, see my [digital marketing service](/services/digital-marketing).",
+      "## So which should you pick?",
+      "If people already search for what you sell, start with Google Ads. If your product is visual or new, or you want WhatsApp conversations, start with Meta Ads. If you are not sure, tell me about your business on the [contact page](/contact), and I will tell you which one I would test first and why. If you are an online store, my guide to [growing ecommerce in Nepal](/blog/how-to-grow-ecommerce-in-nepal-2026) shows how ads fit into the bigger picture."
+    ],
+    "faqs": [
+      {
+        "question": "Is Google Ads or Meta Ads better for a small business in Nepal?",
+        "answer": "Neither is better for everyone. Google Ads suits businesses whose customers already search for what they sell. Meta Ads suits visual or new products and businesses that want WhatsApp conversations. Start with one, measure it, and add the other later."
+      },
+      {
+        "question": "How much should I spend on ads to start?",
+        "answer": "Start with a small budget you can afford to lose while you learn, run it for a few weeks, and track cost per enquiry or order. Add budget only after one campaign shows it can bring results."
+      },
+      {
+        "question": "Can Meta Ads send customers to WhatsApp?",
+        "answer": "Yes. Campaigns can be set up so people tap the ad and start a WhatsApp conversation with your business. This suits many Nepali businesses, because customers often prefer to ask questions in a chat before they buy."
+      },
+      {
+        "question": "Who pays for the ads, me or the agency?",
+        "answer": "With my service, your ad budget is paid directly to Google and Meta from your own account, so you always see exactly what was spent. My fee covers planning, running and reporting the campaigns."
+      }
+    ]
+  },
+  {
     "slug": "whatsapp-marketing-automation-nepal",
     "title": "WhatsApp Marketing in Nepal: Automation & Business API Guide from a WhatsApp Marketing Expert in Kathmandu",
     "excerpt": "WhatsApp marketing in Nepal and Kathmandu: how WhatsApp Business API automation handles enquiries, orders, eSewa and Khalti payments, COD and delivery updates.",

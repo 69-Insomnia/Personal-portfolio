@@ -34,6 +34,16 @@ const PROJECT_IMAGE_ALT: Record<string, string> = {
 };
 
 const POST_IMAGE_ALT: Record<string, string> = {
+  'ecommerce-website-developer-vs-agency-vs-freelancer-nepal':
+    'Cover card reading: Freelancer or agency, who should build your online store?',
+  'what-does-an-ecommerce-growth-expert-do-nepal':
+    'Cover card reading: What does an ecommerce growth expert actually do?',
+  'ecommerce-seo-checklist-nepal':
+    'Cover card reading: The ecommerce SEO checklist for Nepali online stores',
+  'shopify-vs-woocommerce-vs-custom-ecommerce-store-nepal':
+    'Cover card reading: Shopify, WooCommerce or custom, what suits your store?',
+  'google-ads-vs-meta-ads-nepal':
+    'Cover card reading: Google Ads or Meta Ads, which should you start with?',
   'technical-seo-foundations':
     'Infographic setting out six technical SEO checks in order: crawlability, clear page focus, metadata, structured data, site speed, and content last',
   'whatsapp-booking-site':
